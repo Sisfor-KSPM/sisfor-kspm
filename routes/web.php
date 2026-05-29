@@ -8,6 +8,12 @@ use App\Http\Controllers\HomeController;
 // });
 
 Route::get('/', [HomeController::class, 'index']);
+Route::get('/kamus', [HomeController::class, 'kamus']);
+Route::get('/about', [HomeController::class, 'about']);
+Route::get('/events', [HomeController::class, 'events']);
+Route::get('/gallery', [HomeController::class, 'gallery']);
+Route::get('/elibrary', [HomeController::class, 'eLibrary']);
+Route::get('/contact', [HomeController::class, 'contact']);
 
 Route::prefix('admin')->group(function () {
     // Overview

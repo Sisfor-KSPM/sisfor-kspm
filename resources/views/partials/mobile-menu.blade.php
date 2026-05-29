@@ -33,10 +33,6 @@
 
   {{-- CTA & Auth --}}
   <div class="flex flex-col gap-2">
-    <a class="px-4 py-3 rounded-[10px] text-base font-bold bg-[#e8ecfb] text-[#1a2fb5] no-underline block"
-       href="{{ url('/recruit') }}">
-      🎯 Open Recruitment 2025
-    </a>
     <button class="px-5 py-3 rounded-[9px] text-sm font-semibold border-[1.5px] border-[#d0d5e8] text-[#1c1f3a] bg-white cursor-pointer w-full"
             onclick="openModal('login'); closeMobileMenu()">
       Sign In
