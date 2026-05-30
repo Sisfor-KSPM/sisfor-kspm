@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Header;
 use Illuminate\Http\Request;
+use App\Models\homecontent;
 
 class HomeController extends Controller
 {
     public function index()
     {
+        $home = Homecontent::first();
         $header = Header::first(); // null-safe, view sudah handle kalau null
-        return view('welcome', compact('header'));
+        return view('welcome', compact('header', 'home'));
     }
 
     public function kamus()

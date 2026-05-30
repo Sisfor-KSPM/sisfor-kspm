@@ -73,16 +73,17 @@
     </div>
 
     <div>
-      <div data-aos="fade-up" class="text-[0.72rem] font-bold tracking-[0.1em] uppercase text-[#1a2fb5] mb-2.5">
-        A little about
+      <div data-aos="fade-up"
+          class="text-[0.72rem] font-bold tracking-[0.1em] uppercase text-[#1a2fb5] mb-2.5">
+          {{ $home->tagline }}
       </div>
+
       <h2 class="text-[clamp(1.9rem,3vw,2.6rem)] text-[#0d0f1a] leading-[1.15] tracking-[-0.02em] font-medium">
-        Kelompok Studi Pasar Modal<br>Sekolah Vokasi IPB University
+          {!! nl2br(e($home->judul)) !!}
       </h2>
+
       <p class="text-[0.95rem] text-[#5a6080] leading-[1.8] max-w-[540px] mt-3">
-        Welcome to IPB University Capital Market Study Group! We analyze the Indonesian
-        Capital Market, offering insights, research, and events. Join us in becoming
-        skilled investors and traders.
+          {{ $home->deskripsi }}
       </p>
       <div class="mt-6">
         <a href="{{ url('/about') }}"

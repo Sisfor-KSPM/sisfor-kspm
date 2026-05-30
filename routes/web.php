@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\admin\HomeContentController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -41,7 +42,11 @@ Route::prefix('admin')->group(function () {
     Route::get('/reviews', function () { return view('admin.reviews'); })->name('admin.reviews');
 
     // Halaman Landing
-    Route::get('/home-content', function () { return view('admin.home_content'); })->name('admin.home_content');
+    Route::get('/home-content', [HomeContentController::class, 'index'])
+        ->name('admin.home-content');
+    Route::post('/home-content', [HomeContentController::class, 'update'])
+        ->name('admin.home-content.update');
+
     Route::get('/about-us', function () { return view('admin.about_us.edit'); })->name('admin.about_us.edit');
     Route::get('/gallery', function () { return view('admin.gallery'); })->name('admin.gallery');
     Route::get('/rekrutmen', function () { return view('admin.rekrutmen'); })->name('admin.rekrutmen');

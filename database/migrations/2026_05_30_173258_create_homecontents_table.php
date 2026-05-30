@@ -16,9 +16,6 @@ return new class extends Migration
             $table->string('tagline');
             $table->string('judul');
             $table->string('deskripsi');
-            $table->string('gambar_home');
-            $table->string('tombol_1_text')->nullable();
-            $table->string('tombol_2_text')->nullable();
             $table->string('ig_link')->nullable();
             $table->string('yt_link')->nullable();
             $table->string('linkedin_link')->nullable();
