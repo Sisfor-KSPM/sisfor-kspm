@@ -31,10 +31,10 @@
             <label class="block text-xs font-semibold text-gray-500 mb-1">Kepanjangan</label>
             <input type="text" class="inp" value="Kelompok Studi Pasar Modal SV IPB" placeholder="Kelompok Studi...">
         </div>
-        
+
         <div class="mb-3.5">
-            <label class="block text-xs font-semibold text-gray-500 mb-1">Tahun Berdiri</label>
-            <input type="number" class="inp" value="2018" placeholder="2018">
+            <label class="block text-xs font-semibold text-gray-500 mb-1">Deskripsi Singkat (Hero Section)</label>
+            <textarea class="inp" rows="3" placeholder="Deskripsi untuk hero...">KSPM SV IPB adalah komunitas mahasiswa yang berfokus pada edukasi dan praktik pasar modal, berafiliasi dengan Bursa Efek Indonesia melalui Investment Gallery.</textarea>
         </div>
         
         <div class="mb-3.5">
@@ -47,10 +47,7 @@
             <textarea class="inp" rows="4" placeholder="Misi organisasi...">Mengedukasi anggota tentang pasar modal Indonesia, memfasilitasi praktik investasi nyata, membangun jaringan profesional, dan berkontribusi pada literasi keuangan kampus.</textarea>
         </div>
         
-        <div class="mb-3.5">
-            <label class="block text-xs font-semibold text-gray-500 mb-1">Deskripsi Singkat (Hero Section)</label>
-            <textarea class="inp" rows="3" placeholder="Deskripsi untuk hero...">KSPM SV IPB adalah komunitas mahasiswa yang berfokus pada edukasi dan praktik pasar modal, berafiliasi dengan Bursa Efek Indonesia melalui Investment Gallery.</textarea>
-        </div>
+        
     </div>
 
     <!-- Logo & Foto -->
@@ -80,7 +77,8 @@
 <!-- Stats Cards -->
 <div class="card p-6 mb-5">
     <div class="font-bold mb-4 text-gray-900">📊 Statistik (ditampilkan di homepage)</div>
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div><label class="block text-xs font-semibold text-gray-500 mb-1">Tahun Berdiri</label><input class="inp" value="2018"></div>
         <div><label class="block text-xs font-semibold text-gray-500 mb-1">Total Anggota</label><input class="inp" value="247+"></div>
         <div><label class="block text-xs font-semibold text-gray-500 mb-1">Tahun Aktif</label><input class="inp" value="6+"></div>
         <div><label class="block text-xs font-semibold text-gray-500 mb-1">Program Kerja</label><input class="inp" value="18+"></div>

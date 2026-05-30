@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 
-@section('page-title', 'Events & Gallery')
+@section('page-title', 'Gallery')
 @section('page-breadcrumb', 'Kelola Foto & Dokumentasi')
 
 @section('content')
 <div class="section-header flex items-center justify-between mb-5 mt-2 gap-3 flex-wrap">
     <div>
-        <div class="section-title text-lg font-bold text-gray-900">Events & Gallery</div>
+        <div class="section-title text-lg font-bold text-gray-900">Gallery</div>
         <div class="section-sub text-sm text-gray-500">Kelola foto & dokumentasi kegiatan KSPM</div>
     </div>
     <div class="flex gap-2 flex-wrap">

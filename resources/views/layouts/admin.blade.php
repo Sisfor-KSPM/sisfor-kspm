@@ -107,22 +107,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var
         <span class="ni-icon">👥</span> Manajemen Anggota
     </a>
     <a href="{{ url('/admin/kegiatan') }}" class="nav-item {{ request()->is('admin/kegiatan*') ? 'active' : '' }}">
-        <span class="ni-icon">📅</span> Kegiatan & Event
-    </a>
-    <a href="{{ url('/admin/lomba') }}" class="nav-item {{ request()->is('admin/lomba*') ? 'active' : '' }}">
-        <span class="ni-icon">🏆</span> Info Lomba <span class="ni-badge">3</span>
+        <span class="ni-icon">📅</span> Kegiatan & Event <span class="ni-badge">3</span>
     </a>
     <a href="{{ url('/admin/riset') }}" class="nav-item {{ request()->is('admin/riset*') ? 'active' : '' }}">
         <span class="ni-icon">📊</span> Riset & Publikasi
     </a>
-    <a href="{{ url('/admin/pengumuman') }}" class="nav-item {{ request()->is('admin/pengumuman*') ? 'active' : '' }}">
-        <span class="ni-icon">📢</span> Pengumuman
-    </a>
     <a href="{{ url('/admin/faq') }}" class="nav-item {{ request()->is('admin/faq*') ? 'active' : '' }}">
         <span class="ni-icon">❓</span> Manajemen FAQ
-    </a>
-    <a href="{{ url('/admin/reviews') }}" class="nav-item {{ request()->is('admin/reviews*') ? 'active' : '' }}">
-        <span class="ni-icon">⭐</span> Manajemen Reviews
     </a>
 
     <div class="nav-section text-xs font-bold tracking-widest text-white/35 px-5 pt-3.5 pb-1 uppercase">Halaman Landing</div>
@@ -133,13 +124,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var
         <span class="ni-icon">🏛️</span> About / Tentang
     </a>
     <a href="{{ url('/admin/gallery') }}" class="nav-item {{ request()->is('admin/gallery*') ? 'active' : '' }}">
-        <span class="ni-icon">🖼️</span> Events & Gallery
-    </a>
-    <a href="{{ url('/admin/rekrutmen') }}" class="nav-item {{ request()->is('admin/rekrutmen*') ? 'active' : '' }}">
-        <span class="ni-icon">🎯</span> Open Recruitment
-    </a>
-    <a href="{{ url('/admin/contact') }}" class="nav-item {{ request()->is('admin/contact*') ? 'active' : '' }}">
-        <span class="ni-icon">📬</span> Contact & Pesan <span class="ni-badge" id="contact-badge">0</span>
+        <span class="ni-icon">🖼️</span> Gallery
     </a>
 
     <div class="nav-section text-xs font-bold tracking-widest text-white/35 px-5 pt-3.5 pb-1 uppercase">Tools</div>
@@ -148,9 +133,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var
     </a>
     <a href="{{ url('/admin/kamus') }}" class="nav-item {{ request()->is('admin/kamus*') ? 'active' : '' }}">
         <span class="ni-icon">📖</span> Kamus Investasi
-    </a>
-    <a href="{{ url('/admin/market') }}" class="nav-item {{ request()->is('admin/market*') ? 'active' : '' }}">
-        <span class="ni-icon">📈</span> Data Pasar
     </a>
 
     <div class="nav-section text-xs font-bold tracking-widest text-white/35 px-5 pt-3.5 pb-1 uppercase">Pengaturan</div>
