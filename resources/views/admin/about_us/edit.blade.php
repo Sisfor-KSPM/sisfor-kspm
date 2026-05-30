@@ -12,9 +12,18 @@
     <button class="btn btn-primary btn-sm" onclick="alert('Perubahan berhasil disimpan!')">💾 Simpan Perubahan</button>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+<div class="grid grid-cols-1 gap-5 mb-5">
     <!-- Profil Organisasi -->
     <div class="card p-6">
+        <div class="mb-5">
+            <label class="block text-xs font-semibold text-gray-500 mb-1">Logo Utama</label>
+            <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:bg-blue-50 transition cursor-pointer" onclick="alert('Fitur upload gambar statis')">
+                <div class="text-4xl mb-2">🏦</div>
+                <div class="font-semibold text-gray-500 text-sm">Klik atau drag & drop logo</div>
+                <div class="text-xs text-gray-400 mt-1">PNG/JPG/SVG · maks 2MB</div>
+            </div>
+        </div>
+
         <div class="font-bold text-base mb-4 flex items-center gap-2 text-gray-900">🏛️ Profil Organisasi</div>
         
         <div class="mb-3.5">
@@ -48,29 +57,6 @@
         </div>
         
         
-    </div>
-
-    <!-- Logo & Foto -->
-    <div class="card p-6">
-        <div class="font-bold text-base mb-4 text-gray-900">🖼️ Logo & Foto Organisasi</div>
-        
-        <div class="mb-5">
-            <label class="block text-xs font-semibold text-gray-500 mb-1">Logo Utama</label>
-            <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:bg-blue-50 transition cursor-pointer" onclick="alert('Fitur upload gambar statis')">
-                <div class="text-4xl mb-2">🏦</div>
-                <div class="font-semibold text-gray-500 text-sm">Klik atau drag & drop logo</div>
-                <div class="text-xs text-gray-400 mt-1">PNG/JPG/SVG · maks 2MB</div>
-            </div>
-        </div>
-        
-        <div>
-            <label class="block text-xs font-semibold text-gray-500 mb-1">Foto Kegiatan / Hero Background</label>
-            <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:bg-blue-50 transition cursor-pointer" onclick="alert('Fitur upload gambar statis')">
-                <div class="text-4xl mb-2">🖼️</div>
-                <div class="font-semibold text-gray-500 text-sm">Foto untuk hero section landing page</div>
-                <div class="text-xs text-gray-400 mt-1">Rekomendasi: 1200×600px · JPG/PNG</div>
-            </div>
-        </div>
     </div>
 </div>
 

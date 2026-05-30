@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->string('title'); // Nama acara (Seminar, RUPS, dll)
-            $table->text('description'); // Deskripsi acara
-            $table->date('event_date'); // Tanggal acara
-            $table->string('location'); // Lokasi / Link Zoom
+            $table->string('kegiatan'); // Nama acara (Seminar, RUPS, dll)
+            $table->string('tipe'); // Deskripsi acara
+            $table->string('tanggal'); // Tanggal acara
+            $table->string('waktu_mulai')->nullable();
+            $table->string('waktu_selesai')->nullable();
+            $table->string('tempat')->nullable(); // Lokasi / Link Zoom
+            $table->string('pic')->nullable(); // Lokasi / Link Zoom
+            $table->string('deskripsi')->nullable(); // Lokasi / Link Zoom
+            $table->enum('status', ['upcoming', 'berlangsung', 'selesai', 'dibatalkan']); // Lokasi / Link Zoom
+            $table->string('kuota')->nullable(); // Lokasi / Link Zoom
             $table->timestamps();
         });
     }

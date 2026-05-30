@@ -13,8 +13,12 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->string('title'); // Judul Laporan (Weekly Outlook, dsb)
+            $table->string('judul_riset'); // Judul Laporan (Weekly Outlook, dsb)
+            $table->string('kategori'); // Judul Laporan (Weekly Outlook, dsb)
+            $table->string('penulis'); // Judul Laporan (Weekly Outlook, dsb)
+            $table->string('tanggal_rilis'); // Judul Laporan (Weekly Outlook, dsb)
             $table->string('pdf_file'); // Path file PDF
+            $table->enum('status', ['publik', 'draft', 'terbatas']); // Path file PDF
             $table->timestamps();
         });
     }

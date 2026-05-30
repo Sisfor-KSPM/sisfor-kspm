@@ -13,9 +13,18 @@ return new class extends Migration
     {
         Schema::create('about_us', function (Blueprint $table) {
             $table->id();
-            $table->text('history')->nullable(); // Sejarah KSPM
-            $table->text('vision')->nullable();  // Visi
-            $table->text('mission')->nullable(); // Misi
+            $table->string('logo')->nullable(); // Sejarah KSPM
+            $table->string('nama'); // Misi
+            $table->string('singkatan')->nullable(); // Misi
+            $table->string('kepanjangan')->nullable(); // Misi
+            $table->string('deskripsi')->nullable(); // Misi
+            $table->string('visi')->nullable();  // Visi
+            $table->string('misi')->nullable(); // Misi
+            $table->string('tahun_berdiri')->nullable(); // Misi
+            $table->string('total_anggota')->nullable(); // Misi
+            $table->string('tahun_aktif')->nullable(); // Misi
+            $table->string('program_kerja')->nullable(); // Misi
+            $table->string('publikasi_riset')->nullable(); // Misi
             $table->timestamps();
         });
     }

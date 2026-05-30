@@ -147,20 +147,18 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3.5">
             <div><label class="block text-xs font-semibold text-gray-500 mb-1">Tanggal Rilis</label><input type="date" class="inp"></div>
-            <div><label class="block text-xs font-semibold text-gray-500 mb-1">Ukuran File</label><input class="inp" placeholder="1.5 MB"></div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 mb-1">Status Publikasi</label>
+                <select class="inp">
+                    <option>Publik</option><option>Draft</option><option>Terbatas</option>
+                </select>
+            </div>
         </div>
         
         <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:bg-blue-50 transition cursor-pointer mb-3.5" onclick="alert('Upload file tidak tersedia di simulasi statis.')">
             <div class="text-3xl mb-2">📄</div>
             <div class="font-semibold text-gray-500 text-sm">Klik untuk upload PDF</div>
             <div class="text-[0.75rem] text-gray-400 mt-1">Mendukung file PDF hingga 10MB</div>
-        </div>
-        
-        <div class="mb-3.5">
-            <label class="block text-xs font-semibold text-gray-500 mb-1">Status Publikasi</label>
-            <select class="inp">
-                <option>Publik</option><option>Draft</option><option>Terbatas</option>
-            </select>
         </div>
         
         <div class="mt-5 pt-4 border-t border-gray-200 flex justify-end gap-2.5">
