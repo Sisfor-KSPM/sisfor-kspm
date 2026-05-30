@@ -83,78 +83,37 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var
     </div>
     <div>
       <div class="sb-logo-text">KSPM SV IPB</div>
-      <div class="sb-logo-sub">Admin Dashboard</div>
+      <div class="sb-logo-sub">User Dashboard</div>
     </div>
   </div>
   <div class="sb-admin-badge">
     <div class="sb-avatar">AD</div>
     <div>
-      <div class="sb-admin-name">{{ Auth::user()->name ?? 'Admin KSPM' }}</div>
-      <div class="sb-admin-role">Super Administrator</div>
+      <div class="sb-admin-name">{{ Auth::user()->name ?? 'Anggota KSPM' }}</div>
+      <div class="sb-admin-role">Anggota</div>
     </div>
   </div>
   <div class="sb-scroll">
     <div class="nav-section text-xs font-bold tracking-widest text-white/35 px-5 pt-3.5 pb-1 uppercase">Overview</div>
-    <a href="{{ url('/admin/dashboard') }}" class="nav-item {{ request()->is('admin/dashboard') ? 'active' : '' }}">
+    <a href="{{ url('/user/dashboard') }}" class="nav-item {{ request()->is('user/dashboard') ? 'active' : '' }}">
         <span class="ni-icon">🏠</span> Dashboard
     </a>
-    <a href="{{ url('/admin/analitik') }}" class="nav-item {{ request()->is('admin/analitik') ? 'active' : '' }}">
-        <span class="ni-icon">📉</span> Analitik Pengguna
+    <a href="{{ url('/user/gallery') }}" class="nav-item {{ request()->is('user/gallery*') ? 'active' : '' }}">
+        <span class="ni-icon">🖼️</span> Events
     </a>
-
-    <div class="nav-section text-xs font-bold tracking-widest text-white/35 px-5 pt-3.5 pb-1 uppercase">Konten & Data</div>
-    <a href="{{ url('/admin/anggota') }}" class="nav-item {{ request()->is('admin/anggota*') ? 'active' : '' }}">
-        <span class="ni-icon">👥</span> Manajemen Anggota
-    </a>
-    <a href="{{ url('/admin/kegiatan') }}" class="nav-item {{ request()->is('admin/kegiatan*') ? 'active' : '' }}">
-        <span class="ni-icon">📅</span> Kegiatan & Event
-    </a>
-    <a href="{{ url('/admin/lomba') }}" class="nav-item {{ request()->is('admin/lomba*') ? 'active' : '' }}">
-        <span class="ni-icon">🏆</span> Info Lomba <span class="ni-badge">3</span>
-    </a>
-    <a href="{{ url('/admin/riset') }}" class="nav-item {{ request()->is('admin/riset*') ? 'active' : '' }}">
-        <span class="ni-icon">📊</span> Riset & Publikasi
-    </a>
-    <a href="{{ url('/admin/pengumuman') }}" class="nav-item {{ request()->is('admin/pengumuman*') ? 'active' : '' }}">
-        <span class="ni-icon">📢</span> Pengumuman
-    </a>
-    <a href="{{ url('/admin/faq') }}" class="nav-item {{ request()->is('admin/faq*') ? 'active' : '' }}">
-        <span class="ni-icon">❓</span> Manajemen FAQ
-    </a>
-    <a href="{{ url('/admin/reviews') }}" class="nav-item {{ request()->is('admin/reviews*') ? 'active' : '' }}">
-        <span class="ni-icon">⭐</span> Manajemen Reviews
-    </a>
-
-    <div class="nav-section text-xs font-bold tracking-widest text-white/35 px-5 pt-3.5 pb-1 uppercase">Halaman Landing</div>
-    <a href="{{ url('/admin/home-content') }}" class="nav-item {{ request()->is('admin/home-content*') ? 'active' : '' }}">
-        <span class="ni-icon">🏠</span> Home Content
-    </a>
-    <a href="{{ url('/admin/about-us') }}" class="nav-item {{ request()->is('admin/about-us*') ? 'active' : '' }}">
-        <span class="ni-icon">🏛️</span> About / Tentang
-    </a>
-    <a href="{{ url('/admin/gallery') }}" class="nav-item {{ request()->is('admin/gallery*') ? 'active' : '' }}">
-        <span class="ni-icon">🖼️</span> Events & Gallery
-    </a>
-    <a href="{{ url('/admin/rekrutmen') }}" class="nav-item {{ request()->is('admin/rekrutmen*') ? 'active' : '' }}">
-        <span class="ni-icon">🎯</span> Open Recruitment
-    </a>
-    <a href="{{ url('/admin/contact') }}" class="nav-item {{ request()->is('admin/contact*') ? 'active' : '' }}">
-        <span class="ni-icon">📬</span> Contact & Pesan <span class="ni-badge" id="contact-badge">0</span>
-    </a>
-
     <div class="nav-section text-xs font-bold tracking-widest text-white/35 px-5 pt-3.5 pb-1 uppercase">Tools</div>
-    <a href="{{ url('/admin/kalkulator') }}" class="nav-item {{ request()->is('admin/kalkulator*') ? 'active' : '' }}">
+    <a href="{{ url('/user/kalkulator') }}" class="nav-item {{ request()->is('user/kalkulator*') ? 'active' : '' }}">
         <span class="ni-icon">🧮</span> Kalkulator Saham
     </a>
-    <a href="{{ url('/admin/kamus') }}" class="nav-item {{ request()->is('admin/kamus*') ? 'active' : '' }}">
+    <a href="{{ url('/user/kamus') }}" class="nav-item {{ request()->is('user/kamus*') ? 'active' : '' }}">
         <span class="ni-icon">📖</span> Kamus Investasi
     </a>
-    <a href="{{ url('/admin/market') }}" class="nav-item {{ request()->is('admin/market*') ? 'active' : '' }}">
+    <a href="{{ url('/user/market') }}" class="nav-item {{ request()->is('user/market*') ? 'active' : '' }}">
         <span class="ni-icon">📈</span> Data Pasar
     </a>
 
     <div class="nav-section text-xs font-bold tracking-widest text-white/35 px-5 pt-3.5 pb-1 uppercase">Pengaturan</div>
-    <a href="{{ url('/admin/pengaturan') }}" class="nav-item {{ request()->is('admin/pengaturan*') ? 'active' : '' }}">
+    <a href="{{ url('/user/pengaturan') }}" class="nav-item {{ request()->is('user/pengaturan*') ? 'active' : '' }}">
         <span class="ni-icon">⚙️</span> Pengaturan
     </a>
     <a href="{{ url('/') }}" target="_blank" class="nav-item" style="color:rgba(255,255,255,.5)">

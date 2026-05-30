@@ -15,6 +15,15 @@ Route::get('/gallery', [HomeController::class, 'gallery']);
 Route::get('/elibrary', [HomeController::class, 'eLibrary']);
 Route::get('/contact', [HomeController::class, 'contact']);
 
+Route::prefix('user')->group(function () {
+    // Overview
+    Route::get('/dashboard', function () { return view('user.dashboard'); })->name('user.dashboard');
+    Route::get('event', function () { return view('user.event'); })->name('user.event');
+    Route::get('kalkulator', function () { return view('user.kalkulator'); })->name('user.kalkulator');
+    Route::get('kamus', function () { return view('user.kamus'); })->name('user.kamus');
+    Route::get('pengaturan', function () { return view('user.pengaturan'); })->name('user.pengaturan');
+});
+
 Route::prefix('admin')->group(function () {
     // Overview
     Route::get('/dashboard', function () { return view('admin.dashboard'); })->name('admin.dashboard');
