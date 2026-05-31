@@ -6,6 +6,7 @@ use App\Http\Controllers\admin\HomeContentController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\GalleryController;
+use App\Http\Controllers\Admin\ReportController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kamus', [HomeController::class, 'kamus']);
@@ -54,13 +55,14 @@ Route::prefix('admin')->group(function () {
     Route::delete('/kegiatan/{id}', [EventController::class, 'destroy'])->name('kegiatan.destroy');
     
     Route::get('/lomba', function () { return view('admin.lomba'); })->name('admin.lomba');
-    Route::get('/riset', function () { return view('admin.riset'); })->name('admin.riset');
+    Route::get('/riset', [ReportController::class, 'index'])->name('admin.riset');
+    Route::post('/riset', [ReportController::class, 'store'])->name('admin.riset.store');
+    Route::delete('/riset/{id}', [ReportController::class, 'destroy'])->name('admin.riset.destroy');
     Route::get('/pengumuman', function () { return view('admin.pengumuman'); })->name('admin.pengumuman');
     
     // Fitur Esensial
     Route::get('/faq', function () { return view('admin.faq'); })->name('admin.faq');
-    Route::get('/reviews', function () { return view('admin.reviews'); })->name('admin.reviews');
-
+    
     // Halaman Landing
     Route::get('/home-content', [HomeContentController::class, 'index'])
         ->name('admin.home-content');
@@ -76,8 +78,7 @@ Route::prefix('admin')->group(function () {
     // Tools
     Route::get('/kalkulator', function () { return view('admin.kalkulator'); })->name('admin.kalkulator');
     Route::get('/kamus', function () { return view('admin.kamus'); })->name('admin.kamus');
-    Route::get('/market', function () { return view('admin.market'); })->name('admin.market');
-
+    
     // Pengaturan
     Route::get('/pengaturan', function () { return view('admin.pengaturan'); })->name('admin.pengaturan');
 });

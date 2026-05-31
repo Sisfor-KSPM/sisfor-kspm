@@ -5,62 +5,54 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Report;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class ReportController extends Controller
 {
-    // ================= FUNGSI WEB =================
-    public function index() {
+    public function index()
+    {
         $reports = Report::orderBy('created_at', 'desc')->get();
-        return view('admin.report.index', compact('reports'));
+        return view('admin.riset', compact('reports'));
     }
 
-    public function store(Request $request) {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'pdf_file' => 'required|mimes:pdf|max:10240', // Maksimal 10MB khusus PDF
-        ]);
-
-        $path = $request->file('pdf_file')->store('reports', 'public');
-        Report::create(['title' => $request->title, 'pdf_file' => $path]);
-        
-        return back()->with('success', 'Laporan PDF berhasil diupload!');
-    }
-
-    public function destroy($id) {
-        $report = Report::findOrFail($id);
-        if ($report->pdf_file && Storage::exists('public/' . $report->pdf_file)) {
-            Storage::delete('public/' . $report->pdf_file);
-        }
-        $report->delete();
-        return back()->with('success', 'Laporan dihapus!');
-    }
-
-    // ================= FUNGSI API =================
-    public function indexApi() {
-        return response()->json(['status' => 'success', 'data' => Report::orderBy('created_at', 'desc')->get()], 200);
-    }
-
-    public function storeApi(Request $request) {
-        $request->validate([
-            'title' => 'required|string|max:255',
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'judul_riset' => 'required|string|max:255',
+            'deskripsi_singkat' => 'nullable|string|max:255',
+            'kategori' => 'required|string|max:100',
+            'penulis' => 'nullable|string|max:255',
+            'tanggal_rilis' => 'nullable|date',
             'pdf_file' => 'required|mimes:pdf|max:10240',
+            'status' => 'required|in:publik,draft,terbatas',
         ]);
 
-        $path = $request->file('pdf_file')->store('reports', 'public');
-        $report = Report::create(['title' => $request->title, 'pdf_file' => $path]);
+        $file = $request->file('pdf_file');
+        $destination = public_path('reports');
+        if (!File::exists($destination)) {
+            File::makeDirectory($destination, 0755, true);
+        }
 
-        return response()->json(['status' => 'success', 'message' => 'Laporan diupload via API!', 'data' => $report], 201);
+        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $file->move($destination, $filename);
+
+        $validated['pdf_file'] = 'reports/' . $filename;
+
+        Report::create($validated);
+
+        return back()->with('success', 'Riset berhasil diupload.');
     }
 
-    public function destroyApi($id) {
-        $report = Report::find($id);
-        if(!$report) return response()->json(['status' => 'error', 'message' => 'Not found'], 404);
-        
-        if ($report->pdf_file && Storage::exists('public/' . $report->pdf_file)) {
-            Storage::delete('public/' . $report->pdf_file);
+    public function destroy($id)
+    {
+        $report = Report::findOrFail($id);
+
+        if ($report->pdf_file && File::exists(public_path($report->pdf_file))) {
+            File::delete(public_path($report->pdf_file));
         }
+
         $report->delete();
-        return response()->json(['status' => 'success', 'message' => 'Laporan dihapus via API!'], 200);
+
+        return back()->with('success', 'Riset berhasil dihapus.');
     }
 }

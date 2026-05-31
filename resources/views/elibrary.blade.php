@@ -76,87 +76,152 @@
       >
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="research-grid"></div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="research-grid">
+      @forelse($reports as $report)      
+        <div
+            class="research-card bg-white rounded-xl p-5 border border-gray-100 cursor-pointer"
+            onclick="document.getElementById('report-modal-{{ $report->id }}').classList.remove('hidden')">
+
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center text-red-800 font-bold">
+                    PDF
+                </div>
+
+                <div>
+                    <div class="font-semibold text-sm text-gray-900">
+                        {{ $report->judul_riset }}
+                    </div>
+
+                    <div class="text-xs text-gray-500 mt-1">
+                        {{ $report->penulis ?: '-' }}
+                        ·
+                        {{ $report->tanggal_rilis ? \Carbon\Carbon::parse($report->tanggal_rilis)->format('d M Y') : '-' }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+      @empty
+        <div class="col-span-1 md:col-span-3 rounded-lg border border-dashed border-gray-200 p-8 text-center text-gray-500">Belum ada laporan riset publik.</div>
+      @endforelse
+    </div>
 
   </div>
 </section>
 
 {{-- RESEARCH MODAL --}}
+@foreach($reports as $report)
+
 <div
-  class="modal-overlay fixed inset-0 z-[700] bg-black/70 backdrop-blur-[10px] overflow-y-auto hidden"
-  id="modal-research">
+    id="report-modal-{{ $report->id }}"
+    class="hidden fixed inset-0 z-[999] bg-black/70 backdrop-blur-sm p-5 overflow-y-auto">
 
-  <div class="min-h-full flex items-center justify-center p-10">
+    <div class="min-h-full flex items-center justify-center">
 
-    <div class="modal-box bg-white rounded-[22px] w-full max-w-[780px] relative shadow-[0_36px_90px_rgba(0,0,0,0.25)]">
+        <div class="bg-white rounded-2xl max-w-3xl w-full overflow-hidden">
 
-      <div class="bg-gradient-to-br from-[#0d1a6e] to-[#1e38cc] p-10 text-white rounded-t-[22px] relative">
+            {{-- HEADER --}}
+            <div class="bg-gradient-to-br from-[#0d1a6e] to-[#1e38cc] text-white p-8 relative">
 
-        <button
-          class="absolute top-4 right-4 w-[34px] h-[34px] rounded-full bg-white/10 text-white cursor-pointer flex items-center justify-center hover:bg-white/20 border-none text-base"
-          onclick="closeModal('research')">
-          ✕
-        </button>
+                <button
+                    onclick="document.getElementById('report-modal-{{ $report->id }}').classList.add('hidden')"
+                    class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20">
 
-        <div
-          class="text-[0.65rem] font-bold uppercase tracking-[0.1em] text-white/50 mb-2"
-          id="rm-type">
+                    ✕
+
+                </button>
+
+                <div class="uppercase text-xs tracking-widest text-white/60 mb-2">
+                    {{ $report->kategori }}
+                </div>
+
+                <h2 class="text-2xl font-bold">
+                    {{ $report->judul_riset }}
+                </h2>
+
+            </div>
+
+            {{-- BODY --}}
+            <div class="p-8">
+
+                <div class="grid md:grid-cols-3 gap-5 mb-8">
+
+                    <div>
+                        <div class="text-xs text-gray-400 uppercase mb-1">
+                            Penulis
+                        </div>
+
+                        <div class="font-semibold">
+                            {{ $report->penulis ?: '-' }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="text-xs text-gray-400 uppercase mb-1">
+                            Kategori
+                        </div>
+
+                        <div class="font-semibold">
+                            {{ $report->kategori }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="text-xs text-gray-400 uppercase mb-1">
+                            Tanggal Rilis
+                        </div>
+
+                        <div class="font-semibold">
+                            {{ $report->tanggal_rilis ? \Carbon\Carbon::parse($report->tanggal_rilis)->format('d F Y') : '-' }}
+                        </div>
+                    </div>
+
+                </div>
+
+                <div>
+
+                    <h3 class="font-bold text-lg mb-3">
+                        Deskripsi
+                    </h3>
+
+                    <p class="text-gray-600 leading-7">
+                        {{ $report->deskripsi_singkat }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            {{-- FOOTER --}}
+            <div class="p-8 pt-0 flex gap-3">
+
+                <a
+                    href="{{ asset($report->pdf_file) }}"
+                    target="_blank"
+                    download
+                    class="flex-1 text-center bg-[#1a2fb5] hover:bg-[#233ccf] text-white font-bold py-3 rounded-lg">
+
+                    ⬇ Download PDF
+
+                </a>
+
+                <button
+                    onclick="document.getElementById('report-modal-{{ $report->id }}').classList.add('hidden')"
+                    class="px-6 py-3 border rounded-lg">
+
+                    Tutup
+
+                </button>
+
+            </div>
+
         </div>
-
-        <div
-          class="text-[1.6rem] font-extrabold mb-2.5 leading-[1.2]"
-          id="rm-title">
-        </div>
-
-        <div
-          class="text-[0.82rem] text-white/60"
-          id="rm-meta">
-        </div>
-
-      </div>
-
-      <div class="px-10 py-9">
-
-        <div class="mb-6">
-          <h4 class="font-bold text-[#0d0f1a] mb-2">
-            Ringkasan
-          </h4>
-
-          <p class="text-[0.88rem] text-[#5a6080] leading-[1.8]" id="rm-summary"></p>
-        </div>
-
-        <div class="mb-6">
-          <h4 class="font-bold text-[#0d0f1a] mb-2">
-            Isi Laporan
-          </h4>
-
-          <p class="text-[0.88rem] text-[#5a6080] leading-[1.8]" id="rm-content"></p>
-        </div>
-
-      </div>
-
-      <div class="flex gap-2.5 px-10 pb-9">
-
-        <button
-          class="flex items-center gap-2 px-6 py-3 rounded-[9px] font-bold text-[0.88rem] bg-[#1a2fb5] text-white border-none cursor-pointer hover:bg-[#1e38cc]"
-          onclick="closeModal('research')">
-
-          ⬇ Download PDF
-        </button>
-
-        <button
-          class="px-6 py-3 rounded-[9px] font-semibold text-[0.88rem] border-[1.5px] border-[#d0d5e8] text-[#1c1f3a] bg-white cursor-pointer hover:border-[#1a2fb5] hover:text-[#1a2fb5]"
-          onclick="closeModal('research')">
-
-          Tutup
-        </button>
-
-      </div>
 
     </div>
-  </div>
+
 </div>
 
+@endforeach
 @endsection
 
 @section('styles')
@@ -199,197 +264,222 @@
 @section('scripts')
 <script>
 
-var researchData = [
+let currentCategory = 'all';
 
-  {
-    type:'Weekly Research',
-    cat:'weekly',
-    title:'Market Update W15 2025 — IHSG Rebound',
-    author:'Tim Riset KSPM',
-    date:'14 April 2025',
-    summary:'IHSG berhasil rebound ke level 7.300-an setelah tekanan jual mereda pekan sebelumnya.',
-    content:'Analisis pergerakan IHSG, sektor-sektor outperform, serta rekomendasi saham pilihan minggu ini.',
-    emoji:'📊'
-  },
+function openResearch(report)
+{
+    document.getElementById('rm-type').textContent =
+        report.kategori ?? '-';
 
-  {
-    type:'Equity Research',
-    cat:'equity',
-    title:'BBCA: Defensive Play di Tengah Volatilitas',
-    author:'Div. Riset',
-    date:'10 April 2025',
-    summary:'BBCA tetap menjadi pilihan utama sebagai saham defensif dengan fundamental solid.',
-    content:'Analisis mendalam fundamental BBCA, valuasi, proyeksi laba, dan target harga.',
-    emoji:'🏦'
-  },
+    document.getElementById('rm-title').textContent =
+        report.judul_riset ?? '-';
 
-  {
-    type:'Market Outlook',
-    cat:'outlook',
-    title:'Q2 2025 Investment Outlook',
-    author:'Tim Analis',
-    date:'1 April 2025',
-    summary:'Proyeksi pasar modal Indonesia Q2 2025 dengan berbagai skenario makroekonomi.',
-    content:'Analisis faktor makro, sektoral, dan rekomendasi alokasi portofolio untuk Q2 2025.',
-    emoji:'🔮'
-  }
+    document.getElementById('rm-meta').textContent =
+        (report.penulis ?? '-') + ' • ' +
+        (report.tanggal_rilis ?? '-');
 
-];
+    const categoryEl = document.getElementById('rm-category');
+    const authorEl   = document.getElementById('rm-author');
+    const dateEl     = document.getElementById('rm-date');
 
-var _resCat = 'all';
-var _resSearch = '';
+    if(categoryEl)
+        categoryEl.textContent = report.kategori ?? '-';
 
-function filterResearch(cat, btn){
+    if(authorEl)
+        authorEl.textContent = report.penulis ?? '-';
 
-  _resCat = cat;
+    if(dateEl)
+        dateEl.textContent = report.tanggal_rilis ?? '-';
 
-  document.querySelectorAll('.tab-btn').forEach(function(b){
+    const summaryEl = document.getElementById('rm-summary');
+    if(summaryEl)
+        summaryEl.textContent =
+            report.ringkasan ??
+            report.deskripsi ??
+            'Tidak ada ringkasan.';
 
-    b.classList.remove(
-      'bg-[#1a2fb5]',
-      'text-white',
-      'border-[#1a2fb5]'
+    const contentEl = document.getElementById('rm-content');
+    if(contentEl)
+        contentEl.textContent =
+            report.isi_laporan ??
+            'Klik tombol download untuk membaca laporan lengkap.';
+
+    document.getElementById('modal-research-download').href =
+        '/' + report.pdf_file;
+
+    const modal =
+        document.getElementById('modal-research');
+
+    modal.classList.remove('hidden');
+
+    setTimeout(() => {
+        modal.classList.add('open');
+    }, 10);
+}
+
+
+function filterResearch(category, btn)
+{
+    currentCategory = category;
+
+    document.querySelectorAll('.tab-btn').forEach(el => {
+
+        el.classList.remove(
+            'bg-[#1a2fb5]',
+            'text-white',
+            'border-[#1a2fb5]'
+        );
+
+        el.classList.add(
+            'bg-white',
+            'text-[#5a6080]',
+            'border-[#d0d5e8]'
+        );
+
+    });
+
+    btn.classList.add(
+        'bg-[#1a2fb5]',
+        'text-white',
+        'border-[#1a2fb5]'
     );
 
-    b.classList.add(
-      'bg-white',
-      'text-[#5a6080]',
-      'border-[#d0d5e8]'
+    btn.classList.remove(
+        'bg-white',
+        'text-[#5a6080]',
+        'border-[#d0d5e8]'
     );
-  });
 
-  btn.classList.add(
-    'bg-[#1a2fb5]',
-    'text-white',
-    'border-[#1a2fb5]'
-  );
-
-  btn.classList.remove(
-    'bg-white',
-    'text-[#5a6080]',
-    'border-[#d0d5e8]'
-  );
-
-  renderResearch();
+    applyFilters();
 }
 
-function searchResearch(){
 
-  _resSearch = document
-    .getElementById('research-search')
-    .value
-    .toLowerCase();
-
-  renderResearch();
+function searchResearch()
+{
+    applyFilters();
 }
 
-function renderResearch(){
 
-  var el = document.getElementById('research-grid');
+function applyFilters()
+{
+    const keyword =
+        document.getElementById('research-search')
+            .value
+            .toLowerCase()
+            .trim();
 
-  if(!el) return;
+    const cards =
+        document.querySelectorAll('.research-card');
 
-  var data = researchData.filter(function(r){
+    cards.forEach(card => {
 
-    var catOk =
-      _resCat === 'all' || r.cat === _resCat;
+        const category =
+            (card.dataset.cat || '')
+            .toLowerCase();
 
-    var searchOk =
-      !_resSearch ||
-      r.title.toLowerCase().includes(_resSearch) ||
-      r.type.toLowerCase().includes(_resSearch);
+        const title =
+            (card.dataset.title || '')
+            .toLowerCase();
 
-    return catOk && searchOk;
-  });
+        const author =
+            (card.dataset.author || '')
+            .toLowerCase();
 
-  if(!data.length){
+        const categoryMatch =
+            currentCategory === 'all' ||
+            category.includes(currentCategory.toLowerCase());
 
-    el.innerHTML = `
-      <div class="col-span-full text-center py-12 text-[#5a6080]">
-        Tidak ada laporan ditemukan.
-      </div>
-    `;
+        const searchMatch =
+            keyword === '' ||
+            title.includes(keyword) ||
+            author.includes(keyword) ||
+            category.includes(keyword);
 
-    return;
-  }
+        if(categoryMatch && searchMatch)
+        {
+            card.style.display = '';
+        }
+        else
+        {
+            card.style.display = 'none';
+        }
 
-  el.innerHTML = data.map(function(r, i){
+    });
 
-    return `
-      <div
-        class="research-card bg-white border border-[#d0d5e8] rounded-[18px] overflow-hidden"
-        onclick="openResearch(${researchData.indexOf(r)})"
-      >
-
-        <div class="h-[120px] bg-gradient-to-br from-[#0d1a6e] to-[#1e38cc] flex items-center justify-center text-[3rem]">
-          ${r.emoji}
-        </div>
-
-        <div class="p-5">
-
-          <div class="text-[0.68rem] font-bold text-[#1a2fb5] uppercase tracking-[0.06em] mb-1.5">
-            ${r.type}
-          </div>
-
-          <div class="text-[0.92rem] font-extrabold text-[#0d0f1a] mb-1 leading-[1.3]">
-            ${r.title}
-          </div>
-
-          <div class="text-[0.72rem] text-[#5a6080] mb-3">
-            ${r.author} · ${r.date}
-          </div>
-
-          <p class="text-[0.82rem] text-[#5a6080] leading-[1.6] mb-4">
-            ${r.summary}
-          </p>
-
-          <div class="flex gap-2">
-
-            <button class="flex-1 py-2 rounded-lg text-[0.8rem] font-bold bg-[#e8ecfb] text-[#1a2fb5] border-none cursor-pointer hover:bg-[#1a2fb5] hover:text-white transition-all duration-200">
-
-              Baca Selengkapnya
-            </button>
-
-          </div>
-
-        </div>
-      </div>
-    `;
-
-  }).join('');
+    checkEmptyState();
 }
 
-renderResearch();
 
-function openResearch(i){
+function checkEmptyState()
+{
+    const cards =
+        document.querySelectorAll('.research-card');
 
-  var r = researchData[i];
+    let visible = 0;
 
-  document.getElementById('rm-type').textContent = r.type;
-  document.getElementById('rm-title').textContent = r.title;
-  document.getElementById('rm-meta').textContent = r.author + ' · ' + r.date;
-  document.getElementById('rm-summary').textContent = r.summary;
-  document.getElementById('rm-content').textContent = r.content;
+    cards.forEach(card => {
 
-  var modal = document.getElementById('modal-research');
+        if(card.style.display !== 'none')
+        {
+            visible++;
+        }
 
-  modal.classList.remove('hidden');
+    });
 
-  setTimeout(function(){
-    modal.classList.add('open');
-  }, 10);
+    let emptyState =
+        document.getElementById('research-empty');
+
+    if(!emptyState)
+    {
+        emptyState = document.createElement('div');
+
+        emptyState.id = 'research-empty';
+
+        emptyState.className =
+            'col-span-full text-center py-12 text-[#5a6080] hidden';
+
+        emptyState.innerHTML =
+            'Tidak ada laporan ditemukan.';
+
+        document
+            .getElementById('research-grid')
+            .appendChild(emptyState);
+    }
+
+    if(visible === 0)
+    {
+        emptyState.classList.remove('hidden');
+    }
+    else
+    {
+        emptyState.classList.add('hidden');
+    }
 }
 
-function closeModal(id){
 
-  var modal = document.getElementById('modal-' + id);
+function closeModal(id)
+{
+    const modal =
+        document.getElementById('modal-' + id);
 
-  modal.classList.remove('open');
+    modal.classList.remove('open');
 
-  setTimeout(function(){
-    modal.classList.add('hidden');
-  }, 250);
+    setTimeout(() => {
+
+        modal.classList.add('hidden');
+
+    }, 250);
 }
+
+
+document.addEventListener('keydown', function(e){
+
+    if(e.key === 'Escape')
+    {
+        closeModal('research');
+    }
+
+});
 
 </script>
 @endsection

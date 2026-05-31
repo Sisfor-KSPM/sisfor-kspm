@@ -9,6 +9,7 @@ use App\Models\AboutUs;
 use App\Models\DataPengurus;
 use App\Models\Event;
 use App\Models\Gallery;
+use App\Models\Report;
 use Illuminate\Support\Facades\File;
 
 class HomeController extends Controller
@@ -66,7 +67,10 @@ class HomeController extends Controller
 
     public function eLibrary()
     {
-        return view('elibrary');
+        $reports = Report::where('status', 'publik')
+            ->orderBy('tanggal_rilis', 'desc')
+            ->get();
+        return view('elibrary', compact('reports'));
     }
 
     public function contact()

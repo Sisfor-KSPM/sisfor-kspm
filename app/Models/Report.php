@@ -5,5 +5,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Report extends Model
 {
-    protected $fillable = ['title', 'pdf_file'];
+    protected $fillable = [
+        'judul_riset',
+        'deskripsi_singkat',
+        'kategori',
+        'penulis',
+        'tanggal_rilis',
+        'pdf_file',
+        'status',
+    ];
 }
