@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\SimulationController;
 use App\Http\Controllers\Admin\DictionaryController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Api\AnalyticsTrackingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
@@ -44,3 +45,11 @@ Route::delete('/admin/event/{id}', [EventController::class, 'destroyApi']);
 Route::get('/admin/report', [ReportController::class, 'indexApi']);
 Route::post('/admin/report', [ReportController::class, 'storeApi']);
 Route::delete('/admin/report/{id}', [ReportController::class, 'destroyApi']);
+
+// Analytics Tracking Routes (Tanpa auth, bisa di-track anonymous users)
+Route::prefix('analytics')->group(function () {
+    Route::post('/track-feature', [AnalyticsTrackingController::class, 'trackFeature']);
+    Route::post('/track-event', [AnalyticsTrackingController::class, 'trackEvent']);
+    Route::post('/track-download', [AnalyticsTrackingController::class, 'trackDownload']);
+    Route::post('/track-page', [AnalyticsTrackingController::class, 'trackPage']);
+});

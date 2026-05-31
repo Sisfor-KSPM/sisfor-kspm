@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\DictionaryController;
+use App\Http\Controllers\Admin\AnalyticsController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kamus', [HomeController::class, 'kamus']);
@@ -30,7 +31,8 @@ Route::prefix('user')->group(function () {
 Route::prefix('admin')->group(function () {
     // Overview
     Route::get('/dashboard', function () { return view('admin.dashboard'); })->name('admin.dashboard');
-    Route::get('/analitik', function () { return view('admin.analitik'); })->name('admin.analitik');
+    Route::get('/analitik', [AnalyticsController::class, 'index'])->name('admin.analitik');
+    Route::get('/api/analytics', [AnalyticsController::class, 'getChartData'])->name('admin.analitik.api');
 
     Route::get('/about-us', [AboutUsController::class, 'index'])->name('about.index');
     Route::put('/about-us', [AboutUsController::class, 'update'])->name('about.update');

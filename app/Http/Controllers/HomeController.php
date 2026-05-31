@@ -12,6 +12,7 @@ use App\Models\Gallery;
 use App\Models\Report;
 use App\Models\Faq;
 use App\Models\Dictionary;
+use App\Services\AnalyticsService;
 use Illuminate\Support\Facades\File;
 
 class HomeController extends Controller
@@ -25,6 +26,7 @@ class HomeController extends Controller
 
     public function kamus()
     {
+        AnalyticsService::trackFeatureUsage('kamus');
         $terms = Dictionary::orderBy('istilah', 'asc')->get();
         return view('kamus', compact('terms'));
     }
@@ -96,6 +98,7 @@ class HomeController extends Controller
 
     public function events()
     {
+        AnalyticsService::trackFeatureUsage('events');
         $events = Event::where('status', '!=', 'dibatalkan')
             ->orderBy('tanggal', 'desc')
             ->get();
@@ -105,12 +108,14 @@ class HomeController extends Controller
 
     public function gallery()
     {
+        AnalyticsService::trackFeatureUsage('gallery');
         $galleries = Gallery::orderBy('created_at', 'desc')->get();
         return view('gallery', compact('galleries'));
     }
 
     public function eLibrary()
     {
+        AnalyticsService::trackFeatureUsage('elibrary');
         $reports = Report::where('status', 'publik')
             ->orderBy('tanggal_rilis', 'desc')
             ->get();
@@ -119,6 +124,7 @@ class HomeController extends Controller
 
     public function contact()
     {
+        AnalyticsService::trackFeatureUsage('contact');
         $faqs = Faq::all();
         return view('contact', compact('faqs'));
     }
