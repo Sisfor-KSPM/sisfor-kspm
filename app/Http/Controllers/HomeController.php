@@ -10,6 +10,7 @@ use App\Models\DataPengurus;
 use App\Models\Event;
 use App\Models\Gallery;
 use App\Models\Report;
+use App\Models\Faq;
 use Illuminate\Support\Facades\File;
 
 class HomeController extends Controller
@@ -75,7 +76,8 @@ class HomeController extends Controller
 
     public function contact()
     {
-        return view('contact');
+        $faqs = Faq::all();
+        return view('contact', compact('faqs'));
     }
 
 

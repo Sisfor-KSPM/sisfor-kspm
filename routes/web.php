@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\FaqController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kamus', [HomeController::class, 'kamus']);
@@ -61,8 +62,11 @@ Route::prefix('admin')->group(function () {
     Route::get('/pengumuman', function () { return view('admin.pengumuman'); })->name('admin.pengumuman');
     
     // Fitur Esensial
-    Route::get('/faq', function () { return view('admin.faq'); })->name('admin.faq');
-    
+    Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');
+    Route::post('/faq', [FaqController::class, 'store'])->name('faq.store');
+    Route::put('/faq/{id}', [FaqController::class, 'update'])->name('faq.update');
+    Route::delete('/faq/{id}', [FaqController::class, 'destroy'])->name('faq.destroy');
+
     // Halaman Landing
     Route::get('/home-content', [HomeContentController::class, 'index'])
         ->name('admin.home-content');
