@@ -6,6 +6,7 @@ use App\Models\Header;
 use Illuminate\Http\Request;
 use App\Models\homecontent;
 use App\Models\AboutUs;
+use App\Models\DataPengurus;
 
 class HomeController extends Controller
 {
@@ -24,7 +25,25 @@ class HomeController extends Controller
     public function about()
     {
         $about = AboutUs::first();
-        return view('about', compact('about'));
+        $pengurusByDivisi = DataPengurus::latest()->get()->groupBy('divisi');
+        
+        // Format divisions data for frontend
+        $divisiData = $pengurusByDivisi->map(function($members, $divisi) {
+            return [
+                'nama' => $divisi,
+                'desc' => 'Divisi ' . $divisi,
+                'fullDesc' => 'Tim dari divisi ' . $divisi . ' bekerja untuk mencapai tujuan organisasi.',
+                'members' => $members->map(function($member) {
+                    return [
+                        'initials' => strtoupper(substr($member->nama, 0, 1)),
+                        'name' => $member->nama,
+                        'role' => $member->jabatan
+                    ];
+                })->values()->toArray()
+            ];
+        })->values()->toArray();
+        
+        return view('about', compact('about', 'divisiData'));
     }
 
     public function events()

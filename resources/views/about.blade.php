@@ -249,14 +249,23 @@ function slidePhoto(dir){goAph((aphIdx+dir+aphTotal)%aphTotal);}
 
 setInterval(function(){slidePhoto(1);},5000);
 
-/* DIVISIONS DATA */
-var divisiData=[
-  {nama:'BPH (Badan Pengurus Harian)',icon:'<img class="h-10" src="admin.png" alt="education">',desc:'Leading organizational strategy, coordination, and governance of KSPM.',fullDesc:'Badan Pengurus Harian (BPH), consisting of the CEO, Vice CEO, Secretary, and Treasurer, serves as the central pillar of KSPM\'s organizational structure. BPH is responsible for setting strategic direction, coordinating all divisions, and ensuring that every program aligns with KSPM\'s vision and mission.With strong leadership and structured governance, BPH becomes the driving force behind KSPM\'s stability, growth, and sustainability',members:[{initials:'KT',name:'Kangkung Tumis.',role:'CEO'},{initials:'BS',name:'Budi S.',role:'Vice CEO'},{initials:'CR',name:'Citra R.',role:'Bendahara 1'},{initials:'DP',name:'Dika P.',role:'Bendahara 2'}]},
-  {nama:'Public Relations',icon:'<img class="h-10" src="pl.png" alt="education">',desc:'Managing external communication, partnerships, and KSPM\'s public image.',fullDesc:"The Public Relation division manages external communication, develops strategic partnerships, and maintains a positive and professional image of KSPM. Through networking, collaboration, and effective communication, this division plays an important role in expanding KSPM's presence and building meaningful relationships.With strong external relations, KSPM continues to grow — reaching wider and creating greater opportunities for its members.",members:[{initials:'KS',name:'Kevin S.',role:'Kadiv'},{initials:'LM',name:'Lisa M.',role:'Anggota'}]},
-  {nama:'Analyze Trading',icon:'<img class="h-10" src="at.png" alt="education">',desc:'Conducting technical and fundamental market analysis for investment insights.',fullDesc:'The Analysis Trading division focuses on stock market analysis through both technical and fundamental approaches, providing a solid framework to understand market movements. From identifying trends to conducting in-depth research, this division delivers insights that support members in making informed and well-calculated investment decisions. Through a disciplined and analytical mindset, Analysis Trading helps sharpen critical thinking and build a comprehensive understanding of market dynamics.',members:[{initials:'MA',name:'Maya A.',role:'Kadiv'},{initials:'NR',name:'Nanda R.',role:'Anggota'},{initials:'OP',name:'Oscar P.',role:'Anggota'}]},
-  {nama:'Media Creative',icon:'<img class="h-10" src="media.png" alt="education">',desc:'Creating digital content, visual branding, and creative media for KSPM.',fullDesc:"The Media Creative division is responsible for managing and developing digital content across various platforms, delivering informative and engaging content related to capital markets and investment. By combining visual storytelling with strategic communication, this division ensures that every content is creative, clear, and purposeful. Through continuous innovation, Media Creative plays a key role in amplifying KSPM's voice and expanding its reach.",members:[{initials:'HM',name:'Hana M.',role:'Kadiv'},{initials:'IR',name:'Irfan R.',role:'Anggota'},{initials:'JA',name:'Julia A.',role:'Anggota'}]},
-  {nama:'Education',icon:'<img class="h-10" src="edu.png" alt="education">',desc:'Delivering investment education and improving financial literacy among members.',fullDesc:"The Education division focuses on designing and delivering structured learning programs in investment and capital markets, tailored for members at every level. Its mission is to enhance financial literacy and equip members with the knowledge, skills, and confidence to navigate the investment world. Through continuous learning and development, the Education division lays a strong foundation for KSPM's growth — one lesson at a time.",members:[{initials:'EF',name:'Eka F.',role:'Kadiv'},{initials:'FR',name:'Fani R.',role:'Anggota'},{initials:'GA',name:'Gilang A.',role:'Anggota'}]}
-];
+/* DIVISIONS DATA - DYNAMIC FROM DATABASE */
+var divisiData = @json($divisiData);
+
+// Add emoji icons for each division
+var divisiIcons = {
+  'BPH (Badan Pengurus Harian)': '👑',
+  'Administration': '📋',
+  'Education': '🎓',
+  'Media Creative': '🎨',
+  'Public Relation': '🤝',
+  'Investment Gallery': '📊',
+  'Analyze Trading': '📈'
+};
+
+divisiData.forEach(function(d) {
+  d.icon = divisiIcons[d.nama] || '💼';
+});
 
 var divGrid=document.getElementById('div-grid');
 if(divGrid){

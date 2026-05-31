@@ -34,6 +34,18 @@ Route::prefix('admin')->group(function () {
     Route::get('/about-us', [AboutUsController::class, 'index'])->name('about.index');
     Route::put('/about-us', [AboutUsController::class, 'update'])->name('about.update');
 
+    Route::post('/pengurus', [AboutUsController::class, 'pengurus_store'])
+        ->name('pengurus.store');
+
+    Route::get('/pengurus/{id}/edit', [AboutUsController::class, 'pengurus_edit'])
+        ->name('pengurus.edit');
+
+    Route::put('/pengurus/{id}', [AboutUsController::class, 'pengurus_update'])
+        ->name('pengurus.update');
+
+    Route::delete('/pengurus/{id}', [AboutUsController::class, 'pengurus_destroy'])
+        ->name('pengurus.destroy');
+
     // Konten & Data
     Route::get('/anggota', function () { return view('admin.anggota'); })->name('admin.anggota');
     Route::get('/kegiatan', function () { return view('admin.kegiatan'); })->name('admin.kegiatan');
