@@ -11,6 +11,7 @@ use App\Models\Event;
 use App\Models\Gallery;
 use App\Models\Report;
 use App\Models\Faq;
+use App\Models\Dictionary;
 use Illuminate\Support\Facades\File;
 
 class HomeController extends Controller
@@ -24,7 +25,8 @@ class HomeController extends Controller
 
     public function kamus()
     {
-        return view('kamus');
+        $terms = Dictionary::orderBy('istilah', 'asc')->get();
+        return view('kamus', compact('terms'));
     }
 
     public function about()

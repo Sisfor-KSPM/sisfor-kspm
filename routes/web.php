@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\DictionaryController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kamus', [HomeController::class, 'kamus']);
@@ -81,7 +82,11 @@ Route::prefix('admin')->group(function () {
 
     // Tools
     Route::get('/kalkulator', function () { return view('admin.kalkulator'); })->name('admin.kalkulator');
-    Route::get('/kamus', function () { return view('admin.kamus'); })->name('admin.kamus');
+   
+    Route::get('/kamus', [DictionaryController::class, 'index'])->name('kamus.index');
+    Route::post('/kamus', [DictionaryController::class, 'store'])->name('kamus.store');
+    Route::put('/kamus/{id}', [DictionaryController::class, 'update'])->name('kamus.update');
+    Route::delete('/kamus/{id}', [DictionaryController::class, 'destroy'])->name('kamus.destroy');
     
     // Pengaturan
     Route::get('/pengaturan', function () { return view('admin.pengaturan'); })->name('admin.pengaturan');

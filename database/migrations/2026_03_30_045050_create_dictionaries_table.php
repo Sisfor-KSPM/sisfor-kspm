@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('dictionaries', function (Blueprint $table) {
             $table->id();
-            $table->string('term'); // Istilah (Contoh: Bearish)
-            $table->text('definition'); // Pengertiannya
+            $table->string('istilah'); // Istilah (Contoh: Bearish)
+            $table->text('definisi'); // Pengertiannya
+            $table->string('kategori'); // Istilah (Contoh: Bearish)
             $table->timestamps();
         });
     }

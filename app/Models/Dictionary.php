@@ -5,5 +5,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Dictionary extends Model
 {
-    protected $fillable = ['term', 'definition'];
+    protected $fillable = ['istilah', 'definisi', 'kategori'];
 }
