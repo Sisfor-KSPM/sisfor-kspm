@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\admin\HomeContentController;
+use App\Http\Controllers\Admin\AboutUsController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -30,6 +31,9 @@ Route::prefix('admin')->group(function () {
     Route::get('/dashboard', function () { return view('admin.dashboard'); })->name('admin.dashboard');
     Route::get('/analitik', function () { return view('admin.analitik'); })->name('admin.analitik');
 
+    Route::get('/about-us', [AboutUsController::class, 'index'])->name('about.index');
+    Route::put('/about-us', [AboutUsController::class, 'update'])->name('about.update');
+
     // Konten & Data
     Route::get('/anggota', function () { return view('admin.anggota'); })->name('admin.anggota');
     Route::get('/kegiatan', function () { return view('admin.kegiatan'); })->name('admin.kegiatan');
@@ -47,7 +51,6 @@ Route::prefix('admin')->group(function () {
     Route::post('/home-content', [HomeContentController::class, 'update'])
         ->name('admin.home-content.update');
 
-    Route::get('/about-us', function () { return view('admin.about_us.edit'); })->name('admin.about_us.edit');
     Route::get('/gallery', function () { return view('admin.gallery'); })->name('admin.gallery');
     Route::get('/rekrutmen', function () { return view('admin.rekrutmen'); })->name('admin.rekrutmen');
     Route::get('/contact', function () { return view('admin.contact'); })->name('admin.contact');

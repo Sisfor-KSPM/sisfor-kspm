@@ -38,10 +38,34 @@
 {{-- ABOUT HERO TEXT --}}
 <div class="bg-[#1a2fb5] py-[60px] pb-20 text-white relative overflow-hidden">
   <div class="max-w-[1200px] mx-auto px-10 relative z-[2]">
-    <div class="text-[0.75rem] font-bold tracking-[0.12em] uppercase text-white/50 mb-3.5">Our Journey So Far</div>
-    <h1 class="text-[clamp(2.2rem,4.5vw,3.5rem)] font-medium leading-[1.1] mb-[18px]">Kelompok Studi Pasar Modal<br>Sekolah Vokasi IPB University</h1>
-    <p class="text-base text-white/70 leading-[1.8] max-w-[640px] mb-4">Established in 2019, KSPM SV IPB embarked on a transformative journey dedicated to shaping the future of capital market education. In a relatively short span, we have evolved into a dynamic force, leaving a significant impact on the landscape of financial education.</p>
-    <p class="text-base text-white/70 leading-[1.8] max-w-[640px]">Our vision: creating a space where students hone their interests, talents, and competencies in the capital market sector.</p>
+
+    <div class="text-[0.75rem] font-bold tracking-[0.12em] uppercase text-white/50 mb-3.5">
+      {{ $about->singkatan ?? 'Our Journey So Far' }}
+    </div>
+
+    <h1 class="text-[clamp(2.2rem,4.5vw,3.5rem)] font-medium leading-[1.1] mb-[18px]">
+      {!! nl2br(e($about->nama ?? 'Kelompok Studi Pasar Modal')) !!}
+    </h1>
+
+    @if($about?->kepanjangan)
+      <p class="text-lg text-white/90 font-medium mb-4">
+        {{ $about->kepanjangan }}
+      </p>
+    @endif
+
+    @if($about?->deskripsi)
+      <p class="text-base text-white/70 leading-[1.8] max-w-[640px] mb-4">
+        {{ $about->deskripsi }}
+      </p>
+    @endif
+
+    @if($about?->visi)
+      <p class="text-base text-white/70 leading-[1.8] max-w-[640px]">
+        <span class="font-semibold text-white">Vision :</span>
+        {{ $about->visi }}
+      </p>
+    @endif
+
   </div>
 </div>
 
@@ -53,20 +77,86 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-[72px] items-start mt-12">
       <!-- Stats grid -->
       <div class="rounded-3xl overflow-hidden border border-[#d0d5e8] bg-white" data-aos="fade-right">
+
         <div class="bg-gradient-to-br from-[#0d1a6e] via-[#1a2fb5] to-[#2d4ee0] p-8 relative overflow-hidden">
-          <div class="text-[3.6rem] font-black leading-none text-white tracking-[-0.02em]">2019</div>
-          <div class="text-[0.68rem] text-white/50 uppercase tracking-[0.1em] font-bold mt-1">Tahun Berdiri</div>
+          <div class="text-[3.6rem] font-black leading-none text-white tracking-[-0.02em]">
+            {{ $about->tahun_berdiri ?? '-' }}
+          </div>
+
+          <div class="text-[0.68rem] text-white/50 uppercase tracking-[0.1em] font-bold mt-1">
+            Tahun Berdiri
+          </div>
         </div>
-        <div class="grid grid-cols-2 gap-px bg-[#d0d5e8]">
-          <div class="bg-white px-[22px] py-[18px] hover:bg-[#e8ecfb] transition-colors"><div class="text-[1.5rem] font-black text-[#1a2fb5] leading-none">500+</div><div class="text-[0.7rem] text-[#5a6080] mt-1 font-medium">Anggota & Alumni</div></div>
-          <div class="bg-white px-[22px] py-[18px] hover:bg-[#e8ecfb] transition-colors"><div class="text-[1.5rem] font-black text-[#1a2fb5] leading-none">6</div><div class="text-[0.7rem] text-[#5a6080] mt-1 font-medium">Divisi Aktif</div></div>
-          <div class="bg-white px-[22px] py-[18px] hover:bg-[#e8ecfb] transition-colors"><div class="text-[1.5rem] font-black text-[#1a2fb5] leading-none">48+</div><div class="text-[0.7rem] text-[#5a6080] mt-1 font-medium">Laporan Riset</div></div>
-          <div class="bg-white px-[22px] py-[18px] hover:bg-[#e8ecfb] transition-colors"><div class="text-[1.5rem] font-black text-[#1a2fb5] leading-none">BEI</div><div class="text-[0.7rem] text-[#5a6080] mt-1 font-medium">Galeri Resmi</div></div>
+
+        <div class="grid grid-cols-2 gap-px bg-[#d0d5e8']">
+
+          <div class="bg-white px-[22px] py-[18px] hover:bg-[#e8ecfb] transition-colors">
+            <div class="text-[1.5rem] font-black text-[#1a2fb5] leading-none">
+              {{ $about->total_anggota ?? '-' }}
+            </div>
+            <div class="text-[0.7rem] text-[#5a6080] mt-1 font-medium">
+              Anggota & Alumni
+            </div>
+          </div>
+
+          <div class="bg-white px-[22px] py-[18px] hover:bg-[#e8ecfb] transition-colors">
+            <div class="text-[1.5rem] font-black text-[#1a2fb5] leading-none">
+              {{ $about->tahun_aktif ?? '-' }}
+            </div>
+            <div class="text-[0.7rem] text-[#5a6080] mt-1 font-medium">
+              Tahun Aktif
+            </div>
+          </div>
+
+          <div class="bg-white px-[22px] py-[18px] hover:bg-[#e8ecfb] transition-colors">
+            <div class="text-[1.5rem] font-black text-[#1a2fb5] leading-none">
+              {{ $about->program_kerja ?? '-' }}
+            </div>
+            <div class="text-[0.7rem] text-[#5a6080] mt-1 font-medium">
+              Program Kerja
+            </div>
+          </div>
+
+          <div class="bg-white px-[22px] py-[18px] hover:bg-[#e8ecfb] transition-colors">
+            <div class="text-[1.5rem] font-black text-[#1a2fb5] leading-none">
+              {{ $about->publikasi_riset ?? '-' }}
+            </div>
+            <div class="text-[0.7rem] text-[#5a6080] mt-1 font-medium">
+              Publikasi Riset
+            </div>
+          </div>
+
         </div>
       </div>
+      
       <div data-aos="fade-left">
-        <p class="text-[0.92rem] text-[#5a6080] leading-[1.85] mb-[18px]">As we reflect on our journey, each event and accomplishment serves as a testament to our dedication to fostering a community of informed investors and traders. Our vision of creating a space where students hone their interests, talents, and competencies in the capital market sector is gradually becoming a reality.</p>
-        <p class="text-[0.92rem] text-[#5a6080] leading-[1.85]">Looking ahead, we remain steadfast in our mission to instill the values of KSPM SV IPB, open new horizons of investment insights, and promote greater awareness of investment needs among students. The journey continues, and we invite you to be part of the exciting chapters yet to unfold.</p>
+
+        @if($about?->deskripsi)
+          <p class="text-[0.92rem] text-[#5a6080] leading-[1.85] mb-[18px]">
+            {{ $about->deskripsi }}
+          </p>
+        @endif
+
+        @if($about?->visi)
+          <p class="text-[0.92rem] text-[#5a6080] leading-[1.85] mb-[18px]">
+            <span class="font-bold text-[#0d0f1a]">
+              Visi
+            </span>
+            <br>
+            {{ $about->visi }}
+          </p>
+        @endif
+
+        @if($about?->misi)
+          <p class="text-[0.92rem] text-[#5a6080] leading-[1.85]">
+            <span class="font-bold text-[#0d0f1a]">
+              Misi
+            </span>
+            <br>
+            {!! nl2br(e($about->misi)) !!}
+          </p>
+        @endif
+
       </div>
     </div>
   </div>

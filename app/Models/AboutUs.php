@@ -12,5 +12,18 @@ class AboutUs extends Model
     // Nama tabel secara eksplisit (opsional tapi disarankan karena nama model bahasa Inggris dengan CamelCase)
     protected $table = 'about_us'; 
 
-    protected $fillable = ['history', 'vision', 'mission'];
+    protected $fillable = [
+        'logo',
+        'nama',
+        'singkatan',
+        'kepanjangan',
+        'deskripsi',
+        'visi',
+        'misi',
+        'tahun_berdiri',
+        'total_anggota',
+        'tahun_aktif',
+        'program_kerja',
+        'publikasi_riset',
+    ];
 }

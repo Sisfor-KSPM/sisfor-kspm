@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('nama'); // Misi
             $table->string('singkatan')->nullable(); // Misi
             $table->string('kepanjangan')->nullable(); // Misi
-            $table->string('deskripsi')->nullable(); // Misi
-            $table->string('visi')->nullable();  // Visi
-            $table->string('misi')->nullable(); // Misi
+            $table->text('deskripsi')->nullable(); // Misi
+            $table->text('visi')->nullable();  // Visi
+            $table->text('misi')->nullable(); // Misi
             $table->string('tahun_berdiri')->nullable(); // Misi
             $table->string('total_anggota')->nullable(); // Misi
             $table->string('tahun_aktif')->nullable(); // Misi

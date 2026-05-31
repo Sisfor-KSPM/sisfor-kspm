@@ -8,54 +8,51 @@ use Illuminate\Http\Request;
 
 class AboutUsController extends Controller
 {
-    public function edit()
+    public function index()
     {
-        // Ambil data pertama, jika belum ada buat instance baru
-        $aboutUs = AboutUs::first() ?? new AboutUs();
-        return view('admin.about_us.edit', compact('aboutUs'));
+        // Ambil baris pertama, jika tidak ada kirim objek kosong
+        $about = AboutUs::first() ?? new AboutUs();
+        return view('admin.about_us.edit', compact('about'));
     }
 
     public function update(Request $request)
     {
-        // Validasi input dari admin
         $request->validate([
-            'history' => 'required|string',
-            'vision' => 'required|string',
-            'mission' => 'required|string',
+            'nama' => 'required|string|max:255',
+            'singkatan' => 'nullable|string|max:50',
+            'kepanjangan' => 'nullable|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'visi' => 'nullable|string',
+            'misi' => 'nullable|string',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048', // Batas upload 2MB
+            'tahun_berdiri' => 'nullable|string|max:50',
+            'total_anggota' => 'nullable|string|max:50',
+            'tahun_aktif' => 'nullable|string|max:50',
+            'program_kerja' => 'nullable|string|max:50',
+            'publikasi_riset' => 'nullable|string|max:50',
         ]);
 
-        $aboutUs = AboutUs::first() ?? new AboutUs();
-        $aboutUs->history = $request->history;
-        $aboutUs->vision = $request->vision;
-        $aboutUs->mission = $request->mission;
-        
-        $aboutUs->save();
+        // Cari data pertama, atau buat instance baru jika tabel kosong
+        $about = AboutUs::first() ?? new AboutUs();
 
-        return back()->with('success', 'Halaman Tentang Kami berhasil diperbarui!');
-    }
+        // Ambil semua data input kecuali file logo terlebih dahulu
+        $data = $request->except('logo');
 
-    // Tambahkan method ini di dalam AboutUsController
-    public function updateApi(Request $request)
-    {
-        // Validasi input dari Postman/API
-        $request->validate([
-            'history' => 'required|string',
-            'vision' => 'required|string',
-            'mission' => 'required|string',
-        ]);
+        // Logika Upload Logo Utama
+        if ($request->hasFile('logo')) {
+            // Jika data lama sudah ada logonya, hapus file lamanya biar memori gak penuh
+            if ($about->logo && Storage::disk('public')->exists($about->logo)) {
+                Storage::disk('public')->delete($about->logo);
+            }
 
-        $aboutUs = AboutUs::first() ?? new AboutUs();
-        $aboutUs->history = $request->history;
-        $aboutUs->vision = $request->vision;
-        $aboutUs->mission = $request->mission;
-        
-        $aboutUs->save();
+            // Simpan gambar baru ke folder storage/app/public/logos
+            $data['logo'] = $request->file('logo')->store('logos', 'public');
+        }
 
-        // Return berupa JSON untuk API
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Halaman Tentang Kami berhasil diperbarui via API!',
-            'data' => $aboutUs
-        ], 200);
+        // Simpan perubahan ke database
+        $about->fill($data);
+        $about->save();
+
+        return back()->with('success', 'Konten About Us berhasil diperbarui!');
     }
 }

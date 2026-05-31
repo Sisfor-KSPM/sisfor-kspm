@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Header;
 use Illuminate\Http\Request;
 use App\Models\homecontent;
+use App\Models\AboutUs;
 
 class HomeController extends Controller
 {
@@ -22,7 +23,8 @@ class HomeController extends Controller
 
     public function about()
     {
-        return view('about');
+        $about = AboutUs::first();
+        return view('about', compact('about'));
     }
 
     public function events()
