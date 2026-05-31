@@ -116,54 +116,63 @@
 <div class="relative overflow-hidden mt-[68px]" id="eph-track">
 
     @php
-        $heroSlides = [
-            [
-                'emoji' => '🎤',
-                'title' => 'Investalk Vol. 5 — Saham Dividen',
-                'subtitle' => 'Diskusi bersama praktisi pasar modal.',
-                'date' => 'Maret 2025'
-            ],
-            [
-                'emoji' => '📚',
-                'title' => 'Sekolah Pasar Modal Batch 12',
-                'subtitle' => 'Belajar investasi dari dasar hingga analisis.',
-                'date' => 'Februari 2025'
-            ],
-            [
-                'emoji' => '🏛️',
-                'title' => 'Company Visit — BEI Jakarta',
-                'subtitle' => 'Kunjungan langsung ke Bursa Efek Indonesia.',
-                'date' => 'Januari 2025'
-            ],
-        ];
+        $heroSlides = $events->take(3)->map(function($event) {
+            $emojiMap = [
+                'webinar' => '🎤',
+                'workshop' => '📚',
+                'kompetisi' => '🏆',
+                'company_visit' => '🏛️',
+                'seminar' => '🎓',
+                'default' => '📅'
+            ];
+            $emoji = $emojiMap[$event->tipe] ?? '📅';
+            return [
+                'emoji' => $emoji,
+                'title' => $event->kegiatan,
+                'subtitle' => $event->deskripsi ?? 'Event KSPM',
+                'date' => \Carbon\Carbon::parse($event->tanggal)->format('F Y')
+            ];
+        })->toArray();
     @endphp
 
-    @foreach ($heroSlides as $index => $slide)
-        <div class="eph-slide {{ $index === 0 ? 'active' : '' }}">
-            
-            <div class="eph-slide-placeholder">
-                {{ $slide['emoji'] }}
-            </div>
-
-            <div class="eph-slide-overlay"></div>
-
-            <div class="relative z-[2] px-10 py-20 max-w-[700px]">
+    @if(count($heroSlides) > 0)
+        @foreach ($heroSlides as $index => $slide)
+            <div class="eph-slide {{ $index === 0 ? 'active' : '' }}">
                 
-                <div class="eph-slide-tag">
-                    📅 {{ $slide['date'] }}
+                <div class="eph-slide-placeholder">
+                    {{ $slide['emoji'] }}
                 </div>
 
+                <div class="eph-slide-overlay"></div>
+
+                <div class="relative z-[2] px-10 py-20 max-w-[700px]">
+                    
+                    <div class="eph-slide-tag">
+                        📅 {{ $slide['date'] }}
+                    </div>
+
+                    <h1 class="text-[clamp(1.8rem,3.8vw,3rem)] text-white font-extrabold leading-[1.15] mb-4">
+                        {{ $slide['title'] }}
+                    </h1>
+
+                    <p class="eph-slide-sub">
+                        {{ $slide['subtitle'] }}
+                    </p>
+
+                </div>
+            </div>
+        @endforeach
+    @else
+        <div class="eph-slide active">
+            <div class="eph-slide-placeholder">📅</div>
+            <div class="eph-slide-overlay"></div>
+            <div class="relative z-[2] px-10 py-20 max-w-[700px]">
                 <h1 class="text-[clamp(1.8rem,3.8vw,3rem)] text-white font-extrabold leading-[1.15] mb-4">
-                    {{ $slide['title'] }}
+                    Belum ada event terbaru
                 </h1>
-
-                <p class="eph-slide-sub">
-                    {{ $slide['subtitle'] }}
-                </p>
-
             </div>
         </div>
-    @endforeach
+    @endif
 
     {{-- NAV --}}
     <button
@@ -233,72 +242,47 @@
         </div>
 
         @php
-            $events = [
-                [
-                    'title' => 'Investalk Vol. 5',
-                    'type' => 'webinar',
-                    'tag' => 'Webinar',
-                    'date' => '22 Maret 2025',
-                    'emoji' => '🎤',
-                    'desc' => 'Diskusi mendalam tentang strategi investasi saham dividen.'
-                ],
-                [
-                    'title' => 'Sekolah Pasar Modal',
-                    'type' => 'workshop',
-                    'tag' => 'Workshop',
-                    'date' => '10 Februari 2025',
-                    'emoji' => '📚',
-                    'desc' => 'Program edukasi intensif pasar modal.'
-                ],
-                [
-                    'title' => 'Company Visit BEI',
-                    'type' => 'workshop',
-                    'tag' => 'Company Visit',
-                    'date' => '15 Januari 2025',
-                    'emoji' => '🏛️',
-                    'desc' => 'Kunjungan ke Bursa Efek Indonesia.'
-                ],
-                [
-                    'title' => 'Stock Trading Competition',
-                    'type' => 'kompetisi',
-                    'tag' => 'Kompetisi',
-                    'date' => '20 November 2024',
-                    'emoji' => '🏆',
-                    'desc' => 'Kompetisi trading saham antar mahasiswa.'
-                ],
+            $emojiMap = [
+                'webinar' => '🎤',
+                'workshop' => '📚',
+                'kompetisi' => '🏆',
+                'company_visit' => '🏛️',
+                'seminar' => '🎓',
+                'default' => '📅'
             ];
         @endphp
 
         <div class="events-grid" id="events-grid">
 
-            @foreach ($events as $event)
+            @forelse ($events as $event)
                 <div
                     class="event-card"
-                    data-category="{{ $event['type'] }}">
+                    data-category="{{ $event->tipe }}">
 
                     <div class="event-cover">
-                        {{ $event['emoji'] }}
+                        {{ $emojiMap[$event->tipe] ?? '📅' }}
                     </div>
 
                     <div class="p-5">
 
                         <div class="text-[0.68rem] font-bold uppercase tracking-[0.06em] text-[#1a2fb5] mb-2">
-                            {{ $event['tag'] }}
+                            {{ ucfirst($event->tipe) }}
                         </div>
 
                         <div class="text-[1rem] font-extrabold text-[#0d0f1a] mb-1">
-                            {{ $event['title'] }}
+                            {{ $event->kegiatan }}
                         </div>
 
                         <div class="text-[0.75rem] text-[#5a6080] mb-3">
-                            📅 {{ $event['date'] }}
+                            📅 {{ \Carbon\Carbon::parse($event->tanggal)->format('d F Y') }}
                         </div>
 
                         <p class="text-[0.83rem] text-[#5a6080] leading-[1.7] mb-5">
-                            {{ $event['desc'] }}
+                            {{ Str::limit($event->deskripsi ?? 'Event KSPM', 100) }}
                         </p>
 
                         <button
+                            onclick='openEventModal(@json($event))'
                             class="w-full py-2.5 rounded-lg bg-[#e8ecfb] text-[#1a2fb5] font-bold text-[0.82rem] hover:bg-[#1a2fb5] hover:text-white transition-all">
                             Lihat Detail →
                         </button>
@@ -306,13 +290,110 @@
                     </div>
 
                 </div>
-            @endforeach
+            @empty
+                <div class="col-span-full text-center py-12">
+                    <div class="text-4xl mb-3">📅</div>
+                    <p class="text-gray-500">Belum ada event tersedia</p>
+                </div>
+            @endforelse
 
         </div>
 
     </div>
 
 </section>
+
+
+<div
+    id="eventModal"
+    class="fixed inset-0 bg-black/60 z-[9999] hidden items-center justify-center p-4">
+
+    <div class="bg-white rounded-3xl w-full max-w-3xl overflow-hidden shadow-2xl">
+
+        <div
+            id="eventModalBanner"
+            class="h-48 bg-gradient-to-r from-[#0d1a6e] to-[#1e38cc] flex items-center justify-center text-7xl text-white">
+            📅
+        </div>
+
+        <div class="p-8">
+
+            <div class="flex justify-between items-start mb-5">
+
+                <div>
+
+                    <div
+                        id="modalType"
+                        class="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase mb-3">
+                    </div>
+
+                    <h2
+                        id="modalTitle"
+                        class="text-3xl font-extrabold text-[#0d0f1a]">
+                    </h2>
+
+                </div>
+
+                <button
+                    onclick="closeEventModal()"
+                    class="w-10 h-10 rounded-full bg-gray-100 hover:bg-red-100">
+                    ✕
+                </button>
+
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-5 mb-6">
+
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <div class="text-xs text-gray-500 mb-1">Tanggal</div>
+                    <div id="modalTanggal" class="font-bold"></div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <div class="text-xs text-gray-500 mb-1">Waktu</div>
+                    <div id="modalWaktu" class="font-bold"></div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <div class="text-xs text-gray-500 mb-1">Tempat</div>
+                    <div id="modalTempat" class="font-bold"></div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <div class="text-xs text-gray-500 mb-1">PIC</div>
+                    <div id="modalPic" class="font-bold"></div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <div class="text-xs text-gray-500 mb-1">Kuota</div>
+                    <div id="modalKuota" class="font-bold"></div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <div class="text-xs text-gray-500 mb-1">Status</div>
+                    <div id="modalStatus" class="font-bold"></div>
+                </div>
+
+            </div>
+
+            <div>
+
+                <h3 class="font-bold text-lg mb-3">
+                    Deskripsi Kegiatan
+                </h3>
+
+                <div
+                    id="modalDeskripsi"
+                    class="text-gray-600 leading-8">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 @endsection
 
@@ -394,6 +475,66 @@
 
         });
 
+    }
+
+
+
+    function openEventModal(event)
+    {
+        const emojiMap = {
+            webinar: "🎤",
+            workshop: "📚",
+            kompetisi: "🏆",
+            company_visit: "🏛️",
+            seminar: "🎓"
+        };
+
+        document.getElementById('eventModalBanner').innerHTML =
+            emojiMap[event.tipe] || '📅';
+
+        document.getElementById('modalType').innerText =
+            event.tipe.replace('_',' ');
+
+        document.getElementById('modalTitle').innerText =
+            event.kegiatan ?? '-';
+
+        document.getElementById('modalTanggal').innerText =
+            event.tanggal ?? '-';
+
+        document.getElementById('modalWaktu').innerText =
+            (event.waktu_mulai ?? '-') +
+            ' - ' +
+            (event.waktu_selesai ?? '-');
+
+        document.getElementById('modalTempat').innerText =
+            event.tempat ?? '-';
+
+        document.getElementById('modalPic').innerText =
+            event.pic ?? '-';
+
+        document.getElementById('modalKuota').innerText =
+            event.kuota ?? 'Tidak dibatasi';
+
+        document.getElementById('modalStatus').innerText =
+            event.status ?? '-';
+
+        document.getElementById('modalDeskripsi').innerText =
+            event.deskripsi ?? 'Tidak ada deskripsi.';
+
+        document.getElementById('eventModal')
+            .classList.remove('hidden');
+
+        document.getElementById('eventModal')
+            .classList.add('flex');
+    }
+
+    function closeEventModal()
+    {
+        document.getElementById('eventModal')
+            .classList.add('hidden');
+
+        document.getElementById('eventModal')
+            .classList.remove('flex');
     }
 
 </script>

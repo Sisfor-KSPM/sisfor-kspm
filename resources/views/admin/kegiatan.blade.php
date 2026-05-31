@@ -22,7 +22,7 @@
             <option>Rapat</option>
             <option>Webinar</option>
         </select>
-        <button class="btn btn-primary btn-sm" onclick="document.getElementById('modal-kegiatan').classList.add('open')">+ Tambah Kegiatan</button>
+        <button class="btn btn-primary btn-sm" onclick="openTambahKegiatan()">+ Tambah Kegiatan</button>
     </div>
 </div>
 
@@ -97,39 +97,20 @@
     <div class="card p-5">
         <div class="font-bold mb-3.5 text-gray-900">Kegiatan Mendatang</div>
         <div class="flex flex-col gap-2.5">
-            <!-- Kegiatan 1 -->
-            <div class="flex gap-3 p-2.5 rounded-xl border border-gray-200 hover:border-blue-500 transition">
-                <div class="text-center w-10 shrink-0 border-r border-gray-100 pr-2">
-                    <div class="font-mono font-extrabold text-blue-600 text-lg">15</div>
-                    <div class="text-[0.65rem] text-gray-500">Mar</div>
+            @forelse($events->where('status', 'upcoming')->take(3) as $event)
+                <div class="flex gap-3 p-2.5 rounded-xl border border-gray-200 hover:border-blue-500 transition">
+                    <div class="text-center w-10 shrink-0 border-r border-gray-100 pr-2">
+                        <div class="font-mono font-extrabold text-blue-600 text-lg">{{ \Carbon\Carbon::parse($event->tanggal)->format('d') }}</div>
+                        <div class="text-[0.65rem] text-gray-500">{{ \Carbon\Carbon::parse($event->tanggal)->format('M') }}</div>
+                    </div>
+                    <div>
+                        <div class="text-[0.85rem] font-semibold text-gray-900">{{ $event->kegiatan }}</div>
+                        <div class="text-[0.72rem] text-gray-500 mt-0.5">{{ $event->waktu_mulai ?? '—' }} · {{ $event->tempat ?? 'TBD' }}</div>
+                    </div>
                 </div>
-                <div>
-                    <div class="text-[0.85rem] font-semibold text-gray-900">Sekolah Pasar Modal Batch 2</div>
-                    <div class="text-[0.72rem] text-gray-500 mt-0.5">09:00 · Auditorium SV IPB</div>
-                </div>
-            </div>
-            <!-- Kegiatan 2 -->
-            <div class="flex gap-3 p-2.5 rounded-xl border border-gray-200 hover:border-blue-500 transition">
-                <div class="text-center w-10 shrink-0 border-r border-gray-100 pr-2">
-                    <div class="font-mono font-extrabold text-blue-600 text-lg">22</div>
-                    <div class="text-[0.65rem] text-gray-500">Mar</div>
-                </div>
-                <div>
-                    <div class="text-[0.85rem] font-semibold text-gray-900">Workshop Analisis Fundamental</div>
-                    <div class="text-[0.72rem] text-gray-500 mt-0.5">13:00 · Online (Zoom)</div>
-                </div>
-            </div>
-            <!-- Kegiatan 3 -->
-            <div class="flex gap-3 p-2.5 rounded-xl border border-gray-200 hover:border-blue-500 transition">
-                <div class="text-center w-10 shrink-0 border-r border-gray-100 pr-2">
-                    <div class="font-mono font-extrabold text-blue-600 text-lg">10</div>
-                    <div class="text-[0.65rem] text-gray-500">Apr</div>
-                </div>
-                <div>
-                    <div class="text-[0.85rem] font-semibold text-gray-900">Sharing Session: IPO Season</div>
-                    <div class="text-[0.72rem] text-gray-500 mt-0.5">14:00 · Ruang 301 SV IPB</div>
-                </div>
-            </div>
+            @empty
+                <div class="text-center py-4 text-gray-500 text-sm">Tidak ada kegiatan mendatang</div>
+            @endforelse
         </div>
     </div>
 </div>
@@ -150,110 +131,125 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Kegiatan Row 1 -->
-                <tr class="border-b border-gray-50 hover:bg-blue-50 transition">
-                    <td class="px-4 py-3">
-                        <div class="font-semibold text-gray-900">Sekolah Pasar Modal Batch 2</div>
-                        <div class="text-[0.72rem] text-gray-500">SPM untuk anggota baru angkatan 2024...</div>
-                    </td>
-                    <td class="px-4 py-3"><span class="bg-purple-100 text-purple-800 px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">Seminar</span></td>
-                    <td class="px-4 py-3 font-mono text-[0.8rem]">2025-03-15</td>
-                    <td class="px-4 py-3 text-[0.8rem]">09:00–12:00</td>
-                    <td class="px-4 py-3 text-[0.82rem]">Auditorium SV IPB</td>
-                    <td class="px-4 py-3 text-[0.82rem]">Sari Dewi</td>
-                    <td class="px-4 py-3"><span class="bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">Upcoming</span></td>
-                    <td class="px-4 py-3 text-right">
-                        <button class="btn btn-ghost btn-icon btn-sm text-blue-600">✏️</button>
-                        <button class="btn btn-ghost btn-icon btn-sm text-red-500 ml-1">🗑️</button>
-                    </td>
-                </tr>
-                <!-- Kegiatan Row 2 -->
-                <tr class="border-b border-gray-50 hover:bg-blue-50 transition">
-                    <td class="px-4 py-3">
-                        <div class="font-semibold text-gray-900">Workshop Analisis Fundamental</div>
-                        <div class="text-[0.72rem] text-gray-500">Workshop analisis fundamental saham...</div>
-                    </td>
-                    <td class="px-4 py-3"><span class="bg-cyan-100 text-cyan-800 px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">Workshop</span></td>
-                    <td class="px-4 py-3 font-mono text-[0.8rem]">2025-03-22</td>
-                    <td class="px-4 py-3 text-[0.8rem]">13:00–15:00</td>
-                    <td class="px-4 py-3 text-[0.82rem]">Online (Zoom)</td>
-                    <td class="px-4 py-3 text-[0.82rem]">Andi Prasetyo</td>
-                    <td class="px-4 py-3"><span class="bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">Upcoming</span></td>
-                    <td class="px-4 py-3 text-right">
-                        <button class="btn btn-ghost btn-icon btn-sm text-blue-600">✏️</button>
-                        <button class="btn btn-ghost btn-icon btn-sm text-red-500 ml-1">🗑️</button>
-                    </td>
-                </tr>
-                <!-- Kegiatan Row 3 -->
-                <tr class="border-b border-gray-50 hover:bg-blue-50 transition">
-                    <td class="px-4 py-3">
-                        <div class="font-semibold text-gray-900">Rapat Bulanan Pengurus</div>
-                        <div class="text-[0.72rem] text-gray-500">Evaluasi program kerja bulan Februari...</div>
-                    </td>
-                    <td class="px-4 py-3"><span class="bg-gray-100 text-gray-800 px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">Rapat</span></td>
-                    <td class="px-4 py-3 font-mono text-[0.8rem]">2025-03-05</td>
-                    <td class="px-4 py-3 text-[0.8rem]">16:00–18:00</td>
-                    <td class="px-4 py-3 text-[0.82rem]">Ruang 201 SV IPB</td>
-                    <td class="px-4 py-3 text-[0.82rem]">Rizky Firmansyah</td>
-                    <td class="px-4 py-3"><span class="bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">Selesai</span></td>
-                    <td class="px-4 py-3 text-right">
-                        <button class="btn btn-ghost btn-icon btn-sm text-blue-600">✏️</button>
-                        <button class="btn btn-ghost btn-icon btn-sm text-red-500 ml-1">🗑️</button>
-                    </td>
-                </tr>
+                @forelse($events as $event)
+                    <tr class="border-b border-gray-50 hover:bg-blue-50 transition">
+                        <td class="px-4 py-3">
+                            <div class="font-semibold text-gray-900">{{ $event->kegiatan }}</div>
+                            <div class="text-[0.72rem] text-gray-500">{{ Str::limit($event->deskripsi ?? '-', 50) }}</div>
+                        </td>
+                        <td class="px-4 py-3">
+                            <span class="bg-purple-100 text-purple-800 px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">
+                                {{ ucfirst($event->tipe) }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 font-mono text-[0.8rem]">{{ \Carbon\Carbon::parse($event->tanggal)->format('Y-m-d') }}</td>
+                        <td class="px-4 py-3 text-[0.8rem]">{{ $event->waktu_mulai ?? '—' }}@if($event->waktu_selesai)–{{ $event->waktu_selesai }}@endif</td>
+                        <td class="px-4 py-3 text-[0.82rem]">{{ $event->tempat ?? '-' }}</td>
+                        <td class="px-4 py-3 text-[0.82rem]">{{ $event->pic ?? '-' }}</td>
+                        <td class="px-4 py-3">
+                            <span class="@if($event->status === 'upcoming') bg-blue-100 text-blue-800 @elseif($event->status === 'berlangsung') bg-yellow-100 text-yellow-800 @elseif($event->status === 'selesai') bg-green-100 text-green-800 @else bg-red-100 text-red-800 @endif px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">
+                                {{ ucfirst($event->status) }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <button class="btn btn-ghost btn-icon btn-sm text-blue-600" onclick="editKegiatan({{ $event->id }})">✏️</button>
+                            <button class="btn btn-ghost btn-icon btn-sm text-red-500 ml-1" onclick="deleteKegiatan({{ $event->id }})">🗑️</button>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" class="text-center py-8 text-gray-400">Belum ada kegiatan</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
 </div>
 
-<!-- MODAL TAMBAH KEGIATAN -->
+<!-- MODAL TAMBAH / EDIT KEGIATAN -->
 <div class="modal-overlay fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4" id="modal-kegiatan">
     <div class="modal bg-white rounded-2xl p-7 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
-        <div class="modal-header flex items-center justify-between mb-5 pb-3.5 border-b border-gray-200">
-            <div class="modal-title text-base font-bold text-gray-900">Tambah Kegiatan</div>
-            <button class="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-500 transition flex items-center justify-center" onclick="document.getElementById('modal-kegiatan').classList.remove('open')">✕</button>
-        </div>
-        
-        <div class="mb-3.5">
-            <label class="block text-xs font-semibold text-gray-500 mb-1">Nama Kegiatan*</label>
-            <input class="inp" placeholder="Nama kegiatan">
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3.5">
-            <div>
-                <label class="block text-xs font-semibold text-gray-500 mb-1">Tipe*</label>
-                <select class="inp">
-                    <option>Seminar</option><option>Workshop</option><option>Lomba</option><option>Rapat</option><option>Webinar</option><option>Diskusi</option>
-                </select>
+        <form id="kegiatanForm" action="{{ route('kegiatan.store') }}" method="POST">
+            @csrf
+            <input type="hidden" id="kegiatanMethodField" name="_method" value="">
+
+            <div class="modal-header flex items-center justify-between mb-5 pb-3.5 border-b border-gray-200">
+                <div id="kegiatanModalTitle" class="modal-title text-base font-bold text-gray-900">Tambah Kegiatan</div>
+                <button type="button" class="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-500 transition flex items-center justify-center" onclick="closeKegiatanModal()">✕</button>
             </div>
-            <div>
-                <label class="block text-xs font-semibold text-gray-500 mb-1">Tanggal*</label>
-                <input type="date" class="inp">
+            
+            <div class="mb-3.5">
+                <label class="block text-xs font-semibold text-gray-500 mb-1">Nama Kegiatan*</label>
+                <input name="kegiatan" id="kegiatan_kegiatan" class="inp" placeholder="Nama kegiatan" required>
             </div>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3.5">
-            <div><label class="block text-xs font-semibold text-gray-500 mb-1">Waktu Mulai</label><input type="time" class="inp"></div>
-            <div><label class="block text-xs font-semibold text-gray-500 mb-1">Waktu Selesai</label><input type="time" class="inp"></div>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3.5">
-            <div><label class="block text-xs font-semibold text-gray-500 mb-1">Tempat</label><input class="inp" placeholder="Lokasi / Link Zoom"></div>
-            <div><label class="block text-xs font-semibold text-gray-500 mb-1">PIC / Penanggungjawab</label><input class="inp" placeholder="Nama PIC"></div>
-        </div>
-        <div class="mb-3.5">
-            <label class="block text-xs font-semibold text-gray-500 mb-1">Deskripsi</label>
-            <textarea class="inp" placeholder="Deskripsi singkat kegiatan..." rows="3"></textarea>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3.5">
-            <div>
-                <label class="block text-xs font-semibold text-gray-500 mb-1">Status</label>
-                <select class="inp">
-                    <option>Upcoming</option><option>Berlangsung</option><option>Selesai</option><option>Dibatalkan</option>
-                </select>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Tipe*</label>
+                    <select name="tipe" id="kegiatan_tipe" class="inp" required>
+                        <option value="webinar">Webinar</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="kompetisi">Kompetisi</option>
+                        <option value="company_visit">Company Visit</option>
+                        <option value="seminar">Seminar</option>
+                        <option value="rapat">Rapat</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Tanggal*</label>
+                    <input type="date" name="tanggal" id="kegiatan_tanggal" class="inp" required>
+                </div>
             </div>
-            <div><label class="block text-xs font-semibold text-gray-500 mb-1">Kuota Peserta</label><input type="number" class="inp" placeholder="50"></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3.5">
+                <div><label class="block text-xs font-semibold text-gray-500 mb-1">Waktu Mulai</label><input type="time" name="waktu_mulai" id="kegiatan_waktu_mulai" class="inp"></div>
+                <div><label class="block text-xs font-semibold text-gray-500 mb-1">Waktu Selesai</label><input type="time" name="waktu_selesai" id="kegiatan_waktu_selesai" class="inp"></div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3.5">
+                <div><label class="block text-xs font-semibold text-gray-500 mb-1">Tempat</label><input name="tempat" id="kegiatan_tempat" class="inp" placeholder="Lokasi / Link Zoom"></div>
+                <div><label class="block text-xs font-semibold text-gray-500 mb-1">PIC / Penanggungjawab</label><input name="pic" id="kegiatan_pic" class="inp" placeholder="Nama PIC"></div>
+            </div>
+            <div class="mb-3.5">
+                <label class="block text-xs font-semibold text-gray-500 mb-1">Deskripsi</label>
+                <textarea name="deskripsi" id="kegiatan_deskripsi" class="inp" placeholder="Deskripsi singkat kegiatan..." rows="3"></textarea>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Status</label>
+                    <select name="status" id="kegiatan_status" class="inp">
+                        <option value="upcoming">Upcoming</option>
+                        <option value="berlangsung">Berlangsung</option>
+                        <option value="selesai">Selesai</option>
+                        <option value="dibatalkan">Dibatalkan</option>
+                    </select>
+                </div>
+                <div><label class="block text-xs font-semibold text-gray-500 mb-1">Kuota Peserta</label><input type="number" name="kuota" id="kegiatan_kuota" class="inp" placeholder="50"></div>
+            </div>
+
+            <div class="mt-5 pt-4 border-t border-gray-200 flex justify-end gap-2.5">
+                <button type="button" class="btn btn-ghost" onclick="closeKegiatanModal()">Batal</button>
+                <button type="submit" class="btn btn-primary">💾 Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL DELETE KEGIATAN -->
+<div class="modal-overlay fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4" id="modal-delete-kegiatan">
+    <div class="modal bg-white rounded-2xl p-7 w-full max-w-md relative">
+        <div class="modal-header flex items-center justify-between mb-5">
+            <div class="text-base font-bold text-gray-900">Konfirmasi Hapus</div>
+            <button type="button" class="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-500 transition flex items-center justify-center" onclick="closeDeleteKegiatanModal()">✕</button>
         </div>
-        <div class="mt-5 pt-4 border-t border-gray-200 flex justify-end gap-2.5">
-            <button class="btn btn-ghost" onclick="document.getElementById('modal-kegiatan').classList.remove('open')">Batal</button>
-            <button class="btn btn-primary" onclick="alert('Kegiatan disimpan!'); document.getElementById('modal-kegiatan').classList.remove('open')">💾 Simpan</button>
+        <div class="mb-4">
+            <p class="text-gray-600 text-sm">Apakah Anda yakin ingin menghapus kegiatan ini?</p>
+            <p class="text-gray-900 font-semibold mt-2" id="deleteKegiatanName">-</p>
+        </div>
+        <div class="flex justify-end gap-2 mt-6">
+            <button type="button" class="btn btn-ghost" onclick="closeDeleteKegiatanModal()">Batal</button>
+            <form id="deleteKegiatanForm" method="POST" style="display:inline">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger">🗑️ Hapus</button>
+            </form>
         </div>
     </div>
 </div>
@@ -264,4 +260,65 @@
 /* Style pembantu agar modal berfungsi saat display:flex disematkan */
 .modal-overlay.open { display: flex !important; }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+function openTambahKegiatan()
+{
+    const form = document.getElementById('kegiatanForm');
+    form.reset();
+    form.action = "{{ route('kegiatan.store') }}";
+    document.getElementById('kegiatanMethodField').value = '';
+    document.getElementById('kegiatanModalTitle').innerText = 'Tambah Kegiatan';
+    document.getElementById('modal-kegiatan').classList.add('open');
+}
+
+function closeKegiatanModal()
+{
+    document.getElementById('modal-kegiatan').classList.remove('open');
+}
+
+function editKegiatan(id)
+{
+    fetch('{{ url('/admin/kegiatan') }}/'+id+'/edit')
+    .then(res => res.json())
+    .then(data => {
+        const form = document.getElementById('kegiatanForm');
+        document.getElementById('kegiatanModalTitle').innerText = 'Edit Kegiatan';
+        document.getElementById('kegiatan_kegiatan').value = data.kegiatan || '';
+        document.getElementById('kegiatan_tipe').value = data.tipe || '';
+        document.getElementById('kegiatan_tanggal').value = data.tanggal || '';
+        document.getElementById('kegiatan_waktu_mulai').value = data.waktu_mulai || '';
+        document.getElementById('kegiatan_waktu_selesai').value = data.waktu_selesai || '';
+        document.getElementById('kegiatan_tempat').value = data.tempat || '';
+        document.getElementById('kegiatan_pic').value = data.pic || '';
+        document.getElementById('kegiatan_deskripsi').value = data.deskripsi || '';
+        document.getElementById('kegiatan_status').value = data.status || 'upcoming';
+        document.getElementById('kegiatan_kuota').value = data.kuota || '';
+
+        form.action = '{{ url('/admin/kegiatan') }}/' + id;
+        document.getElementById('kegiatanMethodField').value = 'PUT';
+        document.getElementById('modal-kegiatan').classList.add('open');
+    })
+    .catch(err => { console.error(err); alert('Gagal mengambil data kegiatan'); });
+}
+
+function deleteKegiatan(id)
+{
+    fetch('{{ url('/admin/kegiatan') }}/'+id+'/edit')
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('deleteKegiatanName').innerText = data.kegiatan || '-';
+        document.getElementById('deleteKegiatanForm').action = '{{ url('/admin/kegiatan') }}/' + id;
+        document.getElementById('modal-delete-kegiatan').classList.add('open');
+    })
+    .catch(err => { console.error(err); alert('Gagal mengambil data kegiatan'); });
+}
+
+function closeDeleteKegiatanModal()
+{
+    document.getElementById('modal-delete-kegiatan').classList.remove('open');
+}
+</script>
 @endpush

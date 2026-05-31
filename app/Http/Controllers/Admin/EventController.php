@@ -8,48 +8,61 @@ use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
-    // ================= FUNGSI WEB =================
-    public function index() {
-        $events = Event::orderBy('event_date', 'asc')->get();
-        return view('admin.event.index', compact('events'));
+    public function index()
+    {
+        $events = Event::orderBy('tanggal', 'desc')->get();
+        return view('admin.kegiatan', compact('events'));
     }
 
-    public function store(Request $request) {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'event_date' => 'required|date',
-            'location' => 'required|string|max:255',
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'kegiatan' => 'required|string|max:255',
+            'tipe' => 'required|string|max:100',
+            'tanggal' => 'required|date',
+            'waktu_mulai' => 'nullable|date_format:H:i',
+            'waktu_selesai' => 'nullable|date_format:H:i',
+            'tempat' => 'nullable|string|max:255',
+            'pic' => 'nullable|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'status' => 'required|in:upcoming,berlangsung,selesai,dibatalkan',
+            'kuota' => 'nullable|string|max:100',
         ]);
-        Event::create($request->all());
-        return back()->with('success', 'Event berhasil ditambahkan!');
+
+        Event::create($validated);
+        return back()->with('success', 'Kegiatan berhasil ditambahkan!');
     }
 
-    public function destroy($id) {
+    public function edit($id)
+    {
+        $event = Event::findOrFail($id);
+        return response()->json($event);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $event = Event::findOrFail($id);
+        
+        $validated = $request->validate([
+            'kegiatan' => 'required|string|max:255',
+            'tipe' => 'required|string|max:100',
+            'tanggal' => 'required|date',
+            'waktu_mulai' => 'nullable|date_format:H:i',
+            'waktu_selesai' => 'nullable|date_format:H:i',
+            'tempat' => 'nullable|string|max:255',
+            'pic' => 'nullable|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'status' => 'required|in:upcoming,berlangsung,selesai,dibatalkan',
+            'kuota' => 'nullable|string|max:100',
+        ]);
+
+        $event->update($validated);
+        return back()->with('success', 'Kegiatan berhasil diperbarui!');
+    }
+
+    public function destroy($id)
+    {
         Event::findOrFail($id)->delete();
-        return back()->with('success', 'Event dihapus!');
-    }
-
-    // ================= FUNGSI API =================
-    public function indexApi() {
-        return response()->json(['status' => 'success', 'data' => Event::orderBy('event_date', 'asc')->get()], 200);
-    }
-
-    public function storeApi(Request $request) {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'event_date' => 'required|date',
-            'location' => 'required|string|max:255',
-        ]);
-        $event = Event::create($request->all());
-        return response()->json(['status' => 'success', 'message' => 'Event ditambahkan!', 'data' => $event], 201);
-    }
-
-    public function destroyApi($id) {
-        $event = Event::find($id);
-        if(!$event) return response()->json(['status' => 'error', 'message' => 'Not found'], 404);
-        $event->delete();
-        return response()->json(['status' => 'success', 'message' => 'Event dihapus!'], 200);
+        return back()->with('success', 'Kegiatan berhasil dihapus!');
     }
 }

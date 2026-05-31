@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\admin\HomeContentController;
 use App\Http\Controllers\Admin\AboutUsController;
+use App\Http\Controllers\Admin\EventController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -48,7 +49,13 @@ Route::prefix('admin')->group(function () {
 
     // Konten & Data
     Route::get('/anggota', function () { return view('admin.anggota'); })->name('admin.anggota');
-    Route::get('/kegiatan', function () { return view('admin.kegiatan'); })->name('admin.kegiatan');
+    
+    Route::get('/kegiatan', [EventController::class, 'index'])->name('admin.kegiatan');
+    Route::post('/kegiatan', [EventController::class, 'store'])->name('kegiatan.store');
+    Route::get('/kegiatan/{id}/edit', [EventController::class, 'edit'])->name('kegiatan.edit');
+    Route::put('/kegiatan/{id}', [EventController::class, 'update'])->name('kegiatan.update');
+    Route::delete('/kegiatan/{id}', [EventController::class, 'destroy'])->name('kegiatan.destroy');
+    
     Route::get('/lomba', function () { return view('admin.lomba'); })->name('admin.lomba');
     Route::get('/riset', function () { return view('admin.riset'); })->name('admin.riset');
     Route::get('/pengumuman', function () { return view('admin.pengumuman'); })->name('admin.pengumuman');

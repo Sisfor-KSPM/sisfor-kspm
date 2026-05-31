@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\homecontent;
 use App\Models\AboutUs;
 use App\Models\DataPengurus;
+use App\Models\Event;
 
 class HomeController extends Controller
 {
@@ -48,7 +49,11 @@ class HomeController extends Controller
 
     public function events()
     {
-        return view('events');
+        $events = Event::where('status', '!=', 'dibatalkan')
+            ->orderBy('tanggal', 'desc')
+            ->get();
+        
+        return view('events', compact('events'));
     }
 
     public function gallery()
