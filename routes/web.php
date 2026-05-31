@@ -60,8 +60,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/riset', [ReportController::class, 'index'])->name('admin.riset');
     Route::post('/riset', [ReportController::class, 'store'])->name('admin.riset.store');
     Route::delete('/riset/{id}', [ReportController::class, 'destroy'])->name('admin.riset.destroy');
-    Route::get('/pengumuman', function () { return view('admin.pengumuman'); })->name('admin.pengumuman');
-    
+   
     // Fitur Esensial
     Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');
     Route::post('/faq', [FaqController::class, 'store'])->name('faq.store');
