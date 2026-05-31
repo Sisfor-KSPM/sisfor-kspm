@@ -95,23 +95,29 @@
 {{-- MODAL KONFIRMASI HAPUS (GLOBAL)           --}}
 {{-- ========================================= --}}
 <div class="modal-overlay fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4" id="modal-delete">
-    <div class="modal bg-white rounded-2xl p-6 w-full max-w-md relative">
+    <div class="modal bg-white rounded-2xl p-6 w-full max-w-sm relative shadow-xl">
         <div class="text-center">
-            <div class="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+            <div class="w-14 h-14 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
                 ⚠️
             </div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Konfirmasi Hapus</h3>
-            <p class="text-sm text-gray-500 mb-1">Apakah Anda yakin ingin menghapus FAQ berikut?</p>
-            <p class="text-sm font-semibold text-gray-800 italic mb-6 bg-gray-50 p-2.5 rounded-lg border border-gray-100" id="delete-target-name"></p>
+            <div class="text-base font-bold text-gray-900 mb-1">Konfirmasi Hapus</div>
+            <p class="text-xs text-gray-500 leading-relaxed px-2">
+                Apakah Anda yakin ingin menghapus FAQ <strong id="delete-target-name" class="text-gray-800 font-semibold"></strong>? Tindakan ini tidak dapat dibatalkan.
+            </p>
         </div>
-
+        
         {{-- Form action di-inject via JavaScript --}}
         <form id="delete-faq-form" action="" method="POST">
             @csrf
             @method('DELETE')
-            <div class="flex justify-end gap-2.5 pt-2 border-t border-gray-100">
-                <button type="button" class="btn btn-ghost w-full sm:w-auto" onclick="closeModal('modal-delete')">Batal</button>
-                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition w-full sm:w-auto">Hapus Data</button>
+            
+            <div class="mt-6 flex justify-center gap-3">
+                <button type="button" class="btn btn-ghost w-1/2 justify-center" onclick="closeModal('modal-delete')">
+                    Batal
+                </button>
+                <button type="submit" class="btn bg-red-600 hover:bg-red-700 text-white rounded-xl px-4 py-2 text-sm font-semibold transition w-1/2 justify-center shadow-sm">
+                    Ya, Hapus
+                </button>
             </div>
         </form>
     </div>

@@ -156,13 +156,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var
         <div class="text-xs text-gray-400">KSPM SV IPB / <span>@yield('page-breadcrumb')</span></div>
       </div>
     </div>
-    <div class="topbar-right flex items-center gap-2.5">
-      <div class="search-bar relative" style="width:220px">
-        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
-        <input class="inp pl-9 py-1.5 text-sm" placeholder="Cari...">
-      </div>
-      <button class="btn btn-ghost" style="padding:6px 10px;" title="Notifikasi">🔔</button>
-    </div>
   </div>
 
   <!-- CONTENT -->

@@ -266,30 +266,43 @@ var divisiIcons = {
 divisiData.forEach(function(d) {
   d.icon = divisiIcons[d.nama] || '💼';
 });
-
+/* MAPPING ELEMENT GRID DIVISI */
 var divGrid=document.getElementById('div-grid');
 if(divGrid){
   divGrid.innerHTML=divisiData.map(function(d,i){
-    return '<div class="div-card bg-[#f7f8fc] border border-[#d0d5e8] rounded-[18px] p-7 hover:border-[#1a2fb5] hover:bg-[#e8ecfb]" data-aos="fade-up" data-aos-delay="'+(i*60)+'" onclick="openDivModal('+i+')">'+
+    return '<div class="div-card bg-[#f7f8fc] border border-[#d0d5e8] rounded-[18px] p-7 hover:border-[#1a2fb5] hover:bg-[#e8ecfb]" onclick="openDivModal('+i+')">'+
       '<div class="text-[2rem] mb-3">'+d.icon+'</div>'+
       '<div class="text-[0.95rem] font-bold text-[#0d0f1a] mb-1.5">'+d.nama+'</div>'+
-      '<div class="text-[0.82rem] text-[#5a6080] leading-[1.65] mb-4">'+d.desc+'</div>'+
+      // murni memanggil d.desc unik hasil generate controller
+      '<div class="text-[0.82rem] text-[#5a6080] leading-[1.65] mb-4">'+d.desc+'</div>'+ 
       '<div class="text-[0.78rem] font-bold text-[#1a2fb5]">Lihat Detail →</div>'+
     '</div>';
   }).join('');
 }
 
+/* FUNGSI MODAL DETAIL */
 function openDivModal(idx){
   var d=divisiData[idx];
   document.getElementById('dm-title').textContent=d.nama;
-  document.getElementById('dm-sub').textContent=d.desc;
-  document.getElementById('dm-desc').textContent=d.fullDesc;
+  document.getElementById('dm-sub').textContent=d.desc;        // Deskripsi singkat di sub-title modal
+  document.getElementById('dm-desc').textContent=d.fullDesc;   // Deskripsi lengkap di body tentang kami
+
   document.getElementById('dm-members').innerHTML=d.members.map(function(m){
-    return '<div class="bg-[#f7f8fc] border border-[#d0d5e8] rounded-xl p-3.5 text-center">'+
-      '<div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#0d1a6e] to-[#1a2fb5] flex items-center justify-center text-white font-extrabold text-[0.85rem] mx-auto mb-2">'+m.initials+'</div>'+
-      '<div class="text-[0.72rem] font-bold text-[#0d0f1a] mb-0.5">'+m.name+'</div>'+
-      '<div class="text-[0.62rem] text-[#1a2fb5] font-semibold">'+m.role+'</div></div>';
+    var namaPengurus = m.nama || m.name || 'Pengurus';
+    var jabatanPengurus = m.jabatan || m.role || 'Staff';
+    var fotoPengurus = m.foto_pengurus;
+    var inisial = m.initials || 'P';
+
+    return '<div class="bg-[#f7f8fc] border border-[#d0d5e8] rounded-xl p-3.5 text-center">' +
+      (fotoPengurus 
+          ? '<img src="/storage/' + fotoPengurus + '" class="w-12 h-12 rounded-full object-cover mx-auto mb-2" alt="' + namaPengurus + '" onerror="this.onerror=null; this.src=\'https://ui-avatars.com/api/?name=' + encodeURIComponent(namaPengurus) + '&background=0d1a6e&color=fff\'">'
+          : '<div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#0d1a6e] to-[#1a2fb5] flex items-center justify-center text-white font-extrabold text-[0.85rem] mx-auto mb-2">' + inisial + '</div>'
+      ) +
+      '<div class="text-[0.72rem] font-bold text-[#0d0f1a] mb-0.5 line-clamp-1" title="'+namaPengurus+'">' + namaPengurus + '</div>' +
+      '<div class="text-[0.62rem] text-[#1a2fb5] font-semibold line-clamp-1" title="'+jabatanPengurus+'">' + jabatanPengurus + '</div>' +
+    '</div>';
   }).join('');
+  
   var modal=document.getElementById('div-modal');
   var box=document.getElementById('div-modal-box');
   modal.style.opacity='1';modal.style.pointerEvents='all';

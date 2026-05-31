@@ -19,42 +19,6 @@
     </div>
 </div>
 
-<!-- STAT CARDS ANALITIK -->
-<div class="grid-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" style="margin-bottom:24px" id="analitik-stats">
-    <div class="stat-card">
-        <div class="flex items-center justify-between mb-2.5">
-            <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase">User Registrasi</div>
-            <div style="font-size:1.4rem">👤</div>
-        </div>
-        <div class="mono" style="font-size:2rem;font-weight:800;color:#8b5cf6" id="stat-user-reg">183</div>
-        <div style="font-size:.75rem;color:var(--success);margin-top:4px;font-weight:600">▲ +24 bulan ini</div>
-    </div>
-    <div class="stat-card">
-        <div class="flex items-center justify-between mb-2.5">
-            <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase">Bukan Anggota</div>
-            <div style="font-size:1.4rem">🙋</div>
-        </div>
-        <div class="mono" style="font-size:2rem;font-weight:800;color:#0ea5e9" id="stat-non-anggota">183</div>
-        <div style="font-size:.75rem;color:var(--muted);margin-top:4px">Mahasiswa umum</div>
-    </div>
-    <div class="stat-card">
-        <div class="flex items-center justify-between mb-2.5">
-            <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase">View Website</div>
-            <div style="font-size:1.4rem">👁</div>
-        </div>
-        <div class="mono" style="font-size:2rem;font-weight:800;color:#0ea5e9" id="stat-view-website">1,942</div>
-        <div style="font-size:.75rem;color:var(--success);margin-top:4px;font-weight:600">▲ +12% minggu ini</div>
-    </div>
-    <div class="stat-card">
-        <div class="flex items-center justify-between mb-2.5">
-            <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase">Fitur Aktif</div>
-            <div style="font-size:1.4rem">⚡</div>
-        </div>
-        <div class="mono" style="font-size:2rem;font-weight:800;color:#10b981" id="stat-fitur-aktif">6</div>
-        <div style="font-size:.75rem;color:var(--success);margin-top:4px;font-weight:600">Fitur digunakan</div>
-    </div>
-</div>
-
 <!-- GRAFIK BARIS 1: User Registrasi -->
 <div style="margin-bottom:24px">
     <div class="card p-6">
@@ -152,29 +116,6 @@
     </div>
 </div>
 
-<!-- INSIGHT SECTION -->
-<div class="card p-6">
-    <div class="section-header flex items-center justify-between mt-2 gap-3 flex-wrap mb-4">
-        <div>
-            <div class="section-title text-lg font-bold text-gray-900" style="font-size:.95rem">💡 Insight & Rekomendasi</div>
-            <div class="section-sub text-sm text-gray-500">Analisis otomatis berdasarkan data sistem</div>
-        </div>
-    </div>
-    <div class="grid-3 grid grid-cols-1 md:grid-cols-3 gap-5" id="analitik-insights">
-        <div class="card" style="padding:16px;border-left:4px solid #8b5cf6;background:#f5f3ff">
-            <div style="font-size:.78rem;font-weight:700;color:#5b21b6;margin-bottom:6px">📈 PERTUMBUHAN USER</div>
-            <div style="font-size:.85rem;color:var(--text);line-height:1.5">Pertumbuhan user non-anggota mencapai <strong>+24 user</strong> bulan ini. Pertimbangkan kampanye konversi ke anggota resmi KSPM.</div>
-        </div>
-        <div class="card" style="padding:16px;border-left:4px solid #0ea5e9;background:#f0f9ff">
-            <div style="font-size:.78rem;font-weight:700;color:#0369a1;margin-bottom:6px">👁 TRAFFIC WEBSITE</div>
-            <div style="font-size:.85rem;color:var(--text);line-height:1.5">Jumat memiliki traffic tertinggi <strong>(412 views)</strong>. Jadwalkan posting konten pada hari Kamis–Jumat untuk jangkauan maksimal.</div>
-        </div>
-        <div class="card" style="padding:16px;border-left:4px solid #10b981;background:#f0fdf4">
-            <div style="font-size:.78rem;font-weight:700;color:#065f46;margin-bottom:6px">⚡ FITUR TERPOPULER</div>
-            <div style="font-size:.85rem;color:var(--text);line-height:1.5"><strong>Kalkulator Saham</strong> adalah fitur paling sering diakses. Tingkatkan fitur ini dengan lebih banyak jenis kalkulasi investasi.</div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('styles')
@@ -202,9 +143,8 @@ const risetKlikData = { labels: ['W.Outlook Vol.12','W.Outlook Vol.11','Analisis
 const eventKlikData = { labels: ['SPM Batch 2','Webinar IPO','Workshop TA','Seminar BEI','KSPM Cup','School of IPB'], shortLabels: ['SPM B2','Web.IPO','WS TA','Sem BEI','KSPM Cup','SoIPB'], data: [538, 421, 384, 312, 267, 195] };
 const fiturData = [
     {icon:'🧮', name:'Kalkulator Saham', usage:2840, color:'#8b5cf6'},
-    {icon:'📈', name:'Data Pasar & IHSG', usage:2415, color:'#3b82f6'},
     {icon:'📊', name:'Riset & Publikasi', usage:1640, color:'#10b981'},
-    {icon:'🏆', name:'Info Lomba', usage:1280, color:'#f59e0b'},
+    {icon:'🏆', name:'Kegiatan & event', usage:1280, color:'#f59e0b'},
     {icon:'📖', name:'Kamus Investasi', usage:1050, color:'#6366f1'},
 ];
 const userRegData = [{m:'Nov', v:8}, {m:'Des', v:11}, {m:'Jan', v:14}, {m:'Feb', v:19}, {m:'Mar', v:16}, {m:'Apr', v:24}];

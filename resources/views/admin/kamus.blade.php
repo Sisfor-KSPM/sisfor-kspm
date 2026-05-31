@@ -1,3 +1,4 @@
+{{-- resources/views/admin/kamus.blade.php --}}
 @extends('layouts.admin')
 
 @section('page-title', 'Kamus Investasi')
@@ -10,9 +11,10 @@
         <div class="section-sub text-sm text-gray-500">Kelola istilah-istilah pasar modal</div>
     </div>
     <div class="flex gap-2 flex-wrap">
-        <form action="{{ url()->current() }}" method="GET" class="search-bar relative">
+        {{-- KUNCI 1: Form dipertahankan jika user menekan Enter, input diberi penanda JavaScript --}}
+        <form action="{{ url()->current() }}" method="GET" class="search-bar relative" onsubmit="event.preventDefault();">
             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
-            <input name="search" class="inp inp-sm pl-9" placeholder="Cari istilah..." value="{{ $search ?? '' }}">
+            <input id="kamus-search-input" class="inp inp-sm pl-9" placeholder="Cari istilah..." value="{{ request('search') }}">
         </form>
         <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Tambah Istilah</button>
     </div>
@@ -36,14 +38,14 @@
                     <th class="px-4 py-3 text-right">Aksi</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="kamus-table-body">
                 @forelse($terms as $item)
-                <tr class="border-b border-gray-50 hover:bg-blue-50 transition">
-                    <td class="px-4 py-3 font-bold text-blue-700">{{ $item->istilah }}</td>
-                    <td class="px-4 py-3 text-[0.83rem] text-gray-500 leading-relaxed max-w-md">{{ $item->definisi }}</td>
+                {{-- KUNCI 2: Tambahkan class kamus-row untuk mempermudah tracking JavaScript --}}
+                <tr class="kamus-row border-b border-gray-50 hover:bg-blue-50 transition">
+                    <td class="px-4 py-3 font-bold text-blue-700 term-name">{{ $item->istilah }}</td>
+                    <td class="px-4 py-3 text-[0.83rem] text-gray-500 leading-relaxed max-w-md term-definition">{{ $item->definisi }}</td>
                     <td class="px-4 py-3">
                         @php
-                            // Mengatur warna badge dinamis berdasarkan kategori
                             $colorMap = [
                                 'Fundamental' => 'bg-orange-100 text-orange-800',
                                 'Teknikal' => 'bg-blue-100 text-blue-800',
@@ -53,7 +55,7 @@
                             ];
                             $badgeClass = $colorMap[$item->kategori] ?? 'bg-gray-100 text-gray-600';
                         @endphp
-                        <span class="{{ $badgeClass }} px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                        <span class="{{ $badgeClass }} px-2.5 py-0.5 rounded-full text-xs font-semibold term-category">
                             {{ $item->kategori }}
                         </span>
                     </td>
@@ -62,17 +64,23 @@
                                 onclick="openEditModal('{{ $item->id }}', '{{ addslashes($item->istilah) }}', '{{ addslashes($item->definisi) }}', '{{ $item->kategori }}')">
                             ✏️
                         </button>
-                        <button type="button" class="btn btn-ghost btn-icon btn-sm text-red-500 ml-1" 
+                        {{-- SESUAI REQUES: Tombol Hapus disesuaikan tipenya seperti galeri (menggunakan class utility bawaan Anda) --}}
+                        <button type="button" class="btn btn-ghost text-red-500 hover:bg-red-50 border-red-100 btn-sm text-[0.72rem] py-1 px-2.5 ml-1" 
                                 onclick="openDeleteModal('{{ $item->id }}', '{{ addslashes($item->istilah) }}')">
                             🗑️
                         </button>
                     </td>
                 </tr>
                 @empty
-                <tr>
+                <tr id="initial-empty-row">
                     <td colspan="4" class="px-4 py-8 text-center text-gray-500">Tidak ada istilah investasi ditemukan.</td>
                 </tr>
                 @endforelse
+                
+                {{-- Baris dinamis yang muncul jika hasil pencarian lokal tidak ditemukan --}}
+                <tr id="no-search-results" class="hidden">
+                    <td colspan="4" class="px-4 py-8 text-center text-gray-500">Istilah yang Anda cari tidak ditemukan.</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -117,20 +125,27 @@
 </div>
 
 <div class="modal-overlay fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4" id="modal-delete">
-    <div class="modal bg-white rounded-2xl p-6 w-full max-w-md relative">
+    <div class="modal bg-white rounded-2xl p-6 w-full max-w-sm relative shadow-xl">
         <div class="text-center">
-            <div class="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">⚠️</div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Hapus Istilah</h3>
-            <p class="text-sm text-gray-500 mb-1">Apakah Anda yakin ingin menghapus istilah berikut dari kamus?</p>
-            <p class="text-sm font-semibold text-gray-800 italic mb-6 bg-gray-50 p-2 rounded border border-gray-100" id="delete-target-name"></p>
+            <div class="w-14 h-14 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                ⚠️
+            </div>
+            <div class="text-base font-bold text-gray-900 mb-1">Konfirmasi Hapus</div>
+            <p class="text-xs text-gray-500 leading-relaxed px-2">
+                Apakah Anda yakin ingin menghapus istilah <strong id="delete-target-name" class="text-gray-800 font-semibold">-</strong>? Tindakan ini tidak dapat dibatalkan.
+            </p>
         </div>
 
         <form id="delete-kamus-form" action="" method="POST">
             @csrf
             @method('DELETE')
-            <div class="flex justify-end gap-2.5 pt-2 border-t border-gray-100">
-                <button type="button" class="btn btn-ghost w-full sm:w-auto" onclick="closeModal('modal-delete')">Batal</button>
-                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition w-full sm:w-auto">Konfirmasi Hapus</button>
+            <div class="mt-6 flex justify-center gap-3">
+                <button type="button" class="btn btn-ghost w-1/2 justify-center" onclick="closeModal('modal-delete')">
+                    Batal
+                </button>
+                <button type="submit" class="btn bg-red-600 hover:bg-red-700 text-white rounded-xl px-4 py-2 text-sm font-semibold transition w-1/2 justify-center shadow-sm">
+                    Ya, Hapus
+                </button>
             </div>
         </form>
     </div>
@@ -139,7 +154,13 @@
 
 @push('styles')
 <style>
-.modal-overlay.open { display: flex !important; }
+/* KUNCI 3: Aturan utilitas visual modal dan penyembunyian baris tabel */
+.modal-overlay.open { 
+    display: flex !important; 
+}
+.kamus-row.is-hidden {
+    display: none !important;
+}
 </style>
 @endpush
 
@@ -158,6 +179,44 @@
     const deleteKamusForm = document.getElementById('delete-kamus-form');
     const deleteTargetName = document.getElementById('delete-target-name');
 
+    // KUNCI 4: Inisialisasi Fungsi Pencarian Kamus Real-Time
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('kamus-search-input');
+        const rows = document.querySelectorAll('.kamus-row');
+        const noResultsRow = document.getElementById('no-search-results');
+        const initialEmptyRow = document.getElementById('initial-empty-row');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim().toLowerCase();
+                let visibleCount = 0;
+
+                rows.forEach(row => {
+                    const istilahText = row.querySelector('.term-name')?.innerText.toLowerCase() || '';
+                    const definisiText = row.querySelector('.term-definition')?.innerText.toLowerCase() || '';
+                    const kategoriText = row.querySelector('.term-category')?.innerText.toLowerCase() || '';
+
+                    // Jika keyword cocok dengan nama istilah, arti definisi, atau kategori badge
+                    if (query === '' || istilahText.includes(query) || definisiText.includes(query) || kategoriText.includes(query)) {
+                        row.classList.remove('is-hidden');
+                        visibleCount++;
+                    } else {
+                        row.classList.add('is-hidden');
+                    }
+                });
+
+                // Atur visibility alert jika pencarian tidak membuahkan hasil
+                if (rows.length > 0 && noResultsRow) {
+                    if (visibleCount === 0) {
+                        noResultsRow.classList.remove('hidden');
+                    } else {
+                        noResultsRow.classList.add('hidden');
+                    }
+                }
+            });
+        }
+    });
+
     function openAddModal() {
         modalTitle.textContent = "Tambah Istilah";
         kamusForm.action = "{{ route('kamus.store') }}";
@@ -171,7 +230,7 @@
 
     function openEditModal(id, istilah, definisi, kategori) {
         modalTitle.textContent = "Edit Istilah";
-        kamusForm.action = `/admin/kamus/${id}`; // Sesuaikan URL prefix routing web Anda
+        kamusForm.action = `/admin/kamus/${id}`; 
         methodContainer.innerHTML = `<input type="hidden" name="_method" value="PUT">`; 
         inputIstilah.value = istilah;
         inputDefinisi.value = definisi;
@@ -181,7 +240,7 @@
     }
 
     function openDeleteModal(id, istilah) {
-        deleteKamusForm.action = `/admin/kamus/${id}`; // Sesuaikan URL prefix routing web Anda
+        deleteKamusForm.action = `/admin/kamus/${id}`; 
         deleteTargetName.textContent = `"${istilah}"`;
         modalDelete.classList.add('open');
     }

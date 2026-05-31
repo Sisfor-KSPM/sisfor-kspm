@@ -461,41 +461,23 @@ function editPengurus(data)
 {
     let form = document.getElementById('pengurusForm');
 
-    document.getElementById('modalTitle').innerText =
-        'Edit Pengurus';
+    document.getElementById('modalTitle').innerText = 'Edit Pengurus';
+    document.getElementById('nama').value = data.nama ?? '';
+    document.getElementById('nim').value = data.nim ?? '';
+    document.getElementById('jabatan').value = data.jabatan ?? '';
+    document.getElementById('divisi').value = data.divisi ?? '';
+    document.getElementById('periode').value = data.periode ?? '';
+    document.getElementById('angkatan').value = data.angkatan ?? '';
+    document.getElementById('email').value = data.email ?? '';
+    document.getElementById('linkedin').value = data.linkedin ?? '';
 
-    document.getElementById('nama').value =
-        data.nama ?? '';
+    // Arahkan action langsung ke route POST update pengurus
+    form.action = "{{ url('/admin/pengurus') }}/" + data.id;
 
-    document.getElementById('nim').value =
-        data.nim ?? '';
+    // Kosongkan method field karena upload file via modal butuh metode POST murni
+    document.getElementById('methodField').innerHTML = '';
 
-    document.getElementById('jabatan').value =
-        data.jabatan ?? '';
-
-    document.getElementById('divisi').value =
-        data.divisi ?? '';
-
-    document.getElementById('periode').value =
-        data.periode ?? '';
-
-    document.getElementById('angkatan').value =
-        data.angkatan ?? '';
-
-    document.getElementById('email').value =
-        data.email ?? '';
-
-    document.getElementById('linkedin').value =
-        data.linkedin ?? '';
-
-    form.action =
-        "{{ url('/admin/pengurus') }}/" + data.id;
-
-    document.getElementById('methodField').innerHTML =
-        '<input type="hidden" name="_method" value="PUT">';
-
-    document.getElementById('modal-pengurus')
-        .classList.add('open');
+    document.getElementById('modal-pengurus').classList.add('open');
 }
 
 function openDeleteModal(id, nama, deleteRoute)

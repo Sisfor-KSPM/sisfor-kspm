@@ -32,24 +32,65 @@ class HomeController extends Controller
     public function about()
     {
         $about = AboutUs::first();
-        $pengurusByDivisi = DataPengurus::latest()->get()->groupBy('divisi');
-        
-        // Format divisions data for frontend
-        $divisiData = $pengurusByDivisi->map(function($members, $divisi) {
-            return [
-                'nama' => $divisi,
-                'desc' => 'Divisi ' . $divisi,
-                'fullDesc' => 'Tim dari divisi ' . $divisi . ' bekerja untuk mencapai tujuan organisasi.',
-                'members' => $members->map(function($member) {
+        // Contoh potongan kode di Controller Anda saat melempar data ke view about
+        // 1. Definisikan list divisi beserta deskripsi uniknya masing-masing
+        $daftarDivisi = [
+            'BPH (Badan Pengurus Harian)' => [
+                'desc' => 'Inti kepemimpinan dan manajemen pusat organisasi KSPM.',
+                'fullDesc' => 'Badan Pengurus Harian (BPH) bertanggung jawab atas kontrol penuh, koordinasi antar divisi, pengambilan keputusan strategis, serta manajemen keuangan dan administrasi internal KSPM SV IPB agar seluruh program kerja berjalan selaras.'
+            ],
+            'Administration' => [
+                'desc' => 'Pengelola administrasi, surat-menyurat, dan pengarsipan digital.',
+                'fullDesc' => 'Divisi Administration berfokus pada kerapian administrasi organisasi, mengelola sirkulasi surat masuk dan keluar, penyusunan proposal, laporan pertanggungjawaban (LPJ), serta bertindak sebagai pusat arsip data internal.'
+            ],
+            'Education' => [
+                'desc' => 'Pusat edukasi, pelatihan, dan kurikulum pasar modal anggota.',
+                'fullDesc' => 'Divisi Education berkomitmen meningkatkan literasi keuangan dan pasar modal bagi internal anggota maupun publik melalui kelas intensif, workshop, penyusunan modul edukasi, dan persiapan kompetisi pasar modal.'
+            ],
+            'Media Creative' => [
+                'desc' => 'Kreator visual, branding, dan pengelola media komunikasi KSPM.',
+                'fullDesc' => 'Divisi Media Creative bertanggung jawab penuh terhadap citra visual KSPM SV IPB. Tugas utamanya meliputi desain grafis konten media sosial, produksi video kreatif, fotografi kegiatan, hingga pengelolaan estetika identitas organisasi.'
+            ],
+            'Public Relation' => [
+                'desc' => 'Jembatan hubungan eksternal dengan instansi, media, dan alumni.',
+                'fullDesc' => 'Divisi Public Relation bergerak dalam membangun dan menjaga relasi strategis dengan pihak eksternal, seperti BEI, perusahaan sekuritas, komunitas pasar modal lain, media massa, serta menjaga jaringan komunikasi aktif dengan alumni KSPM.'
+            ],
+            'Investment Gallery' => [
+                'desc' => 'Pengelola operasional Galeri Investasi BEI di lingkungan kampus.',
+                'fullDesc' => 'Divisi Investment Gallery bertindak sebagai operator utama Galeri Investasi SV IPB yang bekerja sama dengan BEI dan Sekuritas mitra. Fokusnya adalah melayani pembukaan rekening saham, edukasi langsung bagi pengunjung galeri, dan sosialisasi pasar modal di area kampus.'
+            ],
+            'Analyze Trading' => [
+                'desc' => 'Fokus pada riset emiten, analisis teknikal-fundamental, dan simulasi trading.',
+                'fullDesc' => 'Divisi Analyze Trading merupakan wadah analitis bagi anggota untuk mendalami dunia trading saham. Kegiatan utamanya mencakup pembuatan riset berkala (*market outlook*), analisis teknikal dan fundamental pergerakan emiten, hingga melakukan simulasi kompetisi trading.'
+            ],
+        ];
+
+        // 2. Loop dan kumpulkan anggota dari database berdasarkan divisinya
+        $divisiData = [];
+        foreach ($daftarDivisi as $namaDivisi => $info) {
+            
+            // Ambil pengurus yang terdaftar di divisi ini
+            $members = \App\Models\DataPengurus::where('divisi', $namaDivisi)
+                ->get()
+                ->map(function($m) {
                     return [
-                        'initials' => strtoupper(substr($member->nama, 0, 1)),
-                        'name' => $member->nama,
-                        'role' => $member->jabatan
+                        'nama' => $m->nama,
+                        'jabatan' => $m->jabatan,
+                        'foto_pengurus' => $m->foto_pengurus,
+                        'initials' => strtoupper(substr($m->nama, 0, 1))
                     ];
-                })->values()->toArray()
+                });
+
+            // Gabungkan nama divisi, teks deskripsi unik, dan daftar anggotanya
+            $divisiData[] = [
+                'nama' => $namaDivisi,
+                'desc' => $info['desc'],
+                'fullDesc' => $info['fullDesc'],
+                'members' => $members
             ];
-        })->values()->toArray();
-        
+        }
+
+        // Kirim data ke view about
         return view('about', compact('about', 'divisiData'));
     }
 

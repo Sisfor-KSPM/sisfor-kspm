@@ -88,17 +88,16 @@ class AboutUsController extends Controller
     }
 
     /**
-     * Ambil data untuk edit (AJAX)
+     * Ambil data untuk edit (AJAX jika diperlukan)
      */
     public function pengurus_edit($id)
     {
         $pengurus = DataPengurus::findOrFail($id);
-
         return response()->json($pengurus);
     }
 
     /**
-     * Update data
+     * Update data pengurus (Menggunakan POST method spoofing / direct POST)
      */
     public function pengurus_update(Request $request, $id)
     {
@@ -117,22 +116,23 @@ class AboutUsController extends Controller
         ]);
 
         if ($request->hasFile('foto_pengurus')) {
-
-            if (
-                $pengurus->foto_pengurus &&
-                Storage::disk('public')->exists($pengurus->foto_pengurus)
-            ) {
+            // Hapus foto lama jika ada baru dikosongkan/diganti
+            if ($pengurus->foto_pengurus && Storage::disk('public')->exists($pengurus->foto_pengurus)) {
                 Storage::disk('public')->delete($pengurus->foto_pengurus);
             }
 
+            // Simpan foto pengurus baru
             $validated['foto_pengurus'] = $request
                 ->file('foto_pengurus')
                 ->store('pengurus', 'public');
+        } else {
+            // Biar foto lama tidak ter-overwrite/terhapus menjadi null saat update teks biasa
+            unset($validated['foto_pengurus']);
         }
 
         $pengurus->update($validated);
 
-        return back()->with('success', 'Pengurus berhasil diperbarui.');
+        return back()->with('success', 'Data & Foto Pengurus berhasil diperbarui.');
     }
 
     /**
@@ -142,10 +142,7 @@ class AboutUsController extends Controller
     {
         $pengurus = DataPengurus::findOrFail($id);
 
-        if (
-            $pengurus->foto_pengurus &&
-            Storage::disk('public')->exists($pengurus->foto_pengurus)
-        ) {
+        if ($pengurus->foto_pengurus && Storage::disk('public')->exists($pengurus->foto_pengurus)) {
             Storage::disk('public')->delete($pengurus->foto_pengurus);
         }
 
