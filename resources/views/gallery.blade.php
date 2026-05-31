@@ -86,43 +86,35 @@
         {{-- GALLERY GRID --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
-            @foreach($galleries as $gallery)
-
+            @forelse($galleries as $gallery)
                 <div
                     class="gallery-item cursor-pointer"
-                    data-category="{{ strtolower(trim($gallery->category)) }}"
-                    onclick="openLightbox('{{ $gallery->image }}', '{{ $gallery->title }}')"
+                    data-category="{{ strtolower(trim($gallery->kategori)) }}"
+                    onclick="openLightbox('{{ asset($gallery->foto_link) }}', '{{ $gallery->judul }}')"
                 >
-
                     <div class="relative overflow-hidden rounded-[18px] bg-white border border-[#d0d5e8] shadow-sm">
-
                         <img
-                            src="{{ $gallery->image }}"
-                            alt="{{ $gallery->title }}"
+                            src="{{ asset($gallery->foto_link) }}"
+                            alt="{{ $gallery->judul }}"
                             class="w-full h-[320px] object-cover transition duration-300 hover:scale-[1.03]"
                         >
-
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition duration-300 flex items-end p-4">
-
                             <div>
-
                                 <div class="text-white text-[0.88rem] font-bold">
-                                    {{ $gallery->title }}
+                                    {{ $gallery->judul }}
                                 </div>
-
                                 <div class="text-white/70 text-[0.72rem] mt-1">
-                                    {{ $gallery->event_name }}
+                                    {{ $gallery->fotografer ?: 'Dokumentasi' }}
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
-            @endforeach
+            @empty
+                <div class="col-span-1 sm:col-span-2 lg:col-span-3 rounded-[18px] border border-dashed border-gray-300 bg-white p-10 text-center text-gray-500">
+                    Belum ada foto gallery. Kunjungi admin untuk menambahkan dokumentasi.
+                </div>
+            @endforelse
 
         </div>
 

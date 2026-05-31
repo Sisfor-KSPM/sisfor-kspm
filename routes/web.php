@@ -5,10 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\admin\HomeContentController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\EventController;
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+use App\Http\Controllers\Admin\GalleryController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kamus', [HomeController::class, 'kamus']);
@@ -70,7 +67,9 @@ Route::prefix('admin')->group(function () {
     Route::post('/home-content', [HomeContentController::class, 'update'])
         ->name('admin.home-content.update');
 
-    Route::get('/gallery', function () { return view('admin.gallery'); })->name('admin.gallery');
+    Route::get('/gallery', [GalleryController::class, 'index'])->name('admin.gallery');
+    Route::post('/gallery', [GalleryController::class, 'store'])->name('admin.gallery.store');
+    Route::delete('/gallery/{id}', [GalleryController::class, 'destroy'])->name('admin.gallery.destroy');
     Route::get('/rekrutmen', function () { return view('admin.rekrutmen'); })->name('admin.rekrutmen');
     Route::get('/contact', function () { return view('admin.contact'); })->name('admin.contact');
 

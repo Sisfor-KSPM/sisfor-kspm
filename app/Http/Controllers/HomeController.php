@@ -8,6 +8,8 @@ use App\Models\homecontent;
 use App\Models\AboutUs;
 use App\Models\DataPengurus;
 use App\Models\Event;
+use App\Models\Gallery;
+use Illuminate\Support\Facades\File;
 
 class HomeController extends Controller
 {
@@ -58,73 +60,7 @@ class HomeController extends Controller
 
     public function gallery()
     {
-        $galleries = collect([
-
-            (object)[
-                'id' => 1,
-                'title' => 'Investalk Vol. 5 — Sesi Diskusi',
-                'event_name' => 'Investalk 2025',
-                'category' => 'investalk',
-                'image' => 'gallery/investalk1.jpg',
-            ],
-
-            (object)[
-                'id' => 2,
-                'title' => 'Sekolah Pasar Modal Batch 12',
-                'event_name' => 'Sekolah Pasar Modal',
-                'category' => 'sekolah',
-                'image' => 'gallery/spm1.jpg',
-            ],
-
-            (object)[
-                'id' => 3,
-                'title' => 'Company Visit Bursa Efek Indonesia',
-                'event_name' => 'Company Visit 2025',
-                'category' => 'company',
-                'image' => 'gallery/company1.jpg',
-            ],
-
-            (object)[
-                'id' => 4,
-                'title' => 'Stock Trading Competition',
-                'event_name' => 'ISTC 2025',
-                'category' => 'kompetisi',
-                'image' => 'gallery/kompetisi1.jpg',
-            ],
-
-            (object)[
-                'id' => 5,
-                'title' => 'Pelantikan Anggota Baru',
-                'event_name' => 'Internal KSPM',
-                'category' => 'internal',
-                'image' => 'gallery/internal1.jpg',
-            ],
-
-            (object)[
-                'id' => 6,
-                'title' => 'Market Outlook Discussion',
-                'event_name' => 'Investalk 2025',
-                'category' => 'investalk',
-                'image' => 'gallery/investalk2.jpg',
-            ],
-
-            (object)[
-                'id' => 7,
-                'title' => 'Workshop Analisis Teknikal',
-                'event_name' => 'Sekolah Pasar Modal',
-                'category' => 'sekolah',
-                'image' => 'gallery/spm2.jpg',
-            ],
-
-            (object)[
-                'id' => 8,
-                'title' => 'Kunjungan ke IDX Jakarta',
-                'event_name' => 'Company Visit',
-                'category' => 'company',
-                'image' => 'gallery/company2.jpg',
-            ],
-
-        ]);
+        $galleries = Gallery::orderBy('created_at', 'desc')->get();
         return view('gallery', compact('galleries'));
     }
 
