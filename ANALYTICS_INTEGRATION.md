@@ -1,6 +1,7 @@
 # Panduan Integrasi Analytics Tracking
 
 ## Overview
+
 Sistem analytics tracking otomatis mencatat setiap aktivitas user untuk dashboard analytics. Implementasi sangat sederhana dan bisa dilakukan di berbagai tempat (Frontend, Backend, atau keduanya).
 
 ---
@@ -10,22 +11,26 @@ Sistem analytics tracking otomatis mencatat setiap aktivitas user untuk dashboar
 ### 1. Track Feature Usage (Kalkulator, Kamus, dll)
 
 **Dari Frontend (JavaScript):**
+
 ```javascript
 // Include di dalam view
-<script src="{{ asset('js/analytics-tracker.js') }}"></script>
+<script src="{{ asset('js/analytics-tracker.js') }}"></script>;
 
 // Ketika user klik tombol kalkulator
-document.getElementById('kalkulator-btn').addEventListener('click', function() {
-    AnalyticsTracker.trackFeature('kalkulator');
-});
+document
+    .getElementById("kalkulator-btn")
+    .addEventListener("click", function () {
+        AnalyticsTracker.trackFeature("kalkulator");
+    });
 
 // Ketika user membuka halaman kamus
-document.addEventListener('DOMContentLoaded', function() {
-    AnalyticsTracker.trackPage('kamus');
+document.addEventListener("DOMContentLoaded", function () {
+    AnalyticsTracker.trackPage("kamus");
 });
 ```
 
 **Dari Backend (Controller):**
+
 ```php
 use App\Services\AnalyticsService;
 
@@ -41,19 +46,23 @@ public function accessCalculator()
 ### 2. Track Event Interactions (Kegiatan/Events)
 
 **Dari Frontend:**
+
 ```javascript
 // Ketika user klik event atau hover
-document.querySelector('.event-card').addEventListener('click', function() {
-    AnalyticsTracker.trackEvent(eventId, 'click');
+document.querySelector(".event-card").addEventListener("click", function () {
+    AnalyticsTracker.trackEvent(eventId, "click");
 });
 
 // Ketika user tandai sebagai interested
-document.getElementById('interested-btn').addEventListener('click', function() {
-    AnalyticsTracker.trackEvent(eventId, 'interested');
-});
+document
+    .getElementById("interested-btn")
+    .addEventListener("click", function () {
+        AnalyticsTracker.trackEvent(eventId, "interested");
+    });
 ```
 
 **Dari Backend:**
+
 ```php
 public function viewEvent($eventId)
 {
@@ -71,22 +80,24 @@ public function attendEvent($eventId)
 ### 3. Track Report Downloads (Riset/Download)
 
 **Dari Frontend:**
+
 ```javascript
 // Ketika user klik tombol download
-document.getElementById('download-btn').addEventListener('click', function() {
-    AnalyticsTracker.trackDownload(reportId, 'Riset Terbaru');
+document.getElementById("download-btn").addEventListener("click", function () {
+    AnalyticsTracker.trackDownload(reportId, "Riset Terbaru");
     // Kemudian trigger download
     window.location.href = downloadUrl;
 });
 ```
 
 **Dari Backend:**
+
 ```php
 public function downloadReport($reportId)
 {
     $report = Report::find($reportId);
     AnalyticsService::trackReportDownload($reportId, $report->title);
-    
+
     return response()->download($report->file_path);
 }
 ```
@@ -99,9 +110,9 @@ Middleware `TrackPageView` sudah track setiap akses page otomatis. Jika diperluk
 
 ```javascript
 // Di load awal page
-document.addEventListener('DOMContentLoaded', function() {
-    AnalyticsTracker.trackPage('home');
-    AnalyticsTracker.trackPage('events');
+document.addEventListener("DOMContentLoaded", function () {
+    AnalyticsTracker.trackPage("home");
+    AnalyticsTracker.trackPage("events");
 });
 ```
 
@@ -110,7 +121,9 @@ document.addEventListener('DOMContentLoaded', function() {
 ## 📊 API Endpoints
 
 ### POST `/api/analytics/track-feature`
+
 Track penggunaan fitur
+
 ```json
 {
     "feature_name": "kalkulator"
@@ -118,17 +131,22 @@ Track penggunaan fitur
 ```
 
 ### POST `/api/analytics/track-event`
+
 Track interaksi event
+
 ```json
 {
     "event_id": 1,
     "interaction_type": "click"
 }
 ```
+
 **Tipe interaksi:** `view`, `click`, `attend`, `interested`
 
 ### POST `/api/analytics/track-download`
+
 Track unduhan
+
 ```json
 {
     "report_id": 1,
@@ -137,7 +155,9 @@ Track unduhan
 ```
 
 ### POST `/api/analytics/track-page`
+
 Track akses page
+
 ```json
 {
     "page_name": "kamus"
@@ -149,6 +169,7 @@ Track akses page
 ## 🔧 Implementasi di Controllers
 
 ### HomeContentController - Track akses fitur
+
 ```php
 use App\Services\AnalyticsService;
 
@@ -166,6 +187,7 @@ public function kalkulator()
 ```
 
 ### EventController - Track event interactions
+
 ```php
 public function showEvent($eventId)
 {
@@ -176,12 +198,13 @@ public function showEvent($eventId)
 ```
 
 ### ReportController - Track downloads
+
 ```php
 public function download($reportId)
 {
     $report = Report::find($reportId);
     AnalyticsService::trackReportDownload($reportId, $report->title);
-    
+
     return response()->download(
         storage_path('app/' . $report->file_path),
         $report->title . '.pdf'
@@ -194,6 +217,7 @@ public function download($reportId)
 ## 📈 Query Data Analytics
 
 ### Fitur yang paling sering digunakan
+
 ```php
 $features = AnalyticsService::getMostUsedFeatures(10, 30);
 // Returns: [
@@ -203,6 +227,7 @@ $features = AnalyticsService::getMostUsedFeatures(10, 30);
 ```
 
 ### Event yang paling banyak diklik
+
 ```php
 $events = AnalyticsService::getMostInteractedEvents(10, 30);
 // Returns: [
@@ -212,6 +237,7 @@ $events = AnalyticsService::getMostInteractedEvents(10, 30);
 ```
 
 ### Riset yang paling sering didownload
+
 ```php
 $reports = AnalyticsService::getMostDownloadedReports(10);
 // Returns: [
@@ -221,6 +247,7 @@ $reports = AnalyticsService::getMostDownloadedReports(10);
 ```
 
 ### Pertumbuhan user registrasi
+
 ```php
 $growth = AnalyticsService::getUserGrowth(30);
 // Returns: [
@@ -230,6 +257,7 @@ $growth = AnalyticsService::getUserGrowth(30);
 ```
 
 ### Statistik General
+
 ```php
 $stats = AnalyticsService::getGeneralStats(30);
 // Returns: [
@@ -265,7 +293,7 @@ $stats = AnalyticsService::getGeneralStats(30);
 @endforeach
 
 <!-- Download button dengan tracking -->
-<a href="{{ route('download.report', $report->id) }}" 
+<a href="{{ route('download.report', $report->id) }}"
    onclick="AnalyticsTracker.trackDownload({{ $report->id }}, '{{ $report->title }}');">
     Download Report
 </a>

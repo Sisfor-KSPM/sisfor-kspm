@@ -42,7 +42,7 @@ class AnalyticsController extends Controller
         // Summary Statistics
         $stats = $this->getSummaryStatistics($periode);
 
-        return view('admin.analitik', compact(
+        return view('admin.analitik_new', compact(
             'userRegistration',
             'pageViews',
             'mostUsedFeatures',
@@ -119,9 +119,11 @@ class AnalyticsController extends Controller
     {
         $startDate = Carbon::now()->subDays($periode);
 
-        return EventInteraction::where('created_at', '>=', $startDate)
-            ->join('events', 'event_interactions.event_id', '=', 'events.id')
-            ->selectRaw('events.kegiatan as event_name, events.id, COUNT(*) as interaction_count')
+        return EventInteraction::join('events', 'event_interactions.event_id', '=', 'events.id')
+            // Selesaikan masalah ambigu dengan menambahkan nama tabel di depan kolom created_at
+            ->where('event_interactions.created_at', '>=', $startDate) 
+            ->selectRaw('events.kegiatan as event_name, events.id as event_id, COUNT(*) as interaction_count')
+            // Pastikan groupBy mencakup semua kolom non-agregat yang dipilih agar tidak error di mode Strict
             ->groupBy('events.id', 'events.kegiatan')
             ->orderByDesc('interaction_count')
             ->take(10)

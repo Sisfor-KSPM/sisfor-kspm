@@ -222,7 +222,19 @@
 // Persiapan Data dari Backend
 const userRegData = @json($userRegistration->map(fn($u) => ['date' => $u->date, 'count' => $u->count]));
 const pageViewsData = @json($pageViews->map(fn($p) => ['date' => $p->date, 'views' => $p->views, 'unique' => $p->unique_visitors]));
-const topReportsData = @json($topReports->map(fn($r) => ['title' => substr($r->report_title, 0, 20), 'full_title' => $r->report_title, 'downloads' => $r->total_downloads]));
+// 1. Lempar data mentah dari PHP ke JS
+const rawReports = @json($topReports);
+
+// 2. Lakukan mapping menggunakan standar JavaScript murni
+const topReportsData = rawReports.map(r => {
+    // Pastikan nama property (report_title & total_downloads) sesuai dengan hasil query SQL Anda
+    const titleRaw = r.report_title || 'Tanpa Judul'; 
+    return {
+        title: titleRaw.substring(0, 20),
+        full_title: titleRaw,
+        downloads: parseInt(r.total_downloads || 0)
+    };
+});
 const topEventsData = @json($topEvents->map(fn($e) => ['name' => substr($e->event_name, 0, 20), 'full_name' => $e->event_name, 'interactions' => $e->interaction_count]));
 
 const chartOptions = {

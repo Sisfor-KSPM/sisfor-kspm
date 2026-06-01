@@ -42,6 +42,7 @@ Analytics System
 ## 🚀 Quick Start
 
 ### 1. Setup (Already Done)
+
 - Service, Controllers, Routes, dan Models sudah dibuat
 - Middleware sudah diregister
 
@@ -58,6 +59,7 @@ Analytics System
 ### 3. Integrate dengan HTML (3 Cara)
 
 #### **CARA 1: Otomatis dengan Data Attributes (Rekomendasi)**
+
 Paling mudah, tinggal add `data-track-*` attributes:
 
 ```blade
@@ -81,23 +83,25 @@ Paling mudah, tinggal add `data-track-*` attributes:
 ```
 
 #### **CARA 2: Manual JavaScript**
+
 Untuk interaksi kompleks:
 
 ```javascript
 // Track feature
-AnalyticsTracker.trackFeature('kalkulator');
+AnalyticsTracker.trackFeature("kalkulator");
 
 // Track event
-AnalyticsTracker.trackEvent(eventId, 'click');
+AnalyticsTracker.trackEvent(eventId, "click");
 
 // Track download
-AnalyticsTracker.trackDownload(reportId, 'Laporan Q1');
+AnalyticsTracker.trackDownload(reportId, "Laporan Q1");
 
 // Track page
-AnalyticsTracker.trackPage('kamus');
+AnalyticsTracker.trackPage("kamus");
 ```
 
 #### **CARA 3: Backend Tracking**
+
 Dari controller:
 
 ```php
@@ -174,6 +178,7 @@ $stats = AnalyticsService::getGeneralStats(days: 30);
 ## 📍 Implementasi Per Fitur
 
 ### HomeController (Sudah Integrate)
+
 ✅ `kamus()` - Track feature 'kamus'
 ✅ `events()` - Track feature 'events'
 ✅ `gallery()` - Track feature 'gallery'
@@ -181,6 +186,7 @@ $stats = AnalyticsService::getGeneralStats(days: 30);
 ✅ `contact()` - Track feature 'contact'
 
 ### ReportController (TODO)
+
 ```php
 // Tambahkan di method show/download
 public function download($reportId)
@@ -191,6 +197,7 @@ public function download($reportId)
 ```
 
 ### EventController (TODO)
+
 ```php
 // Tambahkan di method show
 public function show($eventId)
@@ -203,21 +210,24 @@ public function show($eventId)
 ## 🔧 Implementasi Checklist
 
 ### Backend
+
 - [x] AnalyticsService
 - [x] AnalyticsTrackingController
 - [x] TrackPageView Middleware
-- [x] API Routes (/api/analytics/*)
+- [x] API Routes (/api/analytics/\*)
 - [x] AnalyticsHelper
 - [ ] Update ReportController untuk track downloads
 - [ ] Update EventController untuk track interactions
 - [ ] Jalankan `composer dump-autoload`
 
 ### Frontend (Choose One)
+
 - [ ] **Cara 1 (Auto)**: Include `auto-analytics-tracker.js` + add data attributes (Paling Mudah)
 - [ ] **Cara 2 (Manual)**: Include `analytics-tracker.js` + manual JS calls
 - [ ] **Cara 3 (Backend)**: Gunakan service/helper di controller
 
 ### Testing
+
 - [ ] Visit http://localhost/admin/analitik
 - [ ] Click various features
 - [ ] Check database untuk verifikasi tracking
@@ -229,6 +239,7 @@ View: `/admin/analitik`
 Controller: `AnalyticsController`
 
 Menampilkan:
+
 - Fitur paling sering digunakan
 - Event paling banyak diklik
 - Report paling sering didownload
@@ -238,6 +249,7 @@ Menampilkan:
 ## 🛠️ API Endpoints
 
 ### Track Feature Usage
+
 ```bash
 POST /api/analytics/track-feature
 Content-Type: application/json
@@ -248,6 +260,7 @@ Content-Type: application/json
 ```
 
 ### Track Event Interaction
+
 ```bash
 POST /api/analytics/track-event
 Content-Type: application/json
@@ -259,6 +272,7 @@ Content-Type: application/json
 ```
 
 ### Track Report Download
+
 ```bash
 POST /api/analytics/track-download
 Content-Type: application/json
@@ -270,6 +284,7 @@ Content-Type: application/json
 ```
 
 ### Track Page View
+
 ```bash
 POST /api/analytics/track-page
 Content-Type: application/json
@@ -282,16 +297,18 @@ Content-Type: application/json
 ## 🎯 Best Practices
 
 ### 1. Track pada Waktu Tepat
+
 ```javascript
 // ❌ Salah: Track sebelum action selesai
-AnalyticsTracker.trackFeature('download');
+AnalyticsTracker.trackFeature("download");
 // ... belum download
 
 // ✅ Benar: Track setelah/saat action
-<a onclick="AnalyticsTracker.trackDownload(1); this.click()">Download</a>
+<a onclick="AnalyticsTracker.trackDownload(1); this.click()">Download</a>;
 ```
 
 ### 2. Consistent Feature Names
+
 ```
 Gunakan lowercase, underscore untuk separator:
 ✅ 'kalkulator', 'kamus', 'event_view', 'gallery_click'
@@ -299,10 +316,12 @@ Gunakan lowercase, underscore untuk separator:
 ```
 
 ### 3. User Context
+
 Kalau user tidak login, tetap bisa track (dengan user_id = null)
 Tapi lebih baik track user yang login untuk analytics lebih akurat
 
 ### 4. Performance
+
 Tracking adalah async (non-blocking), tidak mengganggu UX
 Tapi jika traffic sangat tinggi, gunakan queue
 
@@ -315,33 +334,36 @@ Tapi jika traffic sangat tinggi, gunakan queue
 
 ## 📚 File Reference
 
-| File | Purpose |
-|------|---------|
-| `app/Services/AnalyticsService.php` | Core analytics logic |
-| `app/Http/Controllers/Api/AnalyticsTrackingController.php` | API handlers |
-| `app/Http/Controllers/Admin/AnalyticsController.php` | Dashboard |
-| `app/Http/Middleware/TrackPageView.php` | Auto page tracking |
-| `app/Helpers/AnalyticsHelper.php` | Helper functions |
-| `resources/js/analytics-tracker.js` | Frontend core JS |
-| `resources/js/auto-analytics-tracker.js` | Frontend auto-tracking |
-| `routes/api.php` | API routes |
-| `routes/web.php` | Web routes (dashboard) |
-| `ANALYTICS_INTEGRATION.md` | Detailed integration guide |
+| File                                                       | Purpose                    |
+| ---------------------------------------------------------- | -------------------------- |
+| `app/Services/AnalyticsService.php`                        | Core analytics logic       |
+| `app/Http/Controllers/Api/AnalyticsTrackingController.php` | API handlers               |
+| `app/Http/Controllers/Admin/AnalyticsController.php`       | Dashboard                  |
+| `app/Http/Middleware/TrackPageView.php`                    | Auto page tracking         |
+| `app/Helpers/AnalyticsHelper.php`                          | Helper functions           |
+| `resources/js/analytics-tracker.js`                        | Frontend core JS           |
+| `resources/js/auto-analytics-tracker.js`                   | Frontend auto-tracking     |
+| `routes/api.php`                                           | API routes                 |
+| `routes/web.php`                                           | Web routes (dashboard)     |
+| `ANALYTICS_INTEGRATION.md`                                 | Detailed integration guide |
 
 ## 🚨 Troubleshooting
 
 ### Data tidak tercatat
+
 1. Verifikasi CSRF token di form/AJAX
 2. Check browser console untuk errors
 3. Verifikasi user sudah login (kalau diperlukan)
 4. Check database tables untuk melihat data
 
 ### Migration fails
+
 ```bash
 php artisan migrate:fresh --seed
 ```
 
 ### Need to reload helper?
+
 ```bash
 composer dump-autoload
 ```
