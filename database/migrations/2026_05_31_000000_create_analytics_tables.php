@@ -15,7 +15,9 @@ return new class extends Migration
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable(); // User yang melakukan aktivitas
-            $table->string('page_name'); // Nama halaman yang dikunjungi (home, about, events, elibrary, gallery, kamus, dll)
+            $table->string('page_name')->nullable(); // Nama halaman yang dikunjungi
+            $table->string('activity_type')->nullable(); // Tipe aktivitas (page_view, feature_usage, event_interaction, report_download)
+            $table->string('description')->nullable(); // Deskripsi detail aktivitas
             $table->string('feature_name')->nullable(); // Nama fitur yang digunakan (download, view, click, dll)
             $table->string('action')->nullable(); // Aksi yang dilakukan (view, download, click, register, dll)
             $table->string('target_type')->nullable(); // Tipe target (report, event, gallery, dll)
@@ -25,6 +27,7 @@ return new class extends Migration
             $table->timestamps();
             
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->index('activity_type');
             $table->index('page_name');
             $table->index('feature_name');
             $table->index('action');

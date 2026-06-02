@@ -116,9 +116,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var
     <a href="{{ url('/user/pengaturan') }}" class="nav-item {{ request()->is('user/pengaturan*') ? 'active' : '' }}">
         <span class="ni-icon">⚙️</span> Pengaturan
     </a>
-    <a href="{{ url('/') }}" target="_blank" class="nav-item" style="color:rgba(255,255,255,.5)">
+    <form action="{{ route('logout') }}" method="POST" id="logoutForm" style="display:none;">
+        @csrf
+    </form>
+    <button onclick="document.getElementById('logoutForm').submit(); return false;" class="nav-item" style="color:rgba(255,255,255,.5); width: 100%; text-align: left; background: none; border: none; cursor: pointer; padding: 10px 20px; margin: 2px 12px; border-radius: 10px; transition: all .2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,.12)';" onmouseout="this.style.color='rgba(255,255,255,.5)'; this.style.background='none';">
         <span class="ni-icon">🚪</span> Logout
-    </a>
+    </button>
   </div>
 </aside>
 

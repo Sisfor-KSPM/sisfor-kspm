@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SessionAuthController;
 use App\Http\Controllers\admin\HomeContentController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\EventController;
@@ -14,8 +15,43 @@ use App\Http\Controllers\User\UEventController;
 use App\Http\Controllers\User\UDictionaryController;
 use App\Http\Controllers\User\UReportController;
 
-Route::get('/loginadmin', function () { return view('loginadmin'); })->name('admin.login');
-Route::get('/lupapwadmin', function () { return view('lupapwadmin'); })->name('admin.lupapw');
+// ============= AUTHENTICATION ROUTES (Session-based) =============
+
+// Route alias untuk default Laravel auth middleware redirect
+// Ketika middleware 'auth' redirect ke route 'login', akan diarahkan ke user login
+Route::middleware('guest')->group(function () {
+    // User Login - Primary route name: 'login' (untuk compatibility dengan default auth middleware)
+    Route::get('/login', [SessionAuthController::class, 'showUserLogin'])->name('login');
+    Route::post('/login', [SessionAuthController::class, 'storeUserLogin'])->name('user.login.store');
+
+    // User Register
+    Route::get('/register', [SessionAuthController::class, 'showUserRegister'])->name('user.register');
+    Route::post('/register', [SessionAuthController::class, 'storeUserRegister'])->name('user.register.store');
+
+    // User Forgot Password
+    Route::get('/forgot-password', [SessionAuthController::class, 'showUserForgotPassword'])->name('user.forgot-password');
+    Route::post('/forgot-password', [SessionAuthController::class, 'storeUserForgotPassword'])->name('user.forgot-password.store');
+
+    // User Reset Password
+    // Primary alias 'password.reset' untuk Laravel Password Facade
+    Route::get('/reset-password/{token}', [SessionAuthController::class, 'showUserResetPassword'])->name('password.reset');
+    Route::post('/reset-password', [SessionAuthController::class, 'storeUserResetPassword'])->name('user.reset-password.store');
+
+    // Admin Login
+    Route::get('/admin/login', [SessionAuthController::class, 'showAdminLogin'])->name('admin.login');
+    Route::post('/admin/login', [SessionAuthController::class, 'storeAdminLogin'])->name('admin.login.store');
+
+    // Admin Forgot Password
+    Route::get('/admin/forgot-password', [SessionAuthController::class, 'showAdminForgotPassword'])->name('admin.forgot-password');
+    Route::post('/admin/forgot-password', [SessionAuthController::class, 'storeAdminForgotPassword'])->name('admin.forgot-password.store');
+
+    // Admin Reset Password
+    Route::get('/admin/reset-password/{token}', [SessionAuthController::class, 'showAdminResetPassword'])->name('admin.reset-password');
+    Route::post('/admin/reset-password', [SessionAuthController::class, 'storeAdminResetPassword'])->name('admin.reset-password.store');
+});
+
+// Logout (untuk semua user yang sudah login)
+Route::post('/logout', [SessionAuthController::class, 'logout'])->name('logout')->middleware('auth');
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kamus', [HomeController::class, 'kamus']);
 Route::get('/about', [HomeController::class, 'about']);
@@ -24,7 +60,7 @@ Route::get('/gallery', [HomeController::class, 'gallery']);
 Route::get('/elibrary', [HomeController::class, 'eLibrary']);
 Route::get('/contact', [HomeController::class, 'contact']);
 
-Route::prefix('user')->group(function () {
+Route::prefix('user')->middleware(['auth', 'is.user'])->group(function () {
     // Overview
     Route::get('/dashboard', function () { return view('user.dashboard'); })->name('user.dashboard');
     Route::get('/events', [UEventController::class, 'index'])->name('user.events');
@@ -34,7 +70,7 @@ Route::prefix('user')->group(function () {
     Route::get('/pengaturan', function () { return view('user.pengaturan'); })->name('user.pengaturan');
 });
 
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     // Overview
     Route::get('/dashboard', function () { return view('admin.dashboard'); })->name('admin.dashboard');
     Route::get('/analitik', [AnalyticsController::class, 'index'])->name('admin.analitik');

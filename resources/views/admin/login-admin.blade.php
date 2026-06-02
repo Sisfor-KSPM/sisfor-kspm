@@ -28,7 +28,7 @@
 
         <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl shadow-gray-200/50 border border-gray-100">
             
-            {{-- Alert Error Bawaan Laravel jika Login Gagal --}}
+            {{-- Alert Error --}}
             @if ($errors->any())
                 <div class="mb-5 p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3 text-red-800 text-sm">
                     <span class="shrink-0 mt-0.5">⚠️</span>
@@ -43,7 +43,15 @@
                 </div>
             @endif
 
-            <form action="" method="POST" class="space-y-5">
+            {{-- Alert Success --}}
+            @if (session('success'))
+                <div class="mb-5 p-4 bg-green-50 border border-green-200 rounded-2xl flex items-start gap-3 text-green-800 text-sm">
+                    <span class="shrink-0 mt-0.5">✅</span>
+                    <div class="text-xs text-green-700">{{ session('success') }}</div>
+                </div>
+            @endif
+
+            <form action="{{ route('admin.login.store') }}" method="POST" class="space-y-5">
                 @csrf
 
                 <div>
@@ -55,8 +63,8 @@
                         <input 
                             type="text" 
                             id="login_field" 
-                            name="username" {{-- Sesuaikan dengan key input backend Anda (bisa diganti 'email') --}}
-                            value="{{ old('username') }}"
+                            name="login"
+                            value="{{ old('login') }}"
                             required 
                             autofocus
                             class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition placeholder-gray-400 text-gray-900" 
@@ -69,6 +77,9 @@
                         <label for="password" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
                             Password
                         </label>
+                        <a href="{{ route('admin.forgot-password') }}" class="text-xs font-bold text-blue-600 hover:text-blue-700">
+                            Lupa Password?
+                        </a>
                     </div>
                     <div class="relative">
                         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-base">🔒</span>
@@ -89,6 +100,16 @@
                     </div>
                 </div>
 
+                <div class="flex items-center gap-2">
+                    <input 
+                        type="checkbox" 
+                        id="remember" 
+                        name="remember" 
+                        class="w-4 h-4 border-gray-300 rounded cursor-pointer accent-blue-600">
+                    <label for="remember" class="text-xs font-bold text-gray-600 cursor-pointer">
+                        Ingat saya
+                    </label>
+                </div>
 
                 <button 
                     type="submit" 
@@ -96,7 +117,6 @@
                     Masuk Sekarang
                 </button>
             </form>
-
         </div>
 
         <p class="text-center text-xs text-gray-400 mt-8">
