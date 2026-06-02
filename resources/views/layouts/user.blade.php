@@ -98,7 +98,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var
     <a href="{{ url('/user/dashboard') }}" class="nav-item {{ request()->is('user/dashboard') ? 'active' : '' }}">
         <span class="ni-icon">🏠</span> Dashboard
     </a>
-    <a href="{{ url('/user/gallery') }}" class="nav-item {{ request()->is('user/gallery*') ? 'active' : '' }}">
+    <a href="{{ url('/user/riset') }}" class="nav-item {{ request()->is('user/riset*') ? 'active' : '' }}">
+        <span class="ni-icon">📊</span> Riset & Publikasi
+    </a>
+    <a href="{{ url('/user/events') }}" class="nav-item {{ request()->is('user/events*') ? 'active' : '' }}">
         <span class="ni-icon">🖼️</span> Events
     </a>
     <div class="nav-section text-xs font-bold tracking-widest text-white/35 px-5 pt-3.5 pb-1 uppercase">Tools</div>
@@ -108,16 +111,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var
     <a href="{{ url('/user/kamus') }}" class="nav-item {{ request()->is('user/kamus*') ? 'active' : '' }}">
         <span class="ni-icon">📖</span> Kamus Investasi
     </a>
-    <a href="{{ url('/user/market') }}" class="nav-item {{ request()->is('user/market*') ? 'active' : '' }}">
-        <span class="ni-icon">📈</span> Data Pasar
-    </a>
 
     <div class="nav-section text-xs font-bold tracking-widest text-white/35 px-5 pt-3.5 pb-1 uppercase">Pengaturan</div>
     <a href="{{ url('/user/pengaturan') }}" class="nav-item {{ request()->is('user/pengaturan*') ? 'active' : '' }}">
         <span class="ni-icon">⚙️</span> Pengaturan
     </a>
     <a href="{{ url('/') }}" target="_blank" class="nav-item" style="color:rgba(255,255,255,.5)">
-        <span class="ni-icon">🌐</span> Lihat Homepage
+        <span class="ni-icon">🚪</span> Logout
     </a>
   </div>
 </aside>

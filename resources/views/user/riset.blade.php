@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.user')
 
 @section('page-title', 'Riset & Publikasi')
 @section('page-breadcrumb', 'Manajemen Dokumen')
@@ -22,7 +22,6 @@
             <option value="outlook">Outlook Sektor</option>
             <option value="khusus">Riset Khusus</option>
         </select>
-        <button class="btn btn-primary btn-sm" onclick="document.getElementById('modal-riset').classList.add('open')">+ Upload Riset</button>
     </div>
 </div>
 
@@ -56,11 +55,6 @@
                         <td class="px-4 py-3"><span class="bg-{{ $report->status === 'publik' ? 'green' : ($report->status === 'draft' ? 'orange' : 'gray') }}-100 text-{{ $report->status === 'publik' ? 'green' : ($report->status === 'draft' ? 'orange' : 'gray') }}-800 px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">{{ ucfirst($report->status) }}</span></td>
                         <td class="px-4 py-3 text-right">
                             <a href="{{ asset($report->pdf_file) }}" download class="btn btn-sm btn-primary">Unduh</a>
-                            <button type="button" 
-                                    class="btn btn-ghost btn-icon btn-sm text-red-500 ml-1"
-                                    onclick="openDeleteModal('{{ $report->id }}', '{{ addslashes($report->judul_riset) }}')">
-                                🗑️
-                            </button>
                         </td>
                     </tr>
                 @empty
@@ -77,94 +71,6 @@
     </div>
 </div>
 
-<div class="modal-overlay fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4" id="modal-riset">
-    <div class="modal bg-white rounded-2xl p-7 w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
-        <form action="{{ route('admin.riset.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            
-            <div class="modal-header flex items-center justify-between mb-5 pb-3.5 border-b border-gray-200">
-                <div class="modal-title text-base font-bold text-gray-900">Upload Riset</div>
-                <button type="button" class="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-500 transition flex items-center justify-center" onclick="document.getElementById('modal-riset').classList.remove('open')">✕</button>
-            </div>
-            
-            <div class="mb-3.5">
-                <label class="block text-xs font-semibold text-gray-500 mb-1">Judul Riset*</label>
-                <input type="text" name="judul_riset" class="inp" placeholder="Judul dokumen riset" required>
-            </div>
-            <div class="mb-3.5">
-                <label class="block text-xs font-semibold text-gray-500 mb-1">Deskripsi Singkat</label>
-                <input type="text" name="deskripsi_singkat" class="inp" placeholder="Deskripsi singkat laporan">
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3.5">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">Kategori*</label>
-                    <select name="kategori" class="inp" required>
-                        <option value="">Pilih kategori</option>
-                        <option value="weekly">Weekly Outlook</option>
-                        <option value="fundamental">Analisis Fundamental</option>
-                        <option value="stock">Stock Pick</option>
-                        <option value="outlook">Outlook Sektor</option>
-                        <option value="khusus">Riset Khusus</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">Penulis</label>
-                    <input type="text" name="penulis" class="inp" placeholder="Nama / Divisi">
-                </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3.5">
-                <div><label class="block text-xs font-semibold text-gray-500 mb-1">Tanggal Rilis</label><input type="date" name="tanggal_rilis" class="inp"></div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">Status Publikasi</label>
-                    <select name="status" class="inp" required>
-                        <option value="publik">Publik</option>
-                        <option value="draft">Draft</option>
-                        <option value="terbatas">Terbatas</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="mb-3.5">
-                <label class="block text-xs font-semibold text-gray-500 mb-1">📄 Upload PDF*</label>
-                <input type="file" name="pdf_file" accept=".pdf" class="w-full rounded-xl border border-gray-300 p-3" required>
-                <p class="text-[0.75rem] text-gray-400 mt-2">File PDF hingga 10MB</p>
-            </div>
-            
-            <div class="mt-5 pt-4 border-t border-gray-200 flex justify-end gap-2.5">
-                <button type="button" class="btn btn-ghost" onclick="document.getElementById('modal-riset').classList.remove('open')">Batal</button>
-                <button type="submit" class="btn btn-primary">📊 Simpan</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="modal-overlay fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4" id="modal-delete-riset">
-    <div class="modal bg-white rounded-2xl p-6 w-full max-w-sm relative shadow-xl">
-        <div class="text-center">
-            <div class="w-14 h-14 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                ⚠️
-            </div>
-            <div class="text-base font-bold text-gray-900 mb-1">Konfirmasi Hapus</div>
-            <p class="text-xs text-gray-500 leading-relaxed px-2">
-                Apakah Anda yakin ingin menghapus riset <strong id="delete-target-title" class="text-gray-800 font-semibold"></strong>? Tindakan ini tidak dapat dibatalkan.
-            </p>
-        </div>
-        
-        <form id="form-delete-riset" action="" method="POST">
-            @csrf
-            @method('DELETE')
-            
-            <div class="mt-6 flex justify-center gap-3">
-                <button type="button" class="btn btn-ghost w-1/2 justify-center" onclick="closeDeleteModal()">
-                    Batal
-                </button>
-                <button type="submit" class="btn bg-red-600 hover:bg-red-700 text-white rounded-xl px-4 py-2 text-sm font-semibold transition w-1/2 justify-center shadow-sm">
-                    Ya, Hapus
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
 @endsection
 
 @push('styles')

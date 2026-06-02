@@ -235,8 +235,12 @@ const topReportsData = rawReports.map(r => {
         downloads: parseInt(r.total_downloads || 0)
     };
 });
-const topEventsData = @json($topEvents->map(fn($e) => ['name' => substr($e->event_name, 0, 20), 'full_name' => $e->event_name, 'interactions' => $e->interaction_count]));
-
+const rawEvents = @json($topEvents);
+const topEventsData = rawEvents.map(e => ({
+    name: (e.event_name || 'Tanpa Nama').substring(0, 20),
+    full_name: e.event_name || '',
+    interactions: parseInt(e.interaction_count || 0)
+}));
 const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,

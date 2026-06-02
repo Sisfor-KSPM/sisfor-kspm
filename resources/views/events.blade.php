@@ -308,20 +308,19 @@
     id="eventModal"
     class="fixed inset-0 bg-black/60 z-[9999] hidden items-center justify-center p-4">
 
-    <div class="bg-white rounded-3xl w-full max-w-3xl overflow-hidden shadow-2xl">
+    <div class="bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
 
         <div
             id="eventModalBanner"
-            class="h-48 bg-gradient-to-r from-[#0d1a6e] to-[#1e38cc] flex items-center justify-center text-7xl text-white">
+            class="h-48 bg-gradient-to-r from-[#0d1a6e] to-[#1e38cc] flex items-center justify-center text-7xl text-white shrink-0">
             📅
         </div>
 
-        <div class="p-8">
+        <div class="p-5 md:p-8">
 
-            <div class="flex justify-between items-start mb-5">
+            <div class="flex justify-between items-start mb-5 gap-3">
 
                 <div>
-
                     <div
                         id="modalType"
                         class="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase mb-3">
@@ -329,64 +328,61 @@
 
                     <h2
                         id="modalTitle"
-                        class="text-3xl font-extrabold text-[#0d0f1a]">
+                        class="text-2xl md:text-3xl font-extrabold text-[#0d0f1a] break-words">
                     </h2>
-
                 </div>
 
                 <button
                     onclick="closeEventModal()"
-                    class="w-10 h-10 rounded-full bg-gray-100 hover:bg-red-100">
+                    class="w-10 h-10 rounded-full bg-gray-100 hover:bg-red-100 transition text-gray-600 shrink-0">
                     ✕
                 </button>
 
             </div>
 
-            <div class="grid md:grid-cols-2 gap-5 mb-6">
+            <div class="grid grid-cols-2 gap-3 md:gap-5 mb-6">
 
-                <div class="bg-gray-50 rounded-xl p-4">
+                <div class="bg-gray-50 rounded-xl p-3 md:p-4">
                     <div class="text-xs text-gray-500 mb-1">Tanggal</div>
-                    <div id="modalTanggal" class="font-bold"></div>
+                    <div id="modalTanggal" class="font-bold text-sm md:text-base text-gray-800"></div>
                 </div>
 
-                <div class="bg-gray-50 rounded-xl p-4">
+                <div class="bg-gray-50 rounded-xl p-3 md:p-4">
                     <div class="text-xs text-gray-500 mb-1">Waktu</div>
-                    <div id="modalWaktu" class="font-bold"></div>
+                    <div id="modalWaktu" class="font-bold text-sm md:text-base text-gray-800"></div>
                 </div>
 
-                <div class="bg-gray-50 rounded-xl p-4">
+                <div class="bg-gray-50 rounded-xl p-3 md:p-4 col-span-2 sm:col-span-1">
                     <div class="text-xs text-gray-500 mb-1">Tempat</div>
-                    <div id="modalTempat" class="font-bold"></div>
+                    <div id="modalTempat" class="font-bold text-sm md:text-base text-gray-800 break-words"></div>
                 </div>
 
-                <div class="bg-gray-50 rounded-xl p-4">
+                <div class="bg-gray-50 rounded-xl p-3 md:p-4">
                     <div class="text-xs text-gray-500 mb-1">PIC</div>
-                    <div id="modalPic" class="font-bold"></div>
+                    <div id="modalPic" class="font-bold text-sm md:text-base text-gray-800"></div>
                 </div>
 
-                <div class="bg-gray-50 rounded-xl p-4">
+                <div class="bg-gray-50 rounded-xl p-3 md:p-4">
                     <div class="text-xs text-gray-500 mb-1">Kuota</div>
-                    <div id="modalKuota" class="font-bold"></div>
+                    <div id="modalKuota" class="font-bold text-sm md:text-base text-gray-800"></div>
                 </div>
 
-                <div class="bg-gray-50 rounded-xl p-4">
+                <div class="bg-gray-50 rounded-xl p-3 md:p-4">
                     <div class="text-xs text-gray-500 mb-1">Status</div>
-                    <div id="modalStatus" class="font-bold"></div>
+                    <div id="modalStatus" class="font-bold text-sm md:text-base text-gray-800"></div>
                 </div>
 
             </div>
 
             <div>
-
-                <h3 class="font-bold text-lg mb-3">
+                <h3 class="font-bold text-lg mb-2 text-gray-900">
                     Deskripsi Kegiatan
                 </h3>
 
                 <div
                     id="modalDeskripsi"
-                    class="text-gray-600 leading-8">
+                    class="text-gray-600 text-sm md:text-base leading-relaxed max-h-[180px] overflow-y-auto pr-2">
                 </div>
-
             </div>
 
         </div>

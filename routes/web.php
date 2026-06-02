@@ -10,6 +10,9 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\DictionaryController;
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\User\UEventController;
+use App\Http\Controllers\User\UDictionaryController;
+use App\Http\Controllers\User\UReportController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kamus', [HomeController::class, 'kamus']);
@@ -22,10 +25,11 @@ Route::get('/contact', [HomeController::class, 'contact']);
 Route::prefix('user')->group(function () {
     // Overview
     Route::get('/dashboard', function () { return view('user.dashboard'); })->name('user.dashboard');
-    Route::get('event', function () { return view('user.event'); })->name('user.event');
-    Route::get('kalkulator', function () { return view('user.kalkulator'); })->name('user.kalkulator');
-    Route::get('kamus', function () { return view('user.kamus'); })->name('user.kamus');
-    Route::get('pengaturan', function () { return view('user.pengaturan'); })->name('user.pengaturan');
+    Route::get('/events', [UEventController::class, 'index'])->name('user.events');
+    Route::get('/kamus', [UDictionaryController::class, 'index'])->name('user.kamus');
+    Route::get('/riset', [UReportController::class, 'index'])->name('user.riset');
+    Route::get('/kalkulator', function () { return view('user.kalkulator'); })->name('user.kalkulator');
+    Route::get('/pengaturan', function () { return view('user.pengaturan'); })->name('user.pengaturan');
 });
 
 Route::prefix('admin')->group(function () {

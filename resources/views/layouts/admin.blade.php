@@ -140,7 +140,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var
         <span class="ni-icon">⚙️</span> Pengaturan
     </a>
     <a href="{{ url('/') }}" target="_blank" class="nav-item" style="color:rgba(255,255,255,.5)">
-        <span class="ni-icon">🌐</span> Lihat Homepage
+        <span class="ni-icon">🚪</span> Logout
     </a>
   </div>
 </aside>
