@@ -133,14 +133,14 @@
                         data-tipe="{{ Str::lower($event->tipe) }}">
                         <td class="px-4 py-3">
                             <div class="font-semibold text-gray-900 name-target">{{ $event->kegiatan }}</div>
-                            <div class="text-[0.72rem] text-gray-500">{{ Str::limit($event->deskripsi ?? '-', 50) }}</div>
+                            <div class="text-[0.72rem] text-gray-500">{{ Str::limit(strip_tags($event->deskripsi ?? '-'), 50) }}</div>
                         </td>
                         <td class="px-4 py-3">
                             <span class="bg-purple-100 text-purple-800 px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">
                                 {{ ucfirst($event->tipe) }}
                             </span>
                         </td>
-                        <td class="px-4 py-3 font-mono text-[0.8rem]">{{ \Carbon\Carbon::parse($event->tanggal)->format('Y-m-d') }}</td>
+                        <td class="px-4 py-3 font-mono text-[0.8rem])">{{ \Carbon\Carbon::parse($event->tanggal)->format('Y-m-d') }}</td>
                         <td class="px-4 py-3 text-[0.8rem]">{{ $event->waktu_mulai ?? '—' }}@if($event->waktu_selesai)–{{ $event->waktu_selesai }}@endif</td>
                         <td class="px-4 py-3 text-[0.82rem]">{{ $event->tempat ?? '-' }}</td>
                         <td class="px-4 py-3 text-[0.82rem]">{{ $event->pic ?? '-' }}</td>
@@ -209,7 +209,14 @@
             </div>
             <div class="mb-3.5">
                 <label class="block text-xs font-semibold text-gray-500 mb-1">Deskripsi</label>
-                <textarea name="deskripsi" id="kegiatan_deskripsi" class="inp" placeholder="Deskripsi singkat kegiatan..." rows="3"></textarea>
+                
+                <input type="hidden" name="deskripsi" id="kegiatan_deskripsi">
+                
+                <trix-editor 
+                    input="kegiatan_deskripsi" 
+                    class="inp min-h-[120px] bg-white border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    placeholder="Deskripsi singkat kegiatan...">
+                </trix-editor>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3.5">
                 <div>
@@ -262,13 +269,23 @@
 @endsection
 
 @push('styles')
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
 <style>
 /* Style pembantu agar modal berfungsi saat display:flex disematkan */
 .modal-overlay.open { display: flex !important; }
+
+/* CSS Kustomisasi Toolbar dan Editor Trix */
+trix-toolbar .trix-button-group--file-tools {
+    display: none !important;
+}
+trix-editor ul { list-style-type: disc !important; padding-left: 1rem !important; }
+trix-editor ol { list-style-type: decimal !important; padding-left: 1rem !important; }
+trix-editor a { color: #2563eb !important; text-decoration: underline !important; }
 </style>
 @endpush
 
 @push('scripts')
+<script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
 <script>
 /**
  * Fungsi Pencarian & Penyaringan Real-Time (Client-Side)
@@ -284,7 +301,6 @@ function filterTable() {
         const namaKegiatan = row.getAttribute('data-nama');
         const tipeKegiatan = row.getAttribute('data-tipe');
 
-        // Validasi kecocokan data inputan search dan filter select
         const matchesSearch = namaKegiatan.includes(searchInput);
         const matchesFilter = filterSelect === "" || tipeKegiatan === filterSelect;
 
@@ -296,7 +312,6 @@ function filterTable() {
         }
     });
 
-    // Handle tampilan jika tidak ada satupun row yang sesuai dengan filter
     if (noMatchRow) {
         if (visibleCount === 0 && rows.length > 0) {
             noMatchRow.classList.remove('hidden');
@@ -313,6 +328,13 @@ function openTambahKegiatan()
     form.action = "{{ route('kegiatan.store') }}";
     document.getElementById('kegiatanMethodField').value = '';
     document.getElementById('kegiatanModalTitle').innerText = 'Tambah Kegiatan';
+    
+    // Reset konten Trix editor agar kosong saat tambah data baru
+    const trixEditor = document.querySelector("trix-editor");
+    if (trixEditor) {
+        trixEditor.editor.loadHTML('');
+    }
+
     document.getElementById('modal-kegiatan').classList.add('open');
 }
 
@@ -335,7 +357,15 @@ function editKegiatan(id)
         document.getElementById('kegiatan_waktu_selesai').value = data.waktu_selesai || '';
         document.getElementById('kegiatan_tempat').value = data.tempat || '';
         document.getElementById('kegiatan_pic').value = data.pic || '';
-        document.getElementById('kegiatan_deskripsi').value = data.deskripsi || '';
+        
+        // Memasukkan isi deskripsi berformat HTML ke dalam Trix Editor
+        const trixEditor = document.querySelector("trix-editor");
+        if (trixEditor) {
+            trixEditor.editor.loadHTML(data.deskripsi || '');
+        } else {
+            document.getElementById('kegiatan_deskripsi').value = data.deskripsi || '';
+        }
+
         document.getElementById('kegiatan_status').value = data.status || 'upcoming';
         document.getElementById('kegiatan_kuota').value = data.kuota || '';
 

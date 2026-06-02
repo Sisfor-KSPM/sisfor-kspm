@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('waktu_selesai')->nullable();
             $table->string('tempat')->nullable(); // Lokasi / Link Zoom
             $table->string('pic')->nullable(); // Lokasi / Link Zoom
-            $table->string('deskripsi')->nullable(); // Lokasi / Link Zoom
+            $table->text('deskripsi')->nullable(); // Lokasi / Link Zoom
             $table->enum('status', ['upcoming', 'berlangsung', 'selesai', 'dibatalkan']); // Lokasi / Link Zoom
             $table->string('kuota')->nullable(); // Lokasi / Link Zoom
             $table->timestamps();

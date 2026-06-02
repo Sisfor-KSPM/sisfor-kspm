@@ -4,7 +4,7 @@
 @section('title', 'KSPM SV IPB — Events')
 
 @section('styles')
-
+<style>
 /* Event Hero Slider */
 .eph-slide{
     display:none;
@@ -108,6 +108,11 @@
     border-color:#1a2fb5!important
 }
 
+/* Styling konten HTML di dalam modal */
+#modalDeskripsi ul { list-style-type: disc !important; padding-left: 1.25rem !important; margin-bottom: 0.5rem; }
+#modalDeskripsi ol { list-style-type: decimal !important; padding-left: 1.25rem !important; margin-bottom: 0.5rem; }
+#modalDeskripsi a { color: #1a2fb5 !important; text-decoration: underline !important; font-weight: 600; }
+</style>
 @endsection
 
 @section('content')
@@ -129,7 +134,8 @@
             return [
                 'emoji' => $emoji,
                 'title' => $event->kegiatan,
-                'subtitle' => $event->deskripsi ?? 'Event KSPM',
+                // strip_tags digunakan agar tag HTML bersih dari slider hero
+                'subtitle' => strip_tags($event->deskripsi ?? 'Event KSPM'),
                 'date' => \Carbon\Carbon::parse($event->tanggal)->format('F Y')
             ];
         })->toArray();
@@ -155,7 +161,7 @@
                         {{ $slide['title'] }}
                     </h1>
 
-                    <p class="eph-slide-sub">
+                    <p class="eph-slide-sub line-clamp-2">
                         {{ $slide['subtitle'] }}
                     </p>
 
@@ -277,8 +283,8 @@
                             📅 {{ \Carbon\Carbon::parse($event->tanggal)->format('d F Y') }}
                         </div>
 
-                        <p class="text-[0.83rem] text-[#5a6080] leading-[1.7] mb-5">
-                            {{ Str::limit($event->deskripsi ?? 'Event KSPM', 100) }}
+                        <p class="text-[0.83rem] text-[#5a6080] leading-[1.7] mb-5 line-clamp-2">
+                            {{ strip_tags($event->deskripsi ?? 'Event KSPM') }}
                         </p>
 
                         <button
@@ -333,6 +339,7 @@
                 </div>
 
                 <button
+                    type="button"
                     onclick="closeEventModal()"
                     class="w-10 h-10 rounded-full bg-gray-100 hover:bg-red-100 transition text-gray-600 shrink-0">
                     ✕
@@ -381,7 +388,7 @@
 
                 <div
                     id="modalDeskripsi"
-                    class="text-gray-600 text-sm md:text-base leading-relaxed max-h-[180px] overflow-y-auto pr-2">
+                    class="text-gray-600 text-sm md:text-base leading-relaxed max-h-[220px] overflow-y-auto pr-2">
                 </div>
             </div>
 
@@ -394,9 +401,7 @@
 @endsection
 
 @section('scripts')
-
 <script>
-
     /* HERO SLIDER */
     let ephIdx = 0;
 
@@ -404,25 +409,17 @@
     const ephDots = document.getElementById('eph-dots');
 
     function renderDots() {
-
         ephDots.innerHTML = '';
-
         ephSlides.forEach((_, i) => {
-
             const dot = document.createElement('button');
-
             dot.className = 'eph-dot' + (i === 0 ? ' active' : '');
-
             dot.onclick = () => goEph(i);
-
             ephDots.appendChild(dot);
-
         });
-
     }
 
     function goEph(index) {
-
+        if(ephSlides.length === 0) return;
         ephSlides[ephIdx].classList.remove('active');
         ephDots.children[ephIdx].classList.remove('active');
 
@@ -430,27 +427,25 @@
 
         ephSlides[ephIdx].classList.add('active');
         ephDots.children[ephIdx].classList.add('active');
-
     }
 
     function ephNav(dir) {
-
+        if(ephSlides.length === 0) return;
         goEph(
             (ephIdx + dir + ephSlides.length) % ephSlides.length
         );
-
     }
 
-    renderDots();
-
-    setInterval(() => {
-        ephNav(1);
-    }, 5000);
+    if(ephSlides.length > 0) {
+        renderDots();
+        setInterval(() => {
+            ephNav(1);
+        }, 5000);
+    }
 
 
     /* FILTER EVENTS */
     function filterEvents(category, btn) {
-
         document.querySelectorAll('.ev-filter-btn')
             .forEach(el => el.classList.remove('active'));
 
@@ -459,7 +454,6 @@
         const cards = document.querySelectorAll('#events-grid .event-card');
 
         cards.forEach(card => {
-
             if (
                 category === 'all' ||
                 card.dataset.category === category
@@ -468,13 +462,10 @@
             } else {
                 card.style.display = 'none';
             }
-
         });
-
     }
 
-
-
+    /* MODAL HANDLER */
     function openEventModal(event)
     {
         const emojiMap = {
@@ -489,7 +480,7 @@
             emojiMap[event.tipe] || '📅';
 
         document.getElementById('modalType').innerText =
-            event.tipe.replace('_',' ');
+            event.tipe ? event.tipe.replace('_',' ') : '-';
 
         document.getElementById('modalTitle').innerText =
             event.kegiatan ?? '-';
@@ -514,8 +505,9 @@
         document.getElementById('modalStatus').innerText =
             event.status ?? '-';
 
-        document.getElementById('modalDeskripsi').innerText =
-            event.deskripsi ?? 'Tidak ada deskripsi.';
+        // MENGGUNAKAN innerHTML agar style custom (bold, italic, link) dari Trix Editor tereksekusi dengan benar
+        document.getElementById('modalDeskripsi').innerHTML =
+            event.deskripsi ?? '<p class="text-gray-400">Tidak ada deskripsi.</p>';
 
         document.getElementById('eventModal')
             .classList.remove('hidden');
@@ -532,7 +524,5 @@
         document.getElementById('eventModal')
             .classList.remove('flex');
     }
-
 </script>
-
 @endsection

@@ -103,7 +103,7 @@
                         <div class="text-[0.72rem] text-gray-500 mt-0.5">{{ $event->waktu_mulai ?? '—' }} · {{ $event->tempat ?? 'TBD' }}</div>
                     </div>
                 </div>
-            @empty
+            @empty  {{-- <-- SUDAH DIPERBAIKI --}}
                 <div class="text-center py-4 text-gray-500 text-sm">Tidak ada kegiatan mendatang</div>
             @endforelse
         </div>
@@ -130,9 +130,11 @@
                     <tr class="kegiatan-row border-b border-gray-50 hover:bg-blue-50 transition" 
                         data-nama="{{ Str::lower($event->kegiatan) }}" 
                         data-tipe="{{ Str::lower($event->tipe) }}">
-                        <td class="px-4 py-3">
+                        <td class="px-4 py-3 max-w-[280px]">
                             <div class="font-semibold text-gray-900 name-target">{{ $event->kegiatan }}</div>
-                            <div class="text-[0.72rem] text-gray-500">{{ Str::limit($event->deskripsi ?? '-', 50) }}</div>
+                            <div class="text-[0.72rem] text-gray-500 line-clamp-2 mt-0.5">
+                                {{ strip_tags($event->deskripsi ?? '-') }}
+                            </div>
                         </td>
                         <td class="px-4 py-3">
                             <span class="bg-purple-100 text-purple-800 px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">
@@ -149,7 +151,6 @@
                             </span>
                         </td>
                         <td class="px-4 py-3 text-right">
-                            {{-- BERUBAH DI SINI: Ditambahkan atribut onclick untuk trigger modal info detail --}}
                             <button type="button" onclick='openEventModal(@json($event))' class="btn btn-ghost btn-icon btn-sm text-blue-600 font-semibold hover:underline">Selengkapnya</button>
                         </td>
                     </tr>
@@ -166,7 +167,7 @@
     </div>
 </div>
 
-{{-- MODAL DETAIL EVENT (Disalin dari template referensi Anda) --}}
+{{-- MODAL DETAIL EVENT --}}
 <div
     id="eventModal"
     class="fixed inset-0 bg-black/60 z-[9999] hidden items-center justify-center p-4">
@@ -244,7 +245,7 @@
 
                 <div
                     id="modalDeskripsi"
-                    class="text-gray-600 text-sm md:text-base leading-relaxed max-h-[180px] overflow-y-auto pr-2">
+                    class="text-gray-600 text-sm md:text-base leading-relaxed max-h-[220px] overflow-y-auto pr-2">
                 </div>
             </div>
 
@@ -259,6 +260,11 @@
 <style>
 /* Style pembantu agar modal berfungsi saat display:flex disematkan */
 .modal-overlay.open { display: flex !important; }
+
+/* Custom stylesheet render tag HTML di dalam lingkup deskripsi modal */
+#modalDeskripsi ul { list-style-type: disc !important; padding-left: 1.25rem !important; margin-bottom: 0.5rem; }
+#modalDeskripsi ol { list-style-type: decimal !important; padding-left: 1.25rem !important; margin-bottom: 0.5rem; }
+#modalDeskripsi a { color: #1a2fb5 !important; text-decoration: underline !important; font-weight: 600; }
 </style>
 @endpush
 
@@ -278,7 +284,6 @@ function filterTable() {
         const namaKegiatan = row.getAttribute('data-nama');
         const tipeKegiatan = row.getAttribute('data-tipe');
 
-        // Validasi kecocokan data inputan search dan filter select
         const matchesSearch = namaKegiatan.includes(searchInput);
         const matchesFilter = filterSelect === "" || tipeKegiatan === filterSelect;
 
@@ -290,7 +295,6 @@ function filterTable() {
         }
     });
 
-    // Handle tampilan jika tidak ada satupun row yang sesuai dengan filter
     if (noMatchRow) {
         if (visibleCount === 0 && rows.length > 0) {
             noMatchRow.classList.remove('hidden');
@@ -383,7 +387,9 @@ function openEventModal(event)
     document.getElementById('modalPic').innerText = event.pic ?? '-';
     document.getElementById('modalKuota').innerText = event.kuota ?? 'Tidak dibatasi';
     document.getElementById('modalStatus').innerText = event.status ?? '-';
-    document.getElementById('modalDeskripsi').innerText = event.deskripsi ?? 'Tidak ada deskripsi.';
+    
+    // MODIFIKASI UTAMA: Menggunakan innerHTML agar style HTML tereksekusi dengan benar di modal detail info
+    document.getElementById('modalDeskripsi').innerHTML = event.deskripsi ?? '<p class="text-gray-400">Tidak ada deskripsi.</p>';
 
     // Menampilkan modal
     document.getElementById('eventModal').classList.remove('hidden');
