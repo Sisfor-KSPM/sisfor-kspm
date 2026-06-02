@@ -14,6 +14,7 @@ use App\Http\Controllers\User\UEventController;
 use App\Http\Controllers\User\UDictionaryController;
 use App\Http\Controllers\User\UReportController;
 
+Route::get('/loginadmin', function () { return view('loginadmin'); })->name('admin.login');
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kamus', [HomeController::class, 'kamus']);
 Route::get('/about', [HomeController::class, 'about']);
