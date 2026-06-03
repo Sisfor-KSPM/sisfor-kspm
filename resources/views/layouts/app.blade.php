@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="csrf-token" content="{{ csrf_token() }}"/>
 <title>@yield('title', 'KSPM SV IPB')</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -116,6 +117,48 @@ function closeMobileMenu(){
 window.addEventListener('scroll',function(){
   var nb=document.getElementById('navbar');
   if(nb)nb.classList[window.scrollY>40?'add':'remove']('scrolled');
+});
+</script>
+<script>
+window.AnalyticsTracker = {
+  baseUrl: '/analytics',
+  post(endpoint, data) {
+    fetch(this.baseUrl + endpoint, {
+      method: 'POST',
+      credentials: 'same-origin',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+      },
+      body: JSON.stringify(data || {}),
+    }).catch(() => {});
+  },
+  trackFeature(name) { this.post('/track-feature', { feature_name: name }); },
+  trackPage(name) { this.post('/track-page', { page_name: name }); },
+  trackEvent(id, type = 'click') { this.post('/track-event', { event_id: id, interaction_type: type }); },
+  trackModal(type, id = null) { this.post('/track-modal', { modal_type: type, target_id: id }); },
+  trackDownload(id, title, type = null) { this.post('/track-download', { report_id: id, report_title: title, type }); },
+  trackDocumentDownload(type, id, name) { this.post('/track-download', { type, id, name }); },
+  trackCalculator(action) { this.post('/track-calculator', { action }); },
+  trackDictionary(id, name) { this.post('/track-dictionary', { id, name }); },
+};
+
+document.addEventListener('click', function(e) {
+  const feature = e.target.closest('[data-track-feature]');
+  if (feature) AnalyticsTracker.trackFeature(feature.dataset.trackFeature);
+
+  const page = e.target.closest('[data-track-page]');
+  if (page) AnalyticsTracker.trackPage(page.dataset.trackPage);
+
+  const eventTarget = e.target.closest('[data-track-event]');
+  if (eventTarget) AnalyticsTracker.trackEvent(eventTarget.dataset.trackEvent, eventTarget.dataset.trackType || 'click');
+
+  const download = e.target.closest('[data-track-download]');
+  if (download) AnalyticsTracker.trackDocumentDownload(download.dataset.trackDownloadType || 'riset', download.dataset.trackDownload, download.dataset.trackTitle || 'Report');
+
+  const calculator = e.target.closest('[data-track-calculator]');
+  if (calculator) AnalyticsTracker.trackCalculator(calculator.dataset.trackCalculator);
 });
 </script>
 @yield('scripts')

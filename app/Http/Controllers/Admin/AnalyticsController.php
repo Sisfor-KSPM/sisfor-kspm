@@ -41,6 +41,11 @@ class AnalyticsController extends Controller
 
         // Summary Statistics
         $stats = $this->getSummaryStatistics($periode);
+        $dailyLogins = $this->getDailyLogins($periode);
+        $navItems = $this->getFeaturePrefixUsage('navbar_', $periode, 10);
+        $sidebarItems = $this->getFeaturePrefixUsage('sidebar_', $periode, 10);
+        $calculatorActions = $this->getFeaturePrefixUsage('calculator_', $periode, 12);
+        $downloadTypes = $this->getDownloadTypes($periode);
 
         return view('admin.analitik_new', compact(
             'userRegistration',
@@ -49,7 +54,12 @@ class AnalyticsController extends Controller
             'topReports',
             'topEvents',
             'stats',
-            'periode'
+            'periode',
+            'dailyLogins',
+            'navItems',
+            'sidebarItems',
+            'calculatorActions',
+            'downloadTypes'
         ));
     }
 
@@ -87,13 +97,59 @@ class AnalyticsController extends Controller
      */
     private function getMostUsedFeatures($periode)
     {
-        $startDate = Carbon::now()->subDays($periode);
+        $startDate = Carbon::now()->subDays($periode)->toDateString();
 
         return FeatureUsage::where('usage_date', '>=', $startDate)
             ->selectRaw('feature_name, SUM(usage_count) as total_usage')
             ->groupBy('feature_name')
             ->orderByDesc('total_usage')
             ->take(8)
+            ->get();
+    }
+
+    /**
+     * Get feature usage by feature prefix
+     */
+    private function getFeaturePrefixUsage($prefix, $periode, $limit = 10)
+    {
+        $startDate = Carbon::now()->subDays($periode)->toDateString();
+
+        return FeatureUsage::where('usage_date', '>=', $startDate)
+            ->where('feature_name', 'like', $prefix . '%')
+            ->selectRaw('feature_name, SUM(usage_count) as total_usage, COUNT(DISTINCT user_id) as unique_users')
+            ->groupBy('feature_name')
+            ->orderByDesc('total_usage')
+            ->take($limit)
+            ->get();
+    }
+
+    /**
+     * Get user logins per day
+     */
+    private function getDailyLogins($periode)
+    {
+        $startDate = Carbon::now()->subDays($periode);
+
+        return ActivityLog::where('created_at', '>=', $startDate)
+            ->where('activity_type', 'user_login')
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as count, COUNT(DISTINCT user_id) as unique_users')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+    }
+
+    /**
+     * Get downloads grouped by document source/type
+     */
+    private function getDownloadTypes($periode)
+    {
+        $startDate = Carbon::now()->subDays($periode);
+
+        return ActivityLog::where('created_at', '>=', $startDate)
+            ->where('activity_type', 'document_download')
+            ->selectRaw("COALESCE(target_type, 'report') as download_type, COUNT(*) as total_downloads, COUNT(DISTINCT user_id) as unique_users")
+            ->groupBy('target_type')
+            ->orderByDesc('total_downloads')
             ->get();
     }
 
@@ -161,6 +217,15 @@ class AnalyticsController extends Controller
                 ->count(),
             
             'today_new_users' => User::where('created_at', '>=', Carbon::today())->count(),
+            'today_user_logins' => ActivityLog::where('created_at', '>=', Carbon::today())
+                ->where('activity_type', 'user_login')
+                ->count(),
+            'period_user_logins' => ActivityLog::where('created_at', '>=', $startDate)
+                ->where('activity_type', 'user_login')
+                ->count(),
+            'today_user_registers' => ActivityLog::where('created_at', '>=', Carbon::today())
+                ->where('activity_type', 'user_register')
+                ->count(),
         ];
     }
 

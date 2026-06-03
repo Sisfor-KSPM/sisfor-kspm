@@ -143,6 +143,9 @@
                     href="{{ asset($report->pdf_file) }}"
                     target="_blank"
                     download
+                    data-track-download="{{ $report->id }}"
+                    data-track-download-type="elibrary"
+                    data-track-title="{{ $report->judul_riset }}"
                     class="flex-1 text-center bg-[#1a2fb5] hover:bg-[#233ccf] text-white font-bold py-3 rounded-lg">
                     ⬇ Download PDF
                 </a>

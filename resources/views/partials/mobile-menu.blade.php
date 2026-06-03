@@ -11,6 +11,7 @@
         ['label' => 'Events',    'route' => '/events'],
         ['label' => 'Gallery',   'route' => '/gallery'],
         ['label' => 'E-Library', 'route' => '/elibrary'],
+        ['label' => 'Kamus',     'route' => '/kamus'],
         ['label' => 'Contact',   'route' => '/contact'],
       ];
       $currentPath = request()->path();
@@ -25,6 +26,8 @@
       <a class="mobile-nav-link px-4 py-3 rounded-[10px] text-base font-semibold no-underline block transition-all
                  {{ $isActive ? 'text-[#1a2fb5] bg-[#e8ecfb] active' : 'text-[#1c1f3a] hover:text-[#1a2fb5] hover:bg-[#e8ecfb]' }}"
          href="{{ url($link['route']) }}"
+         data-track-feature="navbar_{{ strtolower(str_replace(['-', ' '], '_', $link['label'])) }}"
+         data-track-page="{{ strtolower(str_replace(['-', ' '], '_', $link['label'])) }}"
          onclick="closeMobileMenu()">
         {{ $link['label'] }}
       </a>

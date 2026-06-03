@@ -12,12 +12,12 @@
 </div>
 
 <div class="tab-bar flex gap-1.5 mb-5 flex-wrap bg-slate-100 p-1.5 rounded-xl">
-    <button class="tab-btn active px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white shadow-sm transition" onclick="switchTab('avg', this)">📉 Average Down</button>
-    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:bg-gray-200 transition" onclick="switchTab('pl', this)">📊 Profit / Loss</button>
-    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:bg-gray-200 transition" onclick="switchTab('bep', this)">🎯 Target & BEP</button>
-    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:bg-gray-200 transition" onclick="switchTab('fee', this)">💸 Fee Broker</button>
-    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:bg-gray-200 transition" onclick="switchTab('dividen', this)">💰 Dividen</button>
-    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:bg-gray-200 transition" onclick="switchTab('valuation', this)">🔍 Valuasi Saham</button>
+    <button class="tab-btn active px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white shadow-sm transition" data-track-feature="calculator_tab_average_down" onclick="switchTab('avg', this)">📉 Average Down</button>
+    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:bg-gray-200 transition" data-track-feature="calculator_tab_profit_loss" onclick="switchTab('pl', this)">📊 Profit / Loss</button>
+    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:bg-gray-200 transition" data-track-feature="calculator_tab_bep" onclick="switchTab('bep', this)">🎯 Target & BEP</button>
+    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:bg-gray-200 transition" data-track-feature="calculator_tab_fee" onclick="switchTab('fee', this)">💸 Fee Broker</button>
+    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:bg-gray-200 transition" data-track-feature="calculator_tab_dividen" onclick="switchTab('dividen', this)">💰 Dividen</button>
+    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:bg-gray-200 transition" data-track-feature="calculator_tab_valuation" onclick="switchTab('valuation', this)">🔍 Valuasi Saham</button>
 </div>
 
 <div class="tab-content block" id="tab-avg">
@@ -33,7 +33,7 @@
                 <div><label class="block text-xs font-semibold text-gray-500 mb-1">Harga Beli Baru (Rp)</label><input id="avg-harga-baru" class="inp" type="number" placeholder="4500"></div>
                 <div><label class="block text-xs font-semibold text-gray-500 mb-1">Lot Baru</label><input id="avg-lot-baru" class="inp" type="number" placeholder="10"></div>
             </div>
-            <button class="btn btn-primary w-full justify-center" onclick="hitungAverageDown()">Hitung Average</button>
+            <button class="btn btn-primary w-full justify-center" data-track-calculator="calculate_average" onclick="hitungAverageDown()">Hitung Average</button>
         </div>
         <div class="card p-6 flex flex-col justify-between">
             <div>
@@ -64,7 +64,7 @@
                 <div><label class="block text-xs font-semibold text-gray-500 mb-1">Jumlah Lot</label><input id="pl-lot" class="inp" type="number" placeholder="10"></div>
                 <div><label class="block text-xs font-semibold text-gray-500 mb-1">Fee Broker (%)</label><input id="pl-fee" class="inp" type="number" placeholder="0.15" value="0.15" step="0.01"></div>
             </div>
-            <button class="btn btn-primary w-full justify-center" onclick="hitungProfitLoss()">Hitung Profit / Loss</button>
+            <button class="btn btn-primary w-full justify-center" data-track-calculator="calculate_profit_loss" onclick="hitungProfitLoss()">Hitung Profit / Loss</button>
         </div>
         <div class="card p-6 flex flex-col justify-between">
             <div>
@@ -99,7 +99,7 @@
             <div class="mb-3.5">
                 <label class="block text-xs font-semibold text-gray-500 mb-1">Target Return (%)</label><input id="bep-target" class="inp" type="number" placeholder="10" value="10">
             </div>
-            <button class="btn btn-primary w-full justify-center" onclick="hitungBEP()">Hitung BEP</button>
+            <button class="btn btn-primary w-full justify-center" data-track-calculator="calculate_bep" onclick="hitungBEP()">Hitung BEP</button>
         </div>
         <div class="card p-6 flex flex-col justify-between">
             <div>
@@ -127,7 +127,7 @@
                 <div><label class="block text-xs font-semibold text-gray-500 mb-1">Fee Beli (%)</label><input id="fee-beli-pct" class="inp" type="number" placeholder="0.15" value="0.15" step="0.01"></div>
                 <div><label class="block text-xs font-semibold text-gray-500 mb-1">Fee Jual + PPh (%)</label><input id="fee-jual-pct" class="inp" type="number" placeholder="0.25" value="0.25" step="0.01"></div>
             </div>
-            <button class="btn btn-primary w-full justify-center" onclick="hitungSimulasiFee()">Kalkulasi Total Fee</button>
+            <button class="btn btn-primary w-full justify-center" data-track-calculator="calculate_total_fee" onclick="hitungSimulasiFee()">Kalkulasi Total Fee</button>
         </div>
         <div class="card p-6">
             <div class="font-bold mb-3 text-gray-900">💸 Rincian Beban Transaksi</div>
@@ -154,7 +154,7 @@
                 <div><label class="block text-xs font-semibold text-gray-500 mb-1">DPS — Dividen/Saham (Rp)</label><input id="div-dps" class="inp" type="number" placeholder="200"></div>
                 <div><label class="block text-xs font-semibold text-gray-500 mb-1">Pajak Dividen (%)</label><input id="div-pajak" class="inp" type="number" placeholder="10" value="10"></div>
             </div>
-            <button class="btn btn-primary w-full justify-center" onclick="hitungDividen()">Hitung Dividen Neto</button>
+            <button class="btn btn-primary w-full justify-center" data-track-calculator="calculate_dividend_neto" onclick="hitungDividen()">Hitung Dividen Neto</button>
         </div>
         <div class="card p-6 flex flex-col justify-between">
             <div>
@@ -183,7 +183,7 @@
                 <div><label class="block text-xs font-semibold text-gray-500 mb-1">Book Value/Saham (Rp)</label><input id="val-bv" class="inp" type="number" placeholder="2500"></div>
                 <div><label class="block text-xs font-semibold text-gray-500 mb-1">PER Industri (x)</label><input id="val-per-ind" class="inp" type="number" placeholder="15" value="15"></div>
             </div>
-            <button class="btn btn-primary w-full justify-center" onclick="hitungValuasi()">Hitung Valuasi</button>
+            <button class="btn btn-primary w-full justify-center" data-track-calculator="calculate_valuation" onclick="hitungValuasi()">Hitung Valuasi</button>
         </div>
         <div class="card p-6 flex flex-col justify-between">
             <div>

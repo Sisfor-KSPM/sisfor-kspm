@@ -366,6 +366,10 @@ function closeDeleteKegiatanModal()
  */
 function openEventModal(event)
 {
+    if (window.AnalyticsTracker && event?.id) {
+        AnalyticsTracker.trackModal('user_event_detail', event.id);
+    }
+
     const emojiMap = {
         webinar: "🎤",
         workshop: "📚",

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Report;
+use App\Services\AnalyticsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
@@ -11,6 +12,9 @@ class ReportController extends Controller
 {
     public function index()
     {
+        // [ANALYTICS] Track akses halaman manajemen riset
+        AnalyticsService::trackFeatureUsage('admin_report_page');
+        
         $reports = Report::orderBy('created_at', 'desc')->get();
         return view('admin.riset', compact('reports'));
     }
@@ -38,7 +42,10 @@ class ReportController extends Controller
 
         $validated['pdf_file'] = 'reports/' . $filename;
 
-        Report::create($validated);
+        $report = Report::create($validated);
+        
+        // [ANALYTICS] Track pengunggahan laporan baru
+        AnalyticsService::logActivity(auth()->id(), 'report_upload', "Report: {$validated['judul_riset']}");
 
         return back()->with('success', 'Riset berhasil diupload.');
     }
@@ -50,6 +57,9 @@ class ReportController extends Controller
         if ($report->pdf_file && File::exists(public_path($report->pdf_file))) {
             File::delete(public_path($report->pdf_file));
         }
+
+        // [ANALYTICS] Track penghapusan laporan
+        AnalyticsService::logActivity(auth()->id(), 'report_delete', "Report: {$report->judul_riset}");
 
         $report->delete();
 

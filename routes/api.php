@@ -52,4 +52,7 @@ Route::prefix('analytics')->group(function () {
     Route::post('/track-event', [AnalyticsTrackingController::class, 'trackEvent']);
     Route::post('/track-download', [AnalyticsTrackingController::class, 'trackDownload']);
     Route::post('/track-page', [AnalyticsTrackingController::class, 'trackPage']);
+    Route::post('/track-modal', [AnalyticsTrackingController::class, 'trackModal']);
+    Route::post('/track-calculator', [AnalyticsTrackingController::class, 'trackCalculator']);
+    Route::post('/track-dictionary', [AnalyticsTrackingController::class, 'trackDictionary']);
 });

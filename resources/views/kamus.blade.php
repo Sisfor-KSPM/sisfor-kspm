@@ -39,6 +39,7 @@ var dbData = @json($terms);
 // Memetakan field database Indonesia ke dalam struktur object JavaScript agar komponen pencarian tidak rusak
 var kamusData = dbData.map(function(item) {
     return {
+        id: item.id,
         term: item.istilah,
         type: item.kategori,
         def: item.definisi
@@ -85,7 +86,7 @@ function renderKamus(){
     return;
   }
   el.innerHTML=data.map(function(k){
-    return '<div class="kamus-card">'+
+    return '<div class="kamus-card" data-track-dictionary="'+k.id+'" data-track-title="'+k.term.replace(/"/g, '&quot;')+'">'+
       '<div class="kamus-term">'+k.term+'</div>'+ 
       '<span class="kamus-type">'+k.type+'</span>'+ 
       '<div class="kamus-def">'+k.def+'</div>'+ 
@@ -93,5 +94,12 @@ function renderKamus(){
   }).join('');
 }
 renderKamus();
+
+document.addEventListener('click', function(e) {
+  var card = e.target.closest('[data-track-dictionary]');
+  if (card && window.AnalyticsTracker) {
+    AnalyticsTracker.trackDictionary(card.getAttribute('data-track-dictionary'), card.getAttribute('data-track-title'));
+  }
+});
 </script>
 @endsection

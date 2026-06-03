@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\User\UEventController;
 use App\Http\Controllers\User\UDictionaryController;
 use App\Http\Controllers\User\UReportController;
+use App\Http\Controllers\Api\AnalyticsTrackingController;
 
 // ============= AUTHENTICATION ROUTES (Session-based) =============
 
@@ -59,6 +60,16 @@ Route::get('/events', [HomeController::class, 'events']);
 Route::get('/gallery', [HomeController::class, 'gallery']);
 Route::get('/elibrary', [HomeController::class, 'eLibrary']);
 Route::get('/contact', [HomeController::class, 'contact']);
+
+Route::prefix('analytics')->group(function () {
+    Route::post('/track-feature', [AnalyticsTrackingController::class, 'trackFeature']);
+    Route::post('/track-event', [AnalyticsTrackingController::class, 'trackEvent']);
+    Route::post('/track-download', [AnalyticsTrackingController::class, 'trackDownload']);
+    Route::post('/track-page', [AnalyticsTrackingController::class, 'trackPage']);
+    Route::post('/track-modal', [AnalyticsTrackingController::class, 'trackModal']);
+    Route::post('/track-calculator', [AnalyticsTrackingController::class, 'trackCalculator']);
+    Route::post('/track-dictionary', [AnalyticsTrackingController::class, 'trackDictionary']);
+});
 
 Route::prefix('user')->middleware(['auth', 'is.user'])->group(function () {
     // Overview

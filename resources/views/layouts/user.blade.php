@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="csrf-token" content="{{ csrf_token() }}"/>
 <title>@yield('page-title', 'User Dashboard') — KSPM SV IPB</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -98,17 +99,17 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var
     <a href="{{ url('/user/dashboard') }}" class="nav-item {{ request()->is('user/dashboard') ? 'active' : '' }}">
         <span class="ni-icon">🏠</span> Dashboard
     </a>
-    <a href="{{ url('/user/riset') }}" class="nav-item {{ request()->is('user/riset*') ? 'active' : '' }}">
+    <a href="{{ url('/user/riset') }}" class="nav-item {{ request()->is('user/riset*') ? 'active' : '' }}" data-track-feature="sidebar_riset" data-track-page="user_riset">
         <span class="ni-icon">📊</span> Riset & Publikasi
     </a>
-    <a href="{{ url('/user/events') }}" class="nav-item {{ request()->is('user/events*') ? 'active' : '' }}">
+    <a href="{{ url('/user/events') }}" class="nav-item {{ request()->is('user/events*') ? 'active' : '' }}" data-track-feature="sidebar_events" data-track-page="user_events">
         <span class="ni-icon">🖼️</span> Events
     </a>
     <div class="nav-section text-xs font-bold tracking-widest text-white/35 px-5 pt-3.5 pb-1 uppercase">Tools</div>
-    <a href="{{ url('/user/kalkulator') }}" class="nav-item {{ request()->is('user/kalkulator*') ? 'active' : '' }}">
+    <a href="{{ url('/user/kalkulator') }}" class="nav-item {{ request()->is('user/kalkulator*') ? 'active' : '' }}" data-track-feature="sidebar_kalkulator" data-track-page="user_kalkulator">
         <span class="ni-icon">🧮</span> Kalkulator Saham
     </a>
-    <a href="{{ url('/user/kamus') }}" class="nav-item {{ request()->is('user/kamus*') ? 'active' : '' }}">
+    <a href="{{ url('/user/kamus') }}" class="nav-item {{ request()->is('user/kamus*') ? 'active' : '' }}" data-track-feature="sidebar_kamus" data-track-page="user_kamus">
         <span class="ni-icon">📖</span> Kamus Investasi
     </a>
 
@@ -164,6 +165,48 @@ function closeSidebar() {
   document.getElementById('sidebar-overlay').classList.add('hidden');
   document.body.style.overflow = '';
 }
+</script>
+<script>
+window.AnalyticsTracker = {
+  baseUrl: '/analytics',
+  post(endpoint, data) {
+    fetch(this.baseUrl + endpoint, {
+      method: 'POST',
+      credentials: 'same-origin',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+      },
+      body: JSON.stringify(data || {}),
+    }).catch(() => {});
+  },
+  trackFeature(name) { this.post('/track-feature', { feature_name: name }); },
+  trackPage(name) { this.post('/track-page', { page_name: name }); },
+  trackEvent(id, type = 'click') { this.post('/track-event', { event_id: id, interaction_type: type }); },
+  trackModal(type, id = null) { this.post('/track-modal', { modal_type: type, target_id: id }); },
+  trackDownload(id, title, type = null) { this.post('/track-download', { report_id: id, report_title: title, type }); },
+  trackDocumentDownload(type, id, name) { this.post('/track-download', { type, id, name }); },
+  trackCalculator(action) { this.post('/track-calculator', { action }); },
+  trackDictionary(id, name) { this.post('/track-dictionary', { id, name }); },
+};
+
+document.addEventListener('click', function(e) {
+  const feature = e.target.closest('[data-track-feature]');
+  if (feature) AnalyticsTracker.trackFeature(feature.dataset.trackFeature);
+
+  const page = e.target.closest('[data-track-page]');
+  if (page) AnalyticsTracker.trackPage(page.dataset.trackPage);
+
+  const eventTarget = e.target.closest('[data-track-event]');
+  if (eventTarget) AnalyticsTracker.trackEvent(eventTarget.dataset.trackEvent, eventTarget.dataset.trackType || 'click');
+
+  const download = e.target.closest('[data-track-download]');
+  if (download) AnalyticsTracker.trackDocumentDownload(download.dataset.trackDownloadType || 'riset', download.dataset.trackDownload, download.dataset.trackTitle || 'Report');
+
+  const calculator = e.target.closest('[data-track-calculator]');
+  if (calculator) AnalyticsTracker.trackCalculator(calculator.dataset.trackCalculator);
+});
 </script>
 @stack('scripts')
 </body>

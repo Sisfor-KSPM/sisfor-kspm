@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
+use App\Services\AnalyticsService;
 
 class SessionAuthController extends Controller
 {
@@ -65,6 +66,20 @@ class SessionAuthController extends Controller
 
         // Auto-login user after registration
         Auth::login($user);
+        AnalyticsService::logActivity($user->id, 'user_register', 'User register', [
+            'page_name' => 'register',
+            'feature_name' => 'auth_register',
+            'action' => 'register',
+            'target_type' => 'user',
+            'target_id' => $user->id,
+        ]);
+        AnalyticsService::logActivity($user->id, 'user_login', 'Auto-login after register', [
+            'page_name' => 'login',
+            'feature_name' => 'auth_login',
+            'action' => 'login',
+            'target_type' => 'user',
+            'target_id' => $user->id,
+        ]);
 
         return redirect()->route('user.dashboard')
             ->with('success', 'Akun berhasil dibuat! Selamat datang di KSPM.');
@@ -107,6 +122,13 @@ class SessionAuthController extends Controller
 
         // Login user
         Auth::login($user, $request->boolean('remember'));
+        AnalyticsService::logActivity($user->id, 'user_login', 'User login', [
+            'page_name' => 'login',
+            'feature_name' => 'auth_login',
+            'action' => 'login',
+            'target_type' => 'user',
+            'target_id' => $user->id,
+        ]);
 
         return redirect()->route('user.dashboard')
             ->with('success', 'Selamat datang kembali, ' . $user->name . '!');
@@ -281,6 +303,13 @@ class SessionAuthController extends Controller
 
         // Login admin
         Auth::login($user, $request->boolean('remember'));
+        AnalyticsService::logActivity($user->id, 'admin_login', 'Admin login', [
+            'page_name' => 'admin.login',
+            'feature_name' => 'auth_admin_login',
+            'action' => 'login',
+            'target_type' => 'user',
+            'target_id' => $user->id,
+        ]);
 
         return redirect()->route('admin.dashboard')
             ->with('success', 'Selamat datang kembali, Admin ' . $user->name . '!');

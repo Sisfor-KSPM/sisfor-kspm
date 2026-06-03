@@ -38,7 +38,7 @@
             <tbody id="kamus-table-body">
                 @forelse($terms as $item)
                 {{-- KUNCI 2: Tambahkan class kamus-row untuk mempermudah tracking JavaScript --}}
-                <tr class="kamus-row border-b border-gray-50 hover:bg-blue-50 transition">
+                <tr class="kamus-row border-b border-gray-50 hover:bg-blue-50 transition cursor-pointer" data-track-dictionary="{{ $item->id }}" data-track-title="{{ $item->istilah }}">
                     <td class="px-4 py-3 font-bold text-blue-700 term-name">{{ $item->istilah }}</td>
                     <td class="px-4 py-3 text-[0.83rem] text-gray-500 leading-relaxed max-w-md term-definition">{{ $item->definisi }}</td>
                     <td class="px-4 py-3">
@@ -137,6 +137,14 @@
                 }
             });
         }
+
+        rows.forEach(row => {
+            row.addEventListener('click', function() {
+                if (window.AnalyticsTracker) {
+                    AnalyticsTracker.trackDictionary(this.dataset.trackDictionary, this.dataset.trackTitle);
+                }
+            });
+        });
     });
 
     function openAddModal() {

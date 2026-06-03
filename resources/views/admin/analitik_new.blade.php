@@ -66,13 +66,32 @@
     </div>
 </div>
 
+<!-- STATISTIK AUTH HARIAN -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4" style="margin-bottom:24px">
+    <div class="card p-6">
+        <div style="font-size:.75rem;color:#64748b;text-transform:uppercase;font-weight:600;margin-bottom:8px">Login User Hari Ini</div>
+        <div style="font-size:1.8rem;font-weight:800;color:#2563eb">{{ number_format($stats['today_user_logins']) }}</div>
+        <div style="font-size:.75rem;color:#64748b;margin-top:4px">{{ number_format($stats['period_user_logins']) }} login dalam periode</div>
+    </div>
+    <div class="card p-6">
+        <div style="font-size:.75rem;color:#64748b;text-transform:uppercase;font-weight:600;margin-bottom:8px">Daftar Hari Ini</div>
+        <div style="font-size:1.8rem;font-weight:800;color:#16a34a">{{ number_format($stats['today_user_registers']) }}</div>
+        <div style="font-size:.75rem;color:#64748b;margin-top:4px">{{ number_format($stats['total_registered_users']) }} daftar dalam periode</div>
+    </div>
+    <div class="card p-6">
+        <div style="font-size:.75rem;color:#64748b;text-transform:uppercase;font-weight:600;margin-bottom:8px">Rata-rata Login/Hari</div>
+        <div style="font-size:1.8rem;font-weight:800;color:#f59e0b">{{ number_format(ceil($stats['period_user_logins'] / max($periode, 1))) }}</div>
+        <div style="font-size:.75rem;color:#64748b;margin-top:4px">berdasarkan {{ $periode }} hari terakhir</div>
+    </div>
+</div>
+
 <!-- GRAFIK BARIS 1: User Registrasi -->
 <div style="margin-bottom:24px">
     <div class="card p-6">
         <div class="section-header flex items-center justify-between mt-2 gap-3 flex-wrap mb-4">
             <div>
-                <div class="section-title text-lg font-bold text-gray-900" style="font-size:.95rem">👤 Pertumbuhan User Registrasi</div>
-                <div class="section-sub text-sm text-gray-500">User terdaftar per hari dalam {{ $periode }} hari terakhir</div>
+                <div class="section-title text-lg font-bold text-gray-900" style="font-size:.95rem">👤 Registrasi & Login Harian</div>
+                <div class="section-sub text-sm text-gray-500">User daftar dan login per hari dalam {{ $periode }} hari terakhir</div>
             </div>
             <span class="badge badge-purple inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-violet-100 text-violet-800">Registrasi</span>
         </div>
@@ -158,6 +177,42 @@
     </div>
 </div>
 
+<!-- DETAIL TRACKING MENU & KALKULATOR -->
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-5" style="margin-bottom:24px">
+    @php
+        $usageBlocks = [
+            ['title' => 'Navbar Publik', 'subtitle' => 'Home, About, Events, Gallery, E-Library, Kamus', 'items' => $navItems],
+            ['title' => 'Sidebar User', 'subtitle' => 'Events, Kalkulator, Kamus, Riset', 'items' => $sidebarItems],
+            ['title' => 'Kalkulator', 'subtitle' => 'Tab dan tombol hitung per fitur', 'items' => $calculatorActions],
+            ['title' => 'Download Dokumen', 'subtitle' => 'E-Library dan Riset User', 'items' => $downloadTypes],
+        ];
+    @endphp
+
+    @foreach($usageBlocks as $block)
+        <div class="card p-6">
+            <div class="section-title text-lg font-bold text-gray-900" style="font-size:.95rem">{{ $block['title'] }}</div>
+            <div class="section-sub text-sm text-gray-500" style="margin-bottom:14px">{{ $block['subtitle'] }}</div>
+
+            @if($block['items']->isEmpty())
+                <div style="text-align:center;color:#94a3b8;padding:18px 0">Data belum tersedia</div>
+            @else
+                <div class="flex flex-col gap-3">
+                    @foreach($block['items'] as $item)
+                        @php
+                            $name = $item->feature_name ?? $item->download_type;
+                            $total = $item->total_usage ?? $item->total_downloads;
+                        @endphp
+                        <div class="mini-usage-row">
+                            <div class="mini-usage-name">{{ str_replace('_', ' ', $name) }}</div>
+                            <div class="mini-usage-count">{{ number_format($total) }}</div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    @endforeach
+</div>
+
 <!-- GRAFIK BARIS 3: Riset & Event -->
 <div class="grid-2 grid grid-cols-1 lg:grid-cols-2 gap-5" style="margin-bottom:24px">
     <!-- Top Reports -->
@@ -212,6 +267,10 @@
 .fitur-bar-track { height:6px; background:#e2e8f0; border-radius:4px; overflow:hidden; }
 .fitur-bar-fill { height:100%; border-radius:4px; transition:width 0.8s cubic-bezier(.4,0,.2,1); }
 .fitur-pct { font-size:0.8rem; font-weight:700; width:50px; text-align:right; }
+.mini-usage-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px solid #e2e8f0; }
+.mini-usage-row:last-child { border-bottom:0; }
+.mini-usage-name { font-size:.82rem; font-weight:650; color:#334155; text-transform:capitalize; }
+.mini-usage-count { font-size:.84rem; font-weight:800; color:#1a2fb5; }
 @keyframes fadeInRight { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
 </style>
 @endpush
@@ -221,6 +280,7 @@
 <script>
 // Persiapan Data dari Backend
 const userRegData = @json($userRegistration->map(fn($u) => ['date' => $u->date, 'count' => $u->count]));
+const dailyLoginData = @json($dailyLogins->map(fn($u) => ['date' => $u->date, 'count' => $u->count, 'unique' => $u->unique_users]));
 const pageViewsData = @json($pageViews->map(fn($p) => ['date' => $p->date, 'views' => $p->views, 'unique' => $p->unique_visitors]));
 // 1. Lempar data mentah dari PHP ke JS
 const rawReports = @json($topReports);
@@ -279,16 +339,22 @@ function number_format(num) {
     return num.toString();
 }
 
-// Chart 1: User Registration
-if (userRegData.length > 0) {
+// Chart 1: User Registration & Login
+if (userRegData.length > 0 || dailyLoginData.length > 0) {
+    const authDates = Array.from(new Set([
+        ...userRegData.map(d => d.date),
+        ...dailyLoginData.map(d => d.date)
+    ])).sort();
+    const regByDate = Object.fromEntries(userRegData.map(d => [d.date, d.count]));
+    const loginByDate = Object.fromEntries(dailyLoginData.map(d => [d.date, d.count]));
     const userRegCtx = document.getElementById('chartUserReg').getContext('2d');
     new Chart(userRegCtx, {
         type: 'line',
         data: {
-            labels: userRegData.map(d => new Date(d.date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' })),
+            labels: authDates.map(d => new Date(d).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' })),
             datasets: [{
                 label: 'Registrasi User',
-                data: userRegData.map(d => d.count),
+                data: authDates.map(d => regByDate[d] || 0),
                 borderColor: '#8b5cf6',
                 backgroundColor: 'rgba(139, 92, 246, 0.1)',
                 fill: true,
@@ -298,9 +364,27 @@ if (userRegData.length > 0) {
                 pointBackgroundColor: '#8b5cf6',
                 pointBorderColor: '#fff',
                 pointBorderWidth: 2
+            }, {
+                label: 'Login User',
+                data: authDates.map(d => loginByDate[d] || 0),
+                borderColor: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 2,
+                pointRadius: 4,
+                pointBackgroundColor: '#2563eb',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
             }]
         },
-        options: chartOptions
+        options: {
+            ...chartOptions,
+            plugins: {
+                ...chartOptions.plugins,
+                legend: { display: true, position: 'bottom' }
+            }
+        }
     });
 }
 

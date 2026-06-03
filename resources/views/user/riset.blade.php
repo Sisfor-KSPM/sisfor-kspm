@@ -46,7 +46,7 @@
                         <td class="px-4 py-3">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-12 rounded-lg bg-red-100 flex flex-col items-center justify-center text-[0.6rem] font-extrabold text-red-800 shrink-0"><span>📄</span><span>PDF</span></div>
-                                <a href="{{ asset($report->pdf_file) }}" download class="font-semibold text-[0.85rem] text-gray-900 hover:text-blue-600">{{ $report->judul_riset }}</a>
+                                <a href="{{ asset($report->pdf_file) }}" download data-track-download="{{ $report->id }}" data-track-download-type="riset" data-track-title="{{ $report->judul_riset }}" class="font-semibold text-[0.85rem] text-gray-900 hover:text-blue-600">{{ $report->judul_riset }}</a>
                             </div>
                         </td>
                         <td class="px-4 py-3"><span class="bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full text-xs font-semibold">{{ ucfirst($report->kategori) }}</span></td>
@@ -54,7 +54,7 @@
                         <td class="px-4 py-3 font-mono text-[0.78rem] text-gray-700">{{ $report->tanggal_rilis ?: '-' }}</td>
                         <td class="px-4 py-3"><span class="bg-{{ $report->status === 'publik' ? 'green' : ($report->status === 'draft' ? 'orange' : 'gray') }}-100 text-{{ $report->status === 'publik' ? 'green' : ($report->status === 'draft' ? 'orange' : 'gray') }}-800 px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">{{ ucfirst($report->status) }}</span></td>
                         <td class="px-4 py-3 text-right">
-                            <a href="{{ asset($report->pdf_file) }}" download class="btn btn-sm btn-primary">Unduh</a>
+                            <a href="{{ asset($report->pdf_file) }}" download data-track-download="{{ $report->id }}" data-track-download-type="riset" data-track-title="{{ $report->judul_riset }}" class="btn btn-sm btn-primary">Unduh</a>
                         </td>
                     </tr>
                 @empty

@@ -21,6 +21,7 @@
         ['label' => 'Events',    'route' => '/events'],
         ['label' => 'Gallery',   'route' => '/gallery'],
         ['label' => 'E-Library', 'route' => '/elibrary'],
+        ['label' => 'Kamus',     'route' => '/kamus'],
       ];
       $currentPath = request()->path();
     @endphp
@@ -33,7 +34,9 @@
       @endphp
       <a class="nav-link px-3.5 py-1.5 rounded-lg text-sm font-medium no-underline transition-all
                  {{ $isActive ? 'text-[#1a2fb5] bg-[#e8ecfb] active' : 'text-[#5a6080] hover:text-[#1a2fb5] hover:bg-[#e8ecfb]' }}"
-         href="{{ url($link['route']) }}">
+         href="{{ url($link['route']) }}"
+         data-track-feature="navbar_{{ strtolower(str_replace(['-', ' '], '_', $link['label'])) }}"
+         data-track-page="{{ strtolower(str_replace(['-', ' '], '_', $link['label'])) }}">
         {{ $link['label'] }}
       </a>
     @endforeach

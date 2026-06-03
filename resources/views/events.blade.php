@@ -468,6 +468,10 @@
     /* MODAL HANDLER */
     function openEventModal(event)
     {
+        if (window.AnalyticsTracker && event?.id) {
+            AnalyticsTracker.trackModal('event_detail', event.id);
+        }
+
         const emojiMap = {
             webinar: "🎤",
             workshop: "📚",
