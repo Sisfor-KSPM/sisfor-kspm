@@ -12,9 +12,7 @@ class ReportController extends Controller
 {
     public function index()
     {
-        // [ANALYTICS] Track akses halaman manajemen riset
         AnalyticsService::trackFeatureUsage('admin_report_page');
-        
         $reports = Report::orderBy('created_at', 'desc')->get();
         return view('admin.riset', compact('reports'));
     }
@@ -33,19 +31,19 @@ class ReportController extends Controller
 
         $file = $request->file('pdf_file');
         $destination = public_path('reports');
-        if (!File::exists($destination)) {
-            File::makeDirectory($destination, 0755, true);
-        }
+        if (!File::exists($destination)) File::makeDirectory($destination, 0755, true);
 
         $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
         $file->move($destination, $filename);
-
         $validated['pdf_file'] = 'reports/' . $filename;
 
         $report = Report::create($validated);
         
-        // [ANALYTICS] Track pengunggahan laporan baru
-        AnalyticsService::logActivity(auth()->id(), 'report_upload', "Report: {$validated['judul_riset']}");
+        AnalyticsService::logActivity(auth()->id(), 'report_upload', "Riset: {$report->judul_riset}", [
+            'target_type' => Report::class,
+            'target_id' => $report->id,
+            'action' => 'create'
+        ]);
 
         return back()->with('success', 'Riset berhasil diupload.');
     }
@@ -54,13 +52,13 @@ class ReportController extends Controller
     {
         $report = Report::findOrFail($id);
 
+        AnalyticsService::logActivity(auth()->id(), 'report_delete', "Riset: {$report->judul_riset}", [
+            'action' => 'delete'
+        ]);
+
         if ($report->pdf_file && File::exists(public_path($report->pdf_file))) {
             File::delete(public_path($report->pdf_file));
         }
-
-        // [ANALYTICS] Track penghapusan laporan
-        AnalyticsService::logActivity(auth()->id(), 'report_delete', "Report: {$report->judul_riset}");
-
         $report->delete();
 
         return back()->with('success', 'Riset berhasil dihapus.');

@@ -5,42 +5,84 @@
 
 @section('content')
 <!-- STAT CARDS -->
-<div class="grid-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" style="margin-bottom:20px">
-    <div class="stat-card">
-        <div class="flex items-center justify-between mb-2.5">
-            <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase">Total Anggota</div>
-            <div style="font-size:1.4rem">👥</div>
+<div class="grid-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+    
+    <!-- Card 1: Total Anggota -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 lg:p-6 hover:shadow-md transition-shadow duration-300 relative overflow-hidden group flex flex-col justify-between">
+        <div class="absolute -right-4 -top-4 w-20 h-20 lg:w-24 lg:h-24 bg-blue-50 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
+        <div class="flex items-start justify-between mb-3 relative z-10">
+            <div class="text-[0.7rem] lg:text-xs font-bold text-gray-500 uppercase tracking-wider mt-1">Total Anggota</div>
+            <div class="flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-blue-50 text-blue-600 text-xl lg:text-2xl shadow-inner shrink-0">
+                👥
+            </div>
         </div>
-        <div class="mono" style="font-size:2rem;font-weight:800;color:var(--blue)">{{ number_format($totalAnggota, 0, ',', '.') }}</div>
-        <div style="font-size:.75rem;color:var(--success);margin-top:4px;font-weight:600">+{{ number_format($anggotaBulanIni, 0, ',', '.') }} bulan ini</div>
-    </div>
-    <div class="stat-card">
-        <div class="flex items-center justify-between mb-2.5">
-            <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase">Kegiatan Aktif</div>
-            <div style="font-size:1.4rem">📅</div>
+        <div class="text-2xl lg:text-3xl font-extrabold text-gray-900 mb-1 relative z-10 break-words">{{ number_format($totalAnggota, 0, ',', '.') }}</div>
+        <div class="flex flex-wrap items-center gap-1.5 mt-2 relative z-10">
+            <span class="inline-flex items-center text-green-700 font-semibold bg-green-100/80 px-2 py-0.5 rounded-md text-[0.65rem] lg:text-xs border border-green-200 whitespace-nowrap">
+                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                +{{ number_format($anggotaBulanIni, 0, ',', '.') }}
+            </span>
+            <span class="text-gray-400 font-medium text-[0.65rem] lg:text-xs leading-tight">Bulan ini</span>
         </div>
-        <div class="mono" style="font-size:2rem;font-weight:800;color:#0ea5e9">{{ number_format($kegiatanAktif, 0, ',', '.') }}</div>
-        <div style="font-size:.75rem;color:var(--muted);margin-top:4px">{{ number_format($upcomingKegiatan, 0, ',', '.') }} upcoming</div>
     </div>
-    <div class="stat-card">
-        <div class="flex items-center justify-between mb-2.5">
-            <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase">Info Lomba</div>
-            <div style="font-size:1.4rem">🏆</div>
+
+    <!-- Card 2: Kegiatan Aktif -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 lg:p-6 hover:shadow-md transition-shadow duration-300 relative overflow-hidden group flex flex-col justify-between">
+        <div class="absolute -right-4 -top-4 w-20 h-20 lg:w-24 lg:h-24 bg-sky-50 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
+        <div class="flex items-start justify-between mb-3 relative z-10">
+            <div class="text-[0.7rem] lg:text-xs font-bold text-gray-500 uppercase tracking-wider mt-1">Kegiatan Aktif</div>
+            <div class="flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-sky-50 text-sky-500 text-xl lg:text-2xl shadow-inner shrink-0">
+                📅
+            </div>
         </div>
-        <div class="mono" style="font-size:2rem;font-weight:800;color:#f59e0b">{{ number_format($infoLomba, 0, ',', '.') }}</div>
-        <div style="font-size:.75rem;color:var(--warn);margin-top:4px;font-weight:600">⚡ Deadline segera</div>
-    </div>
-    <div class="stat-card">
-        <div class="flex items-center justify-between mb-2.5">
-            <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase">Publikasi Riset</div>
-            <div style="font-size:1.4rem">📊</div>
+        <div class="text-2xl lg:text-3xl font-extrabold text-gray-900 mb-1 relative z-10 break-words">{{ number_format($kegiatanAktif, 0, ',', '.') }}</div>
+        <div class="flex flex-wrap items-center gap-1.5 mt-2 relative z-10">
+            <span class="inline-flex items-center text-sky-700 font-semibold bg-sky-100/80 px-2 py-0.5 rounded-md text-[0.65rem] lg:text-xs border border-sky-200 whitespace-nowrap">
+                {{ number_format($upcomingKegiatan, 0, ',', '.') }}
+            </span>
+            <span class="text-gray-400 font-medium text-[0.65rem] lg:text-xs leading-tight">Upcoming</span>
         </div>
-        <div class="mono" style="font-size:2rem;font-weight:800;color:#10b981">{{ number_format($totalRiset, 0, ',', '.') }}</div>
-        <div style="font-size:.75rem;color:var(--success);margin-top:4px;font-weight:600">+{{ number_format($risetMingguIni, 0, ',', '.') }} minggu ini</div>
     </div>
+
+    <!-- Card 3: Info Lomba -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 lg:p-6 hover:shadow-md transition-shadow duration-300 relative overflow-hidden group flex flex-col justify-between">
+        <div class="absolute -right-4 -top-4 w-20 h-20 lg:w-24 lg:h-24 bg-amber-50 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
+        <div class="flex items-start justify-between mb-3 relative z-10">
+            <div class="text-[0.7rem] lg:text-xs font-bold text-gray-500 uppercase tracking-wider mt-1">Info Lomba</div>
+            <div class="flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-amber-50 text-amber-500 text-xl lg:text-2xl shadow-inner shrink-0">
+                🏆
+            </div>
+        </div>
+        <div class="text-2xl lg:text-3xl font-extrabold text-gray-900 mb-1 relative z-10 break-words">{{ number_format($infoLomba, 0, ',', '.') }}</div>
+        <div class="flex flex-wrap items-center gap-1.5 mt-2 relative z-10">
+            <span class="inline-flex items-center text-amber-700 font-semibold bg-amber-100/80 px-2 py-0.5 rounded-md text-[0.65rem] lg:text-xs border border-amber-200 whitespace-nowrap">
+                ⚡ Segera
+            </span>
+        </div>
+    </div>
+
+    <!-- Card 4: Publikasi Riset -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 lg:p-6 hover:shadow-md transition-shadow duration-300 relative overflow-hidden group flex flex-col justify-between">
+        <div class="absolute -right-4 -top-4 w-20 h-20 lg:w-24 lg:h-24 bg-emerald-50 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
+        <div class="flex items-start justify-between mb-3 relative z-10">
+            <div class="text-[0.7rem] lg:text-xs font-bold text-gray-500 uppercase tracking-wider mt-1">Publikasi Riset</div>
+            <div class="flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-emerald-50 text-emerald-500 text-xl lg:text-2xl shadow-inner shrink-0">
+                📊
+            </div>
+        </div>
+        <div class="text-2xl lg:text-3xl font-extrabold text-gray-900 mb-1 relative z-10 break-words">{{ number_format($totalRiset, 0, ',', '.') }}</div>
+        <div class="flex flex-wrap items-center gap-1.5 mt-2 relative z-10">
+            <span class="inline-flex items-center text-emerald-700 font-semibold bg-emerald-100/80 px-2 py-0.5 rounded-md text-[0.65rem] lg:text-xs border border-emerald-200 whitespace-nowrap">
+                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                +{{ number_format($risetMingguIni, 0, ',', '.') }}
+            </span>
+            <span class="text-gray-400 font-medium text-[0.65rem] lg:text-xs leading-tight">Minggu ini</span>
+        </div>
+    </div>
+
 </div>
 
-<div class="grid-2 grid grid-cols-1 lg:grid-cols-2 gap-5" style="margin-bottom:20px">
+<div class="grid-2 grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
     <!-- Aktivitas Terakhir -->
     <div class="card p-5">
         <div class="section-header flex items-center justify-between mb-5 mt-2 gap-3 flex-wrap">
@@ -51,15 +93,33 @@
         </div>
         <div id="activity-log">
             @forelse ($recentActivities as $activity)
+                @php
+                    $act = strtolower($activity->action ?: $activity->activity_type ?: '');
+                    if (str_contains($act, 'create') || str_contains($act, 'upload')) $act = 'create';
+                    elseif (str_contains($act, 'update')) $act = 'update';
+                    elseif (str_contains($act, 'delete')) $act = 'delete';
+
+                    [$dotColor, $badgeBg, $badgeColor, $badgeIcon, $badgeText] = match($act) {
+                        'create'  => ['#16a34a', '#dcfce7', '#15803d', '+', 'Ditambahkan'],
+                        'update'  => ['#2563eb', '#dbeafe', '#1d4ed8', '✎', 'Diperbarui'],
+                        'delete'  => ['#dc2626', '#fee2e2', '#b91c1c', '✕', 'Dihapus'],
+                        default   => ['#94a3b8', '#f1f5f9', '#475569', '•', 'Aktivitas'],
+                    };
+                @endphp
                 <div class="activity-item flex gap-3 py-3 border-b border-gray-100 {{ $loop->last ? 'border-none' : '' }}">
-                    <div class="activity-dot w-2 h-2 rounded-full bg-blue-600 shrink-0 mt-1.5"></div>
-                    <div>
-                        <div style="font-size:.85rem;font-weight:600">{{ $activity->description ?: trim(($activity->action ?: 'Aktivitas') . ' ' . ($activity->page_name ?: $activity->feature_name ?: 'dashboard')) }}</div>
-                        <div style="font-size:.72rem;color:var(--muted)">{{ $activity->created_at?->diffForHumans() }} · {{ $activity->user->name ?? 'Guest' }}</div>
+                    <div style="width:8px;height:8px;border-radius:50%;background:{{ $dotColor }};flex-shrink:0;margin-top:6px"></div>
+                    <div style="flex:1;min-width:0">
+                        <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap">
+                            <span style="display:inline-flex;align-items:center;gap:3px;font-size:.67rem;font-weight:700;padding:2px 8px;border-radius:999px;background:{{ $badgeBg }};color:{{ $badgeColor }};white-space:nowrap;flex-shrink:0">{{ $badgeIcon }} {{ $badgeText }}</span>
+                            <span style="font-size:.85rem;font-weight:600;color:#111827;word-break:break-word">{{ $activity->formatted_description }}</span>
+                        </div>
+                        <div style="font-size:.72rem;color:var(--muted);margin-top:3px">
+                            {{ $activity->created_at?->diffForHumans() }}&nbsp;·&nbsp;<span style="font-weight:500">{{ $activity->user->name ?? 'Guest' }}</span>
+                        </div>
                     </div>
                 </div>
             @empty
-                <div style="font-size:.85rem;color:var(--muted)">Belum ada aktivitas terbaru.</div>
+                <div style="font-size:.85rem;color:var(--muted);padding:12px 0">Belum ada aktivitas Create / Update / Delete terbaru.</div>
             @endforelse
         </div>
     </div>
@@ -102,48 +162,52 @@
     <div class="section-header flex items-center justify-between mb-5 mt-2 gap-3 flex-wrap" style="margin-bottom:16px">
         <div>
             <div class="section-title text-lg font-bold text-gray-900">📊 Grafik Analitik Website</div>
-            <div class="section-sub text-sm text-gray-500">Statistik pengunjung, klik riset, dan klik event</div>
+            <div class="section-sub text-sm text-gray-500">Statistik kunjungan website dan klik publikasi</div>
         </div>
-        <div class="flex gap-1.5">
-            <button class="btn btn-ghost btn-sm" onclick="switchChartView('harian')" id="btn-view-harian" style="border-color:var(--blue);color:var(--blue)">Harian</button>
-            <button class="btn btn-ghost btn-sm" onclick="switchChartView('mingguan')" id="btn-view-mingguan">Mingguan</button>
+        <!-- SWITCH FILTER: MINGGUAN & BULANAN -->
+        <div class="flex gap-1.5" style="background:#f1f5f9; padding:4px; border-radius:8px;">
+            <button class="btn btn-ghost btn-sm" onclick="switchChartView('mingguan')" id="btn-view-mingguan" style="background:#fff; border-color:var(--blue); color:var(--blue); box-shadow:0 1px 2px rgba(0,0,0,0.05)">Mingguan</button>
+            <button class="btn btn-ghost btn-sm" onclick="switchChartView('bulanan')" id="btn-view-bulanan" style="color:var(--muted)">Bulanan</button>
         </div>
     </div>
 
-    <!-- Row 1: Visitor harian & mingguan -->
+    <!-- Row 1: Kunjungan Website (Filterable) -->
     <div class="grid-2 grid grid-cols-1 lg:grid-cols-2 gap-5" style="margin-bottom:20px">
+        
+        <!-- GRAFIK KIRI (Pengunjung Website) -->
         <div class="card p-5">
             <div class="section-header flex items-center justify-between mt-2 gap-3 flex-wrap mb-4">
                 <div>
                     <div class="section-title text-lg font-bold text-gray-900" style="font-size:.95rem">👁 Pengunjung Website</div>
-                    <div class="section-sub text-sm text-gray-500" id="visitor-chart-sub">7 hari terakhir</div>
+                    <div class="section-sub text-sm text-gray-500" id="visitor-chart-sub">4 minggu terakhir</div>
                 </div>
-                <span class="badge badge-blue inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800" id="visitor-total-badge">Total: {{ number_format($chartData['visitorTotal'], 0, ',', '.') }}</span>
+                <span class="badge badge-blue inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800" id="visitor-total-badge">Total: {{ number_format($chartData['weeklyTotal'], 0, ',', '.') }}</span>
             </div>
             <div class="relative h-[180px] w-full">
                 <canvas id="chart-visitor"></canvas>
             </div>
             <div class="mt-3.5 flex gap-5 flex-wrap">
-                <div><div style="font-size:.72rem;color:var(--muted)">Rata-rata/hari</div><div style="font-size:1.2rem;font-weight:800;color:var(--blue)" id="visitor-avg">{{ number_format($chartData['visitorAvg'], 0, ',', '.') }}</div></div>
-                <div><div style="font-size:.72rem;color:var(--muted)">Puncak tertinggi</div><div style="font-size:1.2rem;font-weight:800;color:#10b981" id="visitor-peak">{{ number_format($chartData['visitorPeak'], 0, ',', '.') }}</div></div>
-                <div><div style="font-size:.72rem;color:var(--muted)">Trend</div><div style="font-size:1.2rem;font-weight:800;color:#f59e0b" id="visitor-trend">▲ +12%</div></div>
+                <div><div style="font-size:.72rem;color:var(--muted)">Rata-rata/periode</div><div style="font-size:1.2rem;font-weight:800;color:var(--blue)" id="visitor-avg">{{ number_format($chartData['weeklyAvg'], 0, ',', '.') }}</div></div>
+                <div><div style="font-size:.72rem;color:var(--muted)">Puncak tertinggi</div><div style="font-size:1.2rem;font-weight:800;color:#10b981" id="visitor-peak">{{ number_format($chartData['weeklyPeak'], 0, ',', '.') }}</div></div>
             </div>
         </div>
 
+        <!-- GRAFIK KANAN (Kunjungan Perbandingan) -->
         <div class="card p-5">
             <div class="section-header flex items-center justify-between mt-2 gap-3 flex-wrap mb-4">
                 <div>
-                    <div class="section-title text-lg font-bold text-gray-900" style="font-size:.95rem">📅 Kunjungan Mingguan</div>
-                    <div class="section-sub text-sm text-gray-500">Perbandingan per minggu (4 minggu)</div>
+                    <!-- Judul grafik akan terganti dinamis mengikuti filter -->
+                    <div class="section-title text-lg font-bold text-gray-900" style="font-size:.95rem" id="weekly-title">📅 Kunjungan Mingguan</div>
+                    <div class="section-sub text-sm text-gray-500" id="weekly-sub">Perbandingan per minggu (4 minggu)</div>
                 </div>
-                <span class="badge badge-green inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">Weekly</span>
+                <span class="badge badge-green inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800" id="weekly-badge">Weekly</span>
             </div>
             <div class="relative h-[180px] w-full">
                 <canvas id="chart-weekly"></canvas>
             </div>
             <div class="mt-3.5 flex gap-5 flex-wrap">
-                <div><div style="font-size:.72rem;color:var(--muted)">Total 4 minggu</div><div style="font-size:1.2rem;font-weight:800;color:var(--blue)">{{ number_format($chartData['weeklyTotal'], 0, ',', '.') }}</div></div>
-                <div><div style="font-size:.72rem;color:var(--muted)">Minggu terbaik</div><div style="font-size:1.2rem;font-weight:800;color:#10b981">{{ number_format($chartData['weeklyPeak'], 0, ',', '.') }}</div></div>
+                <div><div style="font-size:.72rem;color:var(--muted)">Total Kunjungan</div><div style="font-size:1.2rem;font-weight:800;color:var(--blue)" id="weekly-total">{{ number_format($chartData['weeklyTotal'], 0, ',', '.') }}</div></div>
+                <div><div style="font-size:.72rem;color:var(--muted)">Puncak Kunjungan</div><div style="font-size:1.2rem;font-weight:800;color:#10b981" id="weekly-peak-right">{{ number_format($chartData['weeklyPeak'], 0, ',', '.') }}</div></div>
             </div>
         </div>
     </div>
@@ -188,18 +252,49 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-// Data Setup
-const visitorHarianRaw = @json($chartData['visitorHarian']);
+// JSON Data Parsing dari Controller
 const visitorMingguanRaw = @json($chartData['visitorMingguan']);
+const visitorBulananRaw = @json($chartData['visitorBulanan']);
 const risetKlikRaw = @json($chartData['risetKlikData']);
 const eventKlikRaw = @json($chartData['eventKlikData']);
 const memberChartRaw = @json($memberChartData);
 
 const shortLabel = label => (label || '-').length > 12 ? (label || '-').slice(0, 12) + '...' : (label || '-');
-const visitorHarian = { labels: visitorHarianRaw.map(item => item.label), data: visitorHarianRaw.map(item => Number(item.value || 0)) };
-const visitorMingguan = { labels: visitorMingguanRaw.map(item => item.label), data: visitorMingguanRaw.map(item => Number(item.value || 0)) };
+
+// Setup Mapping Dataset
+const dataMingguan = { 
+    labels: visitorMingguanRaw.map(i => i.label), 
+    values: visitorMingguanRaw.map(i => Number(i.value || 0))
+};
+const dataBulanan = { 
+    labels: visitorBulananRaw.map(i => i.label), 
+    values: visitorBulananRaw.map(i => Number(i.value || 0))
+};
+
 const risetKlikData = { labels: risetKlikRaw.map(item => item.title), shortLabels: risetKlikRaw.map(item => shortLabel(item.title)), data: risetKlikRaw.map(item => Number(item.views || 0)) };
 const eventKlikData = { labels: eventKlikRaw.map(item => item.title), shortLabels: eventKlikRaw.map(item => shortLabel(item.title)), data: eventKlikRaw.map(item => Number(item.views || 0)) };
+
+// Data UI Switcher (Kunjungan Asli)
+const statsData = {
+    mingguan: {
+        total: "{{ number_format($chartData['weeklyTotal'], 0, ',', '.') }}",
+        avg: "{{ number_format($chartData['weeklyAvg'], 0, ',', '.') }}",
+        peak: "{{ number_format($chartData['weeklyPeak'], 0, ',', '.') }}",
+        sub: "4 minggu terakhir",
+        rightTitle: "📅 Kunjungan Mingguan",
+        rightSub: "Perbandingan per minggu (4 minggu)",
+        rightBadge: "Weekly"
+    },
+    bulanan: {
+        total: "{{ number_format($chartData['monthlyTotal'], 0, ',', '.') }}",
+        avg: "{{ number_format($chartData['monthlyAvg'], 0, ',', '.') }}",
+        peak: "{{ number_format($chartData['monthlyPeak'], 0, ',', '.') }}",
+        sub: "6 bulan terakhir",
+        rightTitle: "📅 Kunjungan Bulanan",
+        rightSub: "Perbandingan per bulan (6 bulan)",
+        rightBadge: "Monthly"
+    }
+};
 
 function hexToRgb(hex) { return [parseInt(hex.slice(1,3),16), parseInt(hex.slice(3,5),16), parseInt(hex.slice(5,7),16)].join(','); }
 function buildGradient(canvasEl, hex, alpha1=0.22, alpha2=0) {
@@ -225,7 +320,7 @@ const sharedOptions = (extraTooltip={}) => ({
     scales: { x: { grid: { display: false }, border: { display: false } }, y: { beginAtZero: true, grid: { color: 'rgba(208,213,232,0.35)' }, border: { display: false } } }
 });
 
-// SVG Chart Function for Dashboard
+// Konstruktor Line Chart SVG internal untuk Pertumbuhan Anggota
 function renderLineChartSVG(containerId, data, color1) {
     const el = document.getElementById(containerId);
     if (!el) return;
@@ -252,15 +347,23 @@ function renderLineChartSVG(containerId, data, color1) {
 let chartVisitor, chartWeekly, chartRiset, chartEvent;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Member SVG Chart
     renderLineChartSVG('member-chart', memberChartRaw, '#1a2fb5');
 
-    // Chart.js Charts
+    // Chart Pengunjung (Kiri - Biru)
     const c1 = document.getElementById('chart-visitor');
-    chartVisitor = new Chart(c1, { type: 'line', data: { labels: visitorHarian.labels, datasets: [buildLineDataset(c1, visitorHarian.data, '#1a2fb5', 'Pengunjung')] }, options: sharedOptions({ callbacks: { label: ctx => `  Pengunjung: ${ctx.parsed.y.toLocaleString('id-ID')}` } }) });
+    chartVisitor = new Chart(c1, { 
+        type: 'line', 
+        data: { labels: dataMingguan.labels, datasets: [buildLineDataset(c1, dataMingguan.values, '#1a2fb5', 'Pengunjung')] }, 
+        options: sharedOptions({ callbacks: { label: ctx => `  Pengunjung: ${ctx.parsed.y.toLocaleString('id-ID')}` } }) 
+    });
 
+    // Chart Kunjungan Asli (Kanan - Hijau)
     const c2 = document.getElementById('chart-weekly');
-    chartWeekly = new Chart(c2, { type: 'line', data: { labels: visitorMingguan.labels, datasets: [buildLineDataset(c2, visitorMingguan.data, '#10b981', 'Pengunjung')] }, options: sharedOptions({ callbacks: { label: ctx => `  Pengunjung: ${ctx.parsed.y.toLocaleString('id-ID')}` } }) });
+    chartWeekly = new Chart(c2, { 
+        type: 'line', 
+        data: { labels: dataMingguan.labels, datasets: [buildLineDataset(c2, dataMingguan.values, '#10b981', 'Kunjungan')] }, 
+        options: sharedOptions({ callbacks: { label: ctx => `  Kunjungan: ${ctx.parsed.y.toLocaleString('id-ID')}` } }) 
+    });
 
     const c3 = document.getElementById('chart-riset-click');
     chartRiset = new Chart(c3, { type: 'line', data: { labels: risetKlikData.shortLabels, datasets: [buildLineDataset(c3, risetKlikData.data, '#8b5cf6', 'Klik')] }, options: sharedOptions({ callbacks: { title: i => risetKlikData.labels[i[0].dataIndex], label: ctx => `  Klik: ${ctx.parsed.y.toLocaleString('id-ID')}` } }) });
@@ -269,21 +372,52 @@ document.addEventListener('DOMContentLoaded', () => {
     chartEvent = new Chart(c4, { type: 'line', data: { labels: eventKlikData.shortLabels, datasets: [buildLineDataset(c4, eventKlikData.data, '#f59e0b', 'Klik')] }, options: sharedOptions({ callbacks: { title: i => eventKlikData.labels[i[0].dataIndex], label: ctx => `  Klik: ${ctx.parsed.y.toLocaleString('id-ID')}` } }) });
 });
 
+// LOGIKA FILTER MINGGUAN / BULANAN (Sinkronisasi Grafik Pengunjung)
 function switchChartView(view) {
-    const btnH = document.getElementById('btn-view-harian');
     const btnM = document.getElementById('btn-view-mingguan');
-    if (view === 'harian') {
-        btnH && (btnH.style.borderColor='var(--blue)', btnH.style.color='var(--blue)');
-        btnM && (btnM.style.borderColor='', btnM.style.color='');
-        if (chartVisitor) { chartVisitor.data.labels = visitorHarian.labels; chartVisitor.data.datasets[0].data = visitorHarian.data; chartVisitor.update(); }
+    const btnB = document.getElementById('btn-view-bulanan');
+    
+    // UI Label Elements (Kiri)
+    const vTotal = document.getElementById('visitor-total-badge');
+    const vAvg = document.getElementById('visitor-avg');
+    const vPeak = document.getElementById('visitor-peak');
+    const vSub = document.getElementById('visitor-chart-sub');
+    
+    // UI Label Elements (Kanan)
+    const wTitle = document.getElementById('weekly-title');
+    const wSub = document.getElementById('weekly-sub');
+    const wBadge = document.getElementById('weekly-badge');
+    const wTotal = document.getElementById('weekly-total');
+    const wPeak = document.getElementById('weekly-peak-right');
+
+    const d = view === 'mingguan' ? dataMingguan : dataBulanan;
+    const s = view === 'mingguan' ? statsData.mingguan : statsData.bulanan;
+
+    // Toggle Style Button
+    if (view === 'mingguan') {
+        btnM && (btnM.style.background='#fff', btnM.style.borderColor='var(--blue)', btnM.style.color='var(--blue)', btnM.style.boxShadow='0 1px 2px rgba(0,0,0,0.05)');
+        btnB && (btnB.style.background='transparent', btnB.style.borderColor='transparent', btnB.style.color='var(--muted)', btnB.style.boxShadow='none');
     } else {
-        btnM && (btnM.style.borderColor='var(--blue)', btnM.style.color='var(--blue)');
-        btnH && (btnH.style.borderColor='', btnH.style.color='');
-        if (chartVisitor) { chartVisitor.data.labels = visitorMingguan.labels; chartVisitor.data.datasets[0].data = visitorMingguan.data; chartVisitor.update(); }
+        btnB && (btnB.style.background='#fff', btnB.style.borderColor='var(--blue)', btnB.style.color='var(--blue)', btnB.style.boxShadow='0 1px 2px rgba(0,0,0,0.05)');
+        btnM && (btnM.style.background='transparent', btnM.style.borderColor='transparent', btnM.style.color='var(--muted)', btnM.style.boxShadow='none');
     }
+    
+    // Update Chart Data
+    if (chartVisitor) { chartVisitor.data.labels = d.labels; chartVisitor.data.datasets[0].data = d.values; chartVisitor.update(); }
+    if (chartWeekly) { chartWeekly.data.labels = d.labels; chartWeekly.data.datasets[0].data = d.values; chartWeekly.update(); }
+    
+    // Update Teks Data (Kiri)
+    vTotal && (vTotal.innerText = 'Total: ' + s.total);
+    vAvg && (vAvg.innerText = s.avg);
+    vPeak && (vPeak.innerText = s.peak);
+    vSub && (vSub.innerText = s.sub);
+    
+    // Update Teks Data (Kanan)
+    wTitle && (wTitle.innerText = s.rightTitle);
+    wSub && (wSub.innerText = s.rightSub);
+    wBadge && (wBadge.innerText = s.rightBadge);
+    wTotal && (wTotal.innerText = s.total);
+    wPeak && (wPeak.innerText = s.peak);
 }
 </script>
 @endpush
-
-
-

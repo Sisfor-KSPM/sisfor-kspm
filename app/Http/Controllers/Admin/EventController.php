@@ -11,9 +11,7 @@ class EventController extends Controller
 {
     public function index()
     {
-        // [ANALYTICS] Track akses halaman manajemen event
         AnalyticsService::trackFeatureUsage('admin_event_page');
-        
         $events = Event::orderBy('tanggal', 'desc')->get();
         return view('admin.kegiatan', compact('events'));
     }
@@ -35,8 +33,11 @@ class EventController extends Controller
 
         $event = Event::create($validated);
         
-        // [ANALYTICS] Track pembuatan event baru
-        AnalyticsService::logActivity(auth()->id(), 'event_create', "Event: {$validated['kegiatan']}");
+        AnalyticsService::logActivity(auth()->id(), 'event_create', "Kegiatan: {$event->kegiatan}", [
+            'target_type' => Event::class,
+            'target_id' => $event->id,
+            'action' => 'create'
+        ]);
         
         return back()->with('success', 'Kegiatan berhasil ditambahkan!');
     }
@@ -50,7 +51,6 @@ class EventController extends Controller
     public function update(Request $request, $id)
     {
         $event = Event::findOrFail($id);
-        
         $validated = $request->validate([
             'kegiatan' => 'required|string|max:255',
             'tipe' => 'required|string|max:100',
@@ -66,8 +66,11 @@ class EventController extends Controller
 
         $event->update($validated);
         
-        // [ANALYTICS] Track perubahan event
-        AnalyticsService::logActivity(auth()->id(), 'event_update', "Event: {$validated['kegiatan']}");
+        AnalyticsService::logActivity(auth()->id(), 'event_update', "Kegiatan: {$event->kegiatan}", [
+            'target_type' => Event::class,
+            'target_id' => $event->id,
+            'action' => 'update'
+        ]);
         
         return back()->with('success', 'Kegiatan berhasil diperbarui!');
     }
@@ -76,8 +79,9 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($id);
         
-        // [ANALYTICS] Track penghapusan event
-        AnalyticsService::logActivity(auth()->id(), 'event_delete', "Event: {$event->kegiatan}");
+        AnalyticsService::logActivity(auth()->id(), 'event_delete', "Kegiatan: {$event->kegiatan}", [
+            'action' => 'delete'
+        ]);
         
         $event->delete();
         return back()->with('success', 'Kegiatan berhasil dihapus!');

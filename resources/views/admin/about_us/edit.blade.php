@@ -88,11 +88,6 @@
     </div>
 </form>
 
-
-
-
-
-<!-- Pengurus -->
 <div class="card p-6">
     <div class="flex items-center justify-between mb-4 flex-wrap">
         <div>
@@ -117,72 +112,33 @@
             <tbody>
                 @forelse($pengurus as $item)
                     <tr class="border-b border-gray-50 hover:bg-blue-50 transition">
-
                         <td class="px-4 py-3">
                             @if($item->foto_pengurus)
-                                <img
-                                    src="{{ asset('storage/'.$item->foto_pengurus) }}"
-                                    class="w-10 h-10 rounded-full object-cover"
-                                    alt="{{ $item->nama }}">
+                                <img src="{{ asset('storage/'.$item->foto_pengurus) }}" class="w-10 h-10 rounded-full object-cover" alt="{{ $item->nama }}">
                             @else
                                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white font-bold text-xs">
                                     {{ strtoupper(substr($item->nama,0,1)) }}
                                 </div>
                             @endif
                         </td>
-
                         <td class="px-4 py-3">
-                            <div class="font-semibold text-gray-900">
-                                {{ $item->nama }}
-                            </div>
-
-                            <div class="text-[0.72rem] text-gray-500 font-mono">
-                                {{ $item->nim }}
-                            </div>
+                            <div class="font-semibold text-gray-900">{{ $item->nama }}</div>
+                            <div class="text-[0.72rem] text-gray-500 font-mono">{{ $item->nim }}</div>
                         </td>
-
                         <td class="px-4 py-3">
-                            <span class="bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">
-                                {{ $item->jabatan }}
-                            </span>
+                            <span class="bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold">{{ $item->jabatan }}</span>
                         </td>
-
-                        <td class="px-4 py-3 text-[0.82rem]">
-                            {{ $item->divisi }}
-                        </td>
-
-                        <td class="px-4 py-3 text-[0.82rem]">
-                            {{ $item->periode }}
-                        </td>
-
-                        <td class="px-4 py-3 text-[0.78rem] text-gray-500">
-                            {{ $item->email }}
-                        </td>
-
+                        <td class="px-4 py-3 text-[0.82rem]">{{ $item->divisi }}</td>
+                        <td class="px-4 py-3 text-[0.82rem]">{{ $item->periode }}</td>
+                        <td class="px-4 py-3 text-[0.78rem] text-gray-500">{{ $item->email }}</td>
                         <td class="px-4 py-3 text-right whitespace-nowrap">
-
-                            <button
-                                type="button"
-                                class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition"
-                                onclick='editPengurus(@json($item))'>
-                                ✏️
-                            </button>
-
-                            <button
-                                type="button"
-                                class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition ml-1"
-                                onclick="openDeleteModal('{{ $item->id }}', '{{ $item->nama }}', '{{ route('pengurus.destroy', $item->id) }}')">
-                                🗑️
-                            </button>
-
+                            <button type="button" class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition" onclick='editPengurus(@json($item))'>✏️</button>
+                            <button type="button" class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition ml-1" onclick="openDeleteModal('{{ $item->id }}', '{{ addslashes($item->nama) }}', '{{ route('pengurus.destroy', $item->id) }}')">🗑️</button>
                         </td>
-
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center py-8 text-gray-400">
-                            Belum ada data pengurus
-                        </td>
+                        <td colspan="7" class="text-center py-8 text-gray-400">Belum ada data pengurus</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -190,56 +146,32 @@
     </div>
 </div>
 
-<!-- MODAL TAMBAH PENGURUS -->
 <div class="modal-overlay fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4" id="modal-pengurus">
     <div class="modal bg-white rounded-2xl p-7 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
-
         <form id="pengurusForm" action="{{ route('pengurus.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" id="methodField">
 
             <div class="modal-header flex items-center justify-between mb-5 pb-3.5 border-b border-gray-200">
-                <div id="modalTitle" class="modal-title text-base font-bold text-gray-900">
-                    Tambah Pengurus
-                </div>
-
-                <button
-                    type="button"
-                    class="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-500 transition flex items-center justify-center"
-                    onclick="document.getElementById('modal-pengurus').classList.remove('open')">
-                    ✕
-                </button>
+                <div id="modalTitle" class="modal-title text-base font-bold text-gray-900">Tambah Pengurus</div>
+                <button type="button" class="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-500 transition flex items-center justify-center" onclick="document.getElementById('modal-pengurus').classList.remove('open')">✕</button>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">
-                        Nama Lengkap*
-                    </label>
-
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Nama Lengkap (Wajib Diisi)</label>
                     <input type="text" id="nama" name="nama" class="inp" required>
                 </div>
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">
-                        NIM
-                    </label>
-
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">NIM (Wajib Diisi)</label>
                     <input type="text" id="nim" name="nim" class="inp">
                 </div>
-
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">
-                        Jabatan*
-                    </label>
-
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Jabatan (Wajib Diisi)</label>
                     <select id="jabatan" name="jabatan" class="inp" required>
-
                         <option value="">Pilih Jabatan</option>
                         <option value="Ketua Umum">Ketua Umum</option>
                         <option value="Wakil Ketua">Wakil Ketua</option>
@@ -247,189 +179,111 @@
                         <option value="Bendahara Umum">Bendahara Umum</option>
                         <option value="Koordinator Divisi">Koordinator Divisi</option>
                         <option value="Staff">Staff</option>
-
                     </select>
                 </div>
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">
-                        Divisi*
-                    </label>
-
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Divisi (Wajib Diisi)</label>
                     <select id="divisi" name="divisi" class="inp" required>
-
                         <option value="">Pilih Divisi</option>
                         <option value="BPH (Badan Pengurus Harian)">BPH (Badan Pengurus Harian)</option>
                         <option value="Administration">Administration</option>
                         <option value="Education">Education</option>
                         <option value="Media Creative">Media Creative</option>
                         <option value="Public Relation">Public Relation</option>
-                        <option value="Investment Gallery">Investment Gallery</option>
-                        <option value="Analyze Trading">Analyze Trading</option>
-
                     </select>
                 </div>
-
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">
-                        Periode Kepengurusan
-                    </label>
-
-                    <input
-                        type="text"
-                        name="periode"
-                        id="periode"
-                        class="inp"
-                        placeholder="2025/2026">
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Periode Kepengurusan (Wajib Diisi)</label>
+                    <input type="text" name="periode" id="periode" class="inp" placeholder="2025/2026">
                 </div>
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">
-                        Angkatan
-                    </label>
-
-                    <input
-                        type="text"
-                        name="angkatan"
-                        id="angkatan"
-                        class="inp"
-                        placeholder="2023">
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Angkatan (Wajib Diisi)</label>
+                    <input type="text" name="angkatan" id="angkatan" class="inp" placeholder="2023">
                 </div>
-
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">
-                        Email / Instagram
-                    </label>
-
-                    <input
-                        type="text"
-                        name="email"
-                        id="email"
-                        class="inp">
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Email / Instagram (Wajib Diisi)</label>
+                    <input type="text" name="email" id="email" class="inp">
                 </div>
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">
-                        LinkedIn
-                    </label>
-
-                    <input
-                        type="text"
-                        name="linkedin"
-                        id="linkedin"
-                        class="inp">
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">LinkedIn (Wajib Diisi)</label>
+                    <input type="text" name="linkedin" id="linkedin" class="inp">
                 </div>
-
             </div>
 
             <div class="mb-5">
+                <label class="block text-xs font-semibold text-gray-500 mb-1">Foto Pengurus (Wajib Diisi)</label>
 
-                <label class="block text-xs font-semibold text-gray-500 mb-1">
-                    Foto Pengurus
-                </label>
-
-                <label class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:bg-blue-50 transition cursor-pointer block">
-
+                <label id="upload-area" class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:bg-blue-50 transition cursor-pointer block">
                     <div class="text-4xl mb-2">👤</div>
-
-                    <div class="font-semibold text-gray-500 text-sm">
-                        Upload Foto Pengurus
-                    </div>
-
-                    <div class="text-[0.72rem] text-gray-400 mt-1">
-                        JPG / PNG · Maks 1 MB
-                    </div>
-
-                    <input
-                        type="file"
-                        name="foto_pengurus"
-                        accept=".jpg,.jpeg,.png"
-                        class="hidden">
-
+                    <div class="font-semibold text-gray-500 text-sm">Pilih Foto Pengurus</div>
+                    <div class="text-[0.72rem] text-gray-400 mt-1">Akan dipotong kotak presisi otomatis</div>
+                    <input type="file" id="foto_input_dummy" accept=".jpg,.jpeg,.png" class="hidden">
                 </label>
 
+                <div id="crop-area" class="hidden mt-3">
+                    <div class="w-full h-[250px] sm:h-[350px] rounded-xl border border-gray-200 bg-gray-100 mb-3 overflow-hidden">
+                        <img id="image-to-crop" src="" style="display: block; max-width: 100%;">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" id="btn-cancel-crop" class="btn btn-ghost flex-1 py-2 text-sm">Batal</button>
+                        <button type="button" id="btn-apply-crop" class="btn btn-primary flex-1 py-2 text-sm">✂️ Potong & Simpan</button>
+                    </div>
+                </div>
+
+                <div id="preview-area" class="hidden mt-3 flex items-center justify-between border border-gray-200 rounded-xl p-4 bg-gray-50">
+                    <div class="flex items-center gap-3">
+                        <img id="cropped-preview" src="" class="w-14 h-14 rounded-full object-cover shadow-sm border border-gray-200">
+                        <div>
+                            <div class="text-sm font-semibold text-gray-700">Foto Siap Upload</div>
+                            <div class="text-xs text-green-600 font-medium">✓ Sudah terpotong (1:1)</div>
+                        </div>
+                    </div>
+                    <button type="button" id="btn-reset-foto" class="text-xs text-red-500 hover:text-red-700 font-semibold px-3 py-1.5 bg-red-50 rounded-lg hover:bg-red-100 transition">Ganti</button>
+                </div>
+
+                <input type="file" id="foto_pengurus_real" name="foto_pengurus" class="hidden" accept=".jpg,.jpeg,.png">
             </div>
 
             <div class="mt-5 pt-4 border-t border-gray-200 flex justify-end gap-2">
-
-                <button
-                    type="button"
-                    class="btn btn-ghost"
-                    onclick="document.getElementById('modal-pengurus').classList.remove('open')">
-                    Batal
-                </button>
-
-                <button
-                    type="submit"
-                    class="btn btn-primary">
-                    💾 Simpan
-                </button>
-
+                <button type="button" class="btn btn-ghost" onclick="document.getElementById('modal-pengurus').classList.remove('open')">Batal</button>
+                <button type="submit" class="btn btn-primary">💾 Simpan</button>
             </div>
-
         </form>
-
     </div>
 </div>
 
-<!-- MODAL DELETE CONFIRMATION -->
 <div class="modal-overlay fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4" id="modal-delete">
     <div class="modal bg-white rounded-2xl p-7 w-full max-w-md relative">
-
         <div class="modal-header flex items-center justify-between mb-5">
             <div class="text-base font-bold text-gray-900">Konfirmasi Hapus</div>
-            <button
-                type="button"
-                class="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-500 transition flex items-center justify-center"
-                onclick="closeDeleteModal()">
-                ✕
-            </button>
+            <button type="button" class="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-500 transition flex items-center justify-center" onclick="closeDeleteModal()">✕</button>
         </div>
-
         <div class="mb-6">
-            <p class="text-gray-600 text-sm">
-                Apakah Anda yakin ingin menghapus pengurus berikut?
-            </p>
+            <p class="text-gray-600 text-sm">Apakah Anda yakin ingin menghapus pengurus berikut?</p>
             <p class="text-gray-900 font-semibold mt-2" id="deleteName">-</p>
         </div>
-
         <div class="mt-6 pt-4 border-t border-gray-200 flex justify-end gap-2">
-            <button
-                type="button"
-                class="btn btn-ghost"
-                onclick="closeDeleteModal()">
-                Batal
-            </button>
-
+            <button type="button" class="btn btn-ghost" onclick="closeDeleteModal()">Batal</button>
             <form id="deleteForm" method="POST" style="display: inline;">
                 @csrf
                 @method('DELETE')
-                <button
-                    type="submit"
-                    class="btn btn-danger">
-                    🗑️ Hapus
-                </button>
+                <button type="submit" class="btn btn-danger">🗑️ Hapus</button>
             </form>
         </div>
-
     </div>
 </div>
 @endsection
 
 @push('styles')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
 <style>
-/* Style pembantu agar modal berfungsi saat display:flex disematkan */
 .modal-overlay.open { display: flex !important; }
-
-/* Button styles */
 .btn-ghost { background: #f3f4f6; color: #6b7280; }
 .btn-ghost:hover { background: #e5e7eb; }
 .btn-danger { background: #dc2626; color: #fff; }
@@ -438,27 +292,39 @@
 @endpush
 
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script>
-    
-function openTambahPengurus()
-{
-    let form = document.getElementById('pengurusForm');
 
-    form.reset();
-
-    form.action = "{{ route('pengurus.store') }}";
-
-    document.getElementById('modalTitle').innerText =
-        'Tambah Pengurus';
-
-    document.getElementById('methodField').innerHTML = '';
-
-    document.getElementById('modal-pengurus')
-        .classList.add('open');
+// --- FUNGSI MODAL PENGURUS --- //
+function resetFotoUI() {
+    document.getElementById('upload-area').classList.remove('hidden');
+    document.getElementById('crop-area').classList.add('hidden');
+    document.getElementById('preview-area').classList.add('hidden');
+    document.getElementById('foto_input_dummy').value = '';
+    document.getElementById('foto_pengurus_real').value = '';
+    if (window.cropperInst) {
+        window.cropperInst.destroy();
+        window.cropperInst = null;
+    }
 }
 
-function editPengurus(data)
-{
+function openTambahPengurus() {
+    let form = document.getElementById('pengurusForm');
+    form.reset();
+    form.action = "{{ route('pengurus.store') }}";
+    document.getElementById('modalTitle').innerText = 'Tambah Pengurus';
+
+    let methodField = document.getElementById('methodField');
+    if (methodField) {
+        methodField.removeAttribute('name');
+        methodField.value = '';
+    }
+
+    resetFotoUI();
+    document.getElementById('modal-pengurus').classList.add('open');
+}
+
+function editPengurus(data) {
     let form = document.getElementById('pengurusForm');
 
     document.getElementById('modalTitle').innerText = 'Edit Pengurus';
@@ -471,25 +337,104 @@ function editPengurus(data)
     document.getElementById('email').value = data.email ?? '';
     document.getElementById('linkedin').value = data.linkedin ?? '';
 
-    // Arahkan action langsung ke route POST update pengurus
     form.action = "{{ url('/admin/pengurus') }}/" + data.id;
 
-    // Kosongkan method field karena upload file via modal butuh metode POST murni
-    document.getElementById('methodField').innerHTML = '';
+    let methodField = document.getElementById('methodField');
+    if (methodField) {
+        methodField.setAttribute('name', '_method');
+        methodField.value = 'PUT';
+    }
 
+    resetFotoUI();
     document.getElementById('modal-pengurus').classList.add('open');
 }
 
-function openDeleteModal(id, nama, deleteRoute)
-{
+function openDeleteModal(id, nama, deleteRoute) {
     document.getElementById('deleteName').innerText = nama;
     document.getElementById('deleteForm').action = deleteRoute;
     document.getElementById('modal-delete').classList.add('open');
 }
 
-function closeDeleteModal()
-{
+function closeDeleteModal() {
     document.getElementById('modal-delete').classList.remove('open');
 }
+
+// --- LOGIKA CROPPER JS --- //
+window.cropperInst = null;
+const fotoDummy = document.getElementById('foto_input_dummy');
+const fotoReal = document.getElementById('foto_pengurus_real');
+const imageToCrop = document.getElementById('image-to-crop');
+
+fotoDummy.addEventListener('change', function(e) {
+    let files = e.target.files;
+    if (files && files.length > 0) {
+        let file = files[0];
+        let reader = new FileReader();
+        
+        reader.onload = function(event) {
+            imageToCrop.src = event.target.result;
+            document.getElementById('upload-area').classList.add('hidden');
+            document.getElementById('crop-area').classList.remove('hidden');
+
+            if (window.cropperInst) {
+                window.cropperInst.destroy();
+            }
+            
+            // Konfigurasi Cropper Mobile-Friendly
+            window.cropperInst = new Cropper(imageToCrop, {
+                aspectRatio: 1, 
+                viewMode: 1, // Kunci agar crop box tidak keluar jalur gambar
+                dragMode: 'move', // Sangat berguna untuk HP (geser gambar dengan satu jari)
+                autoCropArea: 0.9,
+                responsive: true,
+                restore: false,
+                guides: true,
+                center: true,
+                highlight: false,
+                cropBoxMovable: true,
+                cropBoxResizable: true,
+                toggleDragModeOnDblclick: false,
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Batal Crop
+document.getElementById('btn-cancel-crop').addEventListener('click', function() {
+    resetFotoUI();
+});
+
+// Terapkan Potongan Gambar
+document.getElementById('btn-apply-crop').addEventListener('click', function() {
+    if (!window.cropperInst) return;
+    
+    window.cropperInst.getCroppedCanvas({
+        width: 500,
+        height: 500
+    }).toBlob((blob) => {
+        
+        let fileName = "foto_pengurus_" + new Date().getTime() + ".jpg";
+        let file = new File([blob], fileName, { type: "image/jpeg", lastModified: new Date().getTime() });
+        
+        let container = new DataTransfer();
+        container.items.add(file);
+        fotoReal.files = container.files;
+
+        document.getElementById('cropped-preview').src = URL.createObjectURL(blob);
+        document.getElementById('crop-area').classList.add('hidden');
+        document.getElementById('preview-area').classList.remove('hidden');
+        
+        window.cropperInst.destroy();
+        window.cropperInst = null;
+        
+    }, 'image/jpeg', 0.90);
+});
+
+// Tombol Ganti / Hapus Foto
+document.getElementById('btn-reset-foto').addEventListener('click', function() {
+    resetFotoUI();
+});
+
 </script>
 @endpush

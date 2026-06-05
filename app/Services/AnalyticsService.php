@@ -17,6 +17,13 @@ class AnalyticsService
 
     private static function defaultActionFor($activityType): string
     {
+        $type = strtolower($activityType);
+        
+        // Tambahkan pengenalan otomatis untuk CRUD
+        if (str_contains($type, 'create') || str_contains($type, 'upload') || str_contains($type, 'store')) return 'create';
+        if (str_contains($type, 'update') || str_contains($type, 'edit')) return 'update';
+        if (str_contains($type, 'delete') || str_contains($type, 'destroy')) return 'delete';
+
         return match ($activityType) {
             'page_view', 'dictionary_access' => 'view',
             'report_download', 'document_download' => 'download',

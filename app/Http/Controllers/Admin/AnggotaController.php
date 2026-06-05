@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\AnalyticsService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -45,7 +46,13 @@ class AnggotaController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        User::create($validated);
+        $user = User::create($validated);
+
+        AnalyticsService::logActivity(auth()->id(), 'user_create', "Anggota: {$user->name}", [
+            'target_type' => User::class,
+            'target_id' => $user->id,
+            'action' => 'create'
+        ]);
 
         return back()->with('success', 'Anggota berhasil ditambahkan.');
     }
@@ -62,11 +69,15 @@ class AnggotaController extends Controller
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
-        if (empty($validated['password'])) {
-            unset($validated['password']);
-        }
+        if (empty($validated['password'])) unset($validated['password']);
 
         $anggota->update($validated);
+
+        AnalyticsService::logActivity(auth()->id(), 'user_update', "Anggota: {$anggota->name}", [
+            'target_type' => User::class,
+            'target_id' => $anggota->id,
+            'action' => 'update'
+        ]);
 
         return back()->with('success', 'Data anggota berhasil diperbarui.');
     }
@@ -75,8 +86,11 @@ class AnggotaController extends Controller
     {
         abort_if($anggota->role === 'admin', 404);
 
-        $anggota->delete();
+        AnalyticsService::logActivity(auth()->id(), 'user_delete', "Anggota: {$anggota->name}", [
+            'action' => 'delete'
+        ]);
 
+        $anggota->delete();
         return back()->with('success', 'Anggota berhasil dihapus.');
     }
 }

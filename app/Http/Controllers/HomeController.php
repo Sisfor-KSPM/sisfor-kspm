@@ -57,14 +57,6 @@ class HomeController extends Controller
                 'desc' => 'Jembatan hubungan eksternal dengan instansi, media, dan alumni.',
                 'fullDesc' => 'Divisi Public Relation bergerak dalam membangun dan menjaga relasi strategis dengan pihak eksternal, seperti BEI, perusahaan sekuritas, komunitas pasar modal lain, media massa, serta menjaga jaringan komunikasi aktif dengan alumni KSPM.'
             ],
-            'Investment Gallery' => [
-                'desc' => 'Pengelola operasional Galeri Investasi BEI di lingkungan kampus.',
-                'fullDesc' => 'Divisi Investment Gallery bertindak sebagai operator utama Galeri Investasi SV IPB yang bekerja sama dengan BEI dan Sekuritas mitra. Fokusnya adalah melayani pembukaan rekening saham, edukasi langsung bagi pengunjung galeri, dan sosialisasi pasar modal di area kampus.'
-            ],
-            'Analyze Trading' => [
-                'desc' => 'Fokus pada riset emiten, analisis teknikal-fundamental, dan simulasi trading.',
-                'fullDesc' => 'Divisi Analyze Trading merupakan wadah analitis bagi anggota untuk mendalami dunia trading saham. Kegiatan utamanya mencakup pembuatan riset berkala (*market outlook*), analisis teknikal dan fundamental pergerakan emiten, hingga melakukan simulasi kompetisi trading.'
-            ],
         ];
 
         // 2. Loop dan kumpulkan anggota dari database berdasarkan divisinya

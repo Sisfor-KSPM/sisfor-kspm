@@ -6,14 +6,18 @@
 @section('styles')
 <style>
 /* Event Hero Slider */
+#eph-track{
+    display:flex;
+    width:100%;
+}
 .eph-slide{
-    display:none;
     position:relative;
     min-height:420px;
-    align-items:center
-}
-.eph-slide.active{
-    display:flex
+    display:flex;
+    align-items:center;
+    background: linear-gradient(135deg,#0d1a6e,#1e38cc);
+    width: 100%;
+    flex-shrink: 0;
 }
 .eph-slide-img{
     position:absolute;
@@ -82,11 +86,21 @@
 
 /* Cards */
 .event-card{
+    display:flex;
+    flex-direction:column;
     background:#fff;
     border:1px solid #d0d5e8;
     border-radius:18px;
     overflow:hidden;
     transition:all .25s ease
+}
+.event-card .p-5{
+    display:flex;
+    flex-direction:column;
+    flex:1;
+}
+.event-card button{
+    margin-top:auto;
 }
 .event-card:hover{
     transform:translateY(-4px);
@@ -118,7 +132,7 @@
 @section('content')
 
 {{-- HERO --}}
-<div class="relative overflow-hidden mt-[68px]" id="eph-track">
+<div class="relative overflow-hidden mt-[68px]">
 
     @php
         $heroSlides = $events->take(3)->map(function($event) {
@@ -138,47 +152,43 @@
                 'subtitle' => strip_tags($event->deskripsi ?? 'Event KSPM'),
                 'date' => \Carbon\Carbon::parse($event->tanggal)->format('F Y')
             ];
-        })->toArray();
+        })->values()->toArray(); // Penambahan ->values() agar index selalu 0, 1, 2
     @endphp
 
-    @if(count($heroSlides) > 0)
-        @foreach ($heroSlides as $index => $slide)
-            <div class="eph-slide {{ $index === 0 ? 'active' : '' }}">
-                
-                <div class="eph-slide-placeholder">
-                    {{ $slide['emoji'] }}
-                </div>
-
-                <div class="eph-slide-overlay"></div>
-
-                <div class="relative z-[2] px-10 py-20 max-w-[700px]">
+    <div id="eph-track" class="flex transition-transform duration-500 ease-in-out w-full">
+        @if(count($heroSlides) > 0)
+            @foreach ($heroSlides as $index => $slide)
+                <div class="eph-slide {{ $index === 0 ? 'active' : '' }}">
                     
-                    <div class="eph-slide-tag">
-                        📅 {{ $slide['date'] }}
+                    <div class="eph-slide-placeholder">
+                        {{ $slide['emoji'] }}
                     </div>
 
+                    <div class="eph-slide-overlay"></div>
+                    <div class="relative z-[2] px-6 md:px-10 py-14 md:py-20 max-w-[700px]">
+                        <div class="max-w-[1200px] mx-auto px-6 lg:px-10 py-20">
+                            {{-- Isi konten (tag, h1, p) --}}
+                            <div class="eph-slide-tag">📅 {{ $slide['date'] }}</div>
+                            <h1 class="text-[clamp(1.8rem,3.8vw,3rem)] text-white font-extrabold leading-[1.15] mb-4">
+                                {{ $slide['title'] }}
+                            </h1>
+                            <p class="eph-slide-sub line-clamp-2">{{ $slide['subtitle'] }}</p>
+                        </div>    
+                    </div>
+                </div>
+            @endforeach
+        @else
+            <div class="eph-slide w-full shrink-0">
+                <div class="eph-slide-placeholder">📅</div>
+                <div class="eph-slide-overlay"></div>
+                <div class="relative z-[2] px-10 py-20 max-w-[700px]">
                     <h1 class="text-[clamp(1.8rem,3.8vw,3rem)] text-white font-extrabold leading-[1.15] mb-4">
-                        {{ $slide['title'] }}
+                        Belum ada event terbaru
                     </h1>
-
-                    <p class="eph-slide-sub line-clamp-2">
-                        {{ $slide['subtitle'] }}
-                    </p>
-
                 </div>
             </div>
-        @endforeach
-    @else
-        <div class="eph-slide active">
-            <div class="eph-slide-placeholder">📅</div>
-            <div class="eph-slide-overlay"></div>
-            <div class="relative z-[2] px-10 py-20 max-w-[700px]">
-                <h1 class="text-[clamp(1.8rem,3.8vw,3rem)] text-white font-extrabold leading-[1.15] mb-4">
-                    Belum ada event terbaru
-                </h1>
-            </div>
-        </div>
-    @endif
+        @endif
+    </div>
 
     {{-- NAV --}}
     <button
@@ -201,7 +211,7 @@
 </div>
 
 {{-- EVENTS --}}
-<section class="bg-[#f7f8fc] py-20">
+<section class="bg-[#f7f8fc] py-14 md:py-20">
 
     <div class="max-w-[1200px] mx-auto px-10">
 
@@ -217,7 +227,7 @@
                 </h2>
             </div>
 
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap justify-start lg:justify-end gap-2">
 
                 <button
                     class="ev-filter-btn active px-5 py-2 rounded-lg text-[0.82rem] font-semibold border border-[#1a2fb5]"
@@ -402,11 +412,13 @@
 
 @section('scripts')
 <script>
-    /* HERO SLIDER */
+    /* HERO SLIDER (UPDATED) */
     let ephIdx = 0;
+    let ephTimer; // Penambahan timer
 
     const ephSlides = document.querySelectorAll('.eph-slide');
     const ephDots = document.getElementById('eph-dots');
+    const ephTrack = document.getElementById('eph-track'); // Mengambil track
 
     function renderDots() {
         ephDots.innerHTML = '';
@@ -420,13 +432,20 @@
 
     function goEph(index) {
         if(ephSlides.length === 0) return;
-        ephSlides[ephIdx].classList.remove('active');
+        
+        // Nonaktifkan dot saat ini
         ephDots.children[ephIdx].classList.remove('active');
 
+        // Perbarui Index
         ephIdx = index;
 
-        ephSlides[ephIdx].classList.add('active');
+        // Aktifkan dot baru
         ephDots.children[ephIdx].classList.add('active');
+
+        // Geser track
+        ephTrack.style.transform = `translateX(-${ephIdx * 100}%)`;
+
+        resetTimer(); // Mereset interval jika digeser manual
     }
 
     function ephNav(dir) {
@@ -436,11 +455,16 @@
         );
     }
 
-    if(ephSlides.length > 0) {
-        renderDots();
-        setInterval(() => {
+    function resetTimer() {
+        clearInterval(ephTimer);
+        ephTimer = setInterval(() => {
             ephNav(1);
         }, 5000);
+    }
+
+    if(ephSlides.length > 0) {
+        renderDots();
+        resetTimer();
     }
 
 
@@ -509,7 +533,6 @@
         document.getElementById('modalStatus').innerText =
             event.status ?? '-';
 
-        // MENGGUNAKAN innerHTML agar style custom (bold, italic, link) dari Trix Editor tereksekusi dengan benar
         document.getElementById('modalDeskripsi').innerHTML =
             event.deskripsi ?? '<p class="text-gray-400">Tidak ada deskripsi.</p>';
 

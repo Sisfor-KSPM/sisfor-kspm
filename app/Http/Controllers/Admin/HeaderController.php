@@ -4,19 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Header;
+use App\Services\AnalyticsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class HeaderController extends Controller
 {
-    // 1. Method untuk menampilkan halaman admin (Web)
     public function edit()
     {
         $header = Header::first() ?? new Header();
         return view('admin.header.edit', compact('header'));
     }
 
-    // 2. Method untuk memproses form dari halaman admin (Web)
     public function update(Request $request)
     {
         $request->validate([
@@ -30,20 +29,21 @@ class HeaderController extends Controller
         $header->tagline = $request->tagline;
 
         if ($request->hasFile('main_image')) {
-            if ($header->main_image && Storage::exists('public/' . $header->main_image)) {
-                Storage::delete('public/' . $header->main_image);
-            }
-            
-            $path = $request->file('main_image')->store('headers', 'public');
-            $header->main_image = $path;
+            if ($header->main_image && Storage::exists('public/' . $header->main_image)) Storage::delete('public/' . $header->main_image);
+            $header->main_image = $request->file('main_image')->store('headers', 'public');
         }
 
         $header->save();
 
+        AnalyticsService::logActivity(auth()->id(), 'header_update', "Header: {$header->welcome_banner}", [
+            'target_type' => Header::class,
+            'target_id' => $header->id,
+            'action' => 'update'
+        ]);
+
         return back()->with('success', 'Header berhasil diperbarui!');
     }
 
-    // 3. Method khusus untuk API Testing (Postman)
     public function updateApi(Request $request)
     {
         $request->validate([
@@ -57,20 +57,18 @@ class HeaderController extends Controller
         $header->tagline = $request->tagline;
 
         if ($request->hasFile('main_image')) {
-            if ($header->main_image && Storage::exists('public/' . $header->main_image)) {
-                Storage::delete('public/' . $header->main_image);
-            }
-            
-            $path = $request->file('main_image')->store('headers', 'public');
-            $header->main_image = $path;
+            if ($header->main_image && Storage::exists('public/' . $header->main_image)) Storage::delete('public/' . $header->main_image);
+            $header->main_image = $request->file('main_image')->store('headers', 'public');
         }
 
         $header->save();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Header berhasil diperbarui via API!',
-            'data' => $header
-        ], 200);
+        AnalyticsService::logActivity(auth()->id(), 'header_update', "Header: {$header->welcome_banner}", [
+            'target_type' => Header::class,
+            'target_id' => $header->id,
+            'action' => 'update'
+        ]);
+
+        return response()->json(['status' => 'success', 'message' => 'Header berhasil diperbarui via API!', 'data' => $header], 200);
     }
 }

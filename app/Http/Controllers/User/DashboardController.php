@@ -35,19 +35,27 @@ class DashboardController extends Controller
             ->whereIn('status', ['berlangsung', 'upcoming'])
             ->count();
 
+        // Khusus User: Hanya menampilkan riset dengan status publik
         $totalRiset = Report::where('status', 'publik')->count();
         $risetMingguIni = Report::where('status', 'publik')
             ->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])
             ->count();
 
-        $recentActivities = ActivityLog::with('user')
+        // Aktivitas Terbaru (Logika CRUD disamakan dengan Admin)
+        $recentActivities = ActivityLog::with(['user', 'target'])
+            ->where(function ($q) {
+                $q->whereIn('action', ['create', 'created', 'update', 'updated', 'delete', 'deleted'])
+                  ->orWhere('activity_type', 'like', '%create%')
+                  ->orWhere('activity_type', 'like', '%update%')
+                  ->orWhere('activity_type', 'like', '%delete%')
+                  ->orWhere('activity_type', 'like', '%upload%');
+            })
             ->latest()
             ->take(5)
             ->get();
 
         $memberChartData = collect(range(5, 0))->map(function ($monthsAgo) use ($memberRoles) {
             $month = now()->subMonths($monthsAgo);
-
             return [
                 'm' => $month->translatedFormat('M'),
                 'v' => User::whereIn('role', $memberRoles)
@@ -57,20 +65,7 @@ class DashboardController extends Controller
             ];
         })->values();
 
-        $visitorHarian = collect(range(6, 0))->map(function ($daysAgo) {
-            $date = Carbon::today()->subDays($daysAgo);
-
-            return [
-                'label' => $date->translatedFormat('D'),
-                'value' => ActivityLog::whereDate('created_at', $date)
-                    ->where(function ($query) {
-                        $query->where('action', 'view')
-                            ->orWhere('activity_type', 'page_view');
-                    })
-                    ->count(),
-            ];
-        })->values();
-
+        // DATA GRAFIK PENGUNJUNG MINGGUAN & BULANAN
         $visitorMingguan = collect(range(3, 0))->map(function ($weeksAgo) {
             $start = Carbon::now()->startOfWeek()->subWeeks($weeksAgo);
             $end = (clone $start)->endOfWeek();
@@ -78,13 +73,24 @@ class DashboardController extends Controller
             return [
                 'label' => 'Minggu ' . (4 - $weeksAgo),
                 'value' => ActivityLog::whereBetween('created_at', [$start, $end])
-                    ->where(function ($query) {
-                        $query->where('action', 'view')
-                            ->orWhere('activity_type', 'page_view');
-                    })
-                    ->count(),
+                    ->where(function ($q) { 
+                        $q->where('action', 'view')->orWhere('activity_type', 'page_view'); 
+                    })->count(),
             ];
-        })->values();
+        });
+
+        $visitorBulanan = collect(range(5, 0))->map(function ($monthsAgo) {
+            $start = Carbon::now()->startOfMonth()->subMonths($monthsAgo);
+            $end = (clone $start)->endOfMonth();
+
+            return [
+                'label' => $start->translatedFormat('M y'),
+                'value' => ActivityLog::whereBetween('created_at', [$start, $end])
+                    ->where(function ($q) { 
+                        $q->where('action', 'view')->orWhere('activity_type', 'page_view'); 
+                    })->count(),
+            ];
+        });
 
         $risetKlikData = ReportDownload::selectRaw('report_title as title, SUM(download_count) as views')
             ->groupBy('report_id', 'report_title')
@@ -120,14 +126,19 @@ class DashboardController extends Controller
                 ]);
         }
 
+        // Kompilasi Chart Data (Kunjungan Website)
         $chartData = [
-            'visitorHarian' => $visitorHarian,
             'visitorMingguan' => $visitorMingguan,
-            'visitorAvg' => (int) round($visitorHarian->avg('value') ?? 0),
-            'visitorPeak' => (int) ($visitorHarian->max('value') ?? 0),
-            'visitorTotal' => (int) $visitorHarian->sum('value'),
+            'visitorBulanan'  => $visitorBulanan,
+            
             'weeklyTotal' => (int) $visitorMingguan->sum('value'),
-            'weeklyPeak' => (int) ($visitorMingguan->max('value') ?? 0),
+            'weeklyAvg'   => (int) round($visitorMingguan->avg('value') ?? 0),
+            'weeklyPeak'  => (int) ($visitorMingguan->max('value') ?? 0),
+
+            'monthlyTotal' => (int) $visitorBulanan->sum('value'),
+            'monthlyAvg'   => (int) round($visitorBulanan->avg('value') ?? 0),
+            'monthlyPeak'  => (int) ($visitorBulanan->max('value') ?? 0),
+
             'risetKlikData' => $risetKlikData,
             'eventKlikData' => $eventKlikData,
             'topRisetTitle' => optional($risetKlikData->sortByDesc('views')->first())->title ?? '-',
