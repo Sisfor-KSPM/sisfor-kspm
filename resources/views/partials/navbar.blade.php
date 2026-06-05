@@ -49,14 +49,16 @@
 
   {{-- Desktop Auth Buttons --}}
   <div class="hidden md:flex items-center gap-2">
-    <button class="px-5 py-2 rounded-[9px] text-sm font-semibold border-[1.5px] border-[#d0d5e8] text-[#1c1f3a] bg-white cursor-pointer transition-all hover:border-[#1a2fb5] hover:text-[#1a2fb5]"
-            onclick="openModal('login')">
+    <a class="px-5 py-2 rounded-[9px] text-sm font-semibold border-[1.5px] border-[#d0d5e8] text-[#1c1f3a] bg-white cursor-pointer transition-all hover:border-[#1a2fb5] hover:text-[#1a2fb5] text-center no-underline inline-block leading-normal"
+       href="{{ url('/login') }}">
       Sign In
-    </button>
-    <button class="px-5 py-2 rounded-[9px] text-sm font-bold bg-[#1a2fb5] text-white border-none cursor-pointer transition-all hover:bg-[#1e38cc]"
-            onclick="openModal('register')">
+    </a>
+    
+    {{-- Tombol Join Us diubah mengarah langsung ke halaman /register --}}
+    <a class="px-5 py-2 rounded-[9px] text-sm font-bold bg-[#1a2fb5] text-white border-none cursor-pointer transition-all hover:bg-[#1e38cc] text-center no-underline inline-block leading-normal"
+       href="{{ url('/register') }}">
       Join Us
-    </button>
+    </a>
   </div>
 
   {{-- Hamburger (Mobile) --}}

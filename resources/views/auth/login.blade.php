@@ -3,134 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - KSPM</title>
+    <title>Login - KSPM SV IPB</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: rgba(0, 0, 0, 0.55); /* Menyamai backdrop modal */
+            backdrop-filter: blur(16px);
         }
     </style>
 </head>
-<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4">
+<body class="flex items-center justify-center min-h-screen p-4">
 
-    <div class="w-full max-w-md">
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-700 text-white text-3xl shadow-lg shadow-green-500/20 mb-4">
-                🌟
-            </div>
-            <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">Selamat Datang</h1>
-            <p class="text-sm text-gray-500 mt-1">Masuk ke akun KSPM Anda</p>
+    {{-- Container mirip Modal Box --}}
+    <div class="bg-white rounded-[20px] p-[38px] w-full max-w-[420px] relative shadow-[0_28px_72px_rgba(0,0,0,0.15)] mx-4">
+        
+        {{-- Header Logo KSPM --}}
+        <div class="flex items-center gap-2 mb-4">
+            <img src="{{ asset('Logo_Kspm_Bg.png') }}" alt="KSPM" class="h-7 w-auto" onerror="this.style.display='none'">
+            <span class="text-[0.83rem] font-bold text-[#1a2fb5]">KSPM SV IPB</span>
         </div>
 
-        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl shadow-gray-200/50 border border-gray-100">
-            
-            {{-- Alert Error --}}
-            @if ($errors->any())
-                <div class="mb-5 p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3 text-red-800 text-sm">
-                    <span class="shrink-0 mt-0.5">⚠️</span>
-                    <div>
-                        <div class="font-bold">Login Gagal</div>
-                        <ul class="list-disc list-inside mt-0.5 text-xs text-red-700">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            @endif
+        <div class="text-[1.3rem] font-extrabold text-[#0d0f1a] mb-1">Masuk ke Akun</div>
+        <div class="text-[0.83rem] text-[#5a6080] mb-5">Akses fitur eksklusif anggota KSPM SV IPB.</div>
 
-            {{-- Alert Success --}}
-            @if (session('success'))
-                <div class="mb-5 p-4 bg-green-50 border border-green-200 rounded-2xl flex items-start gap-3 text-green-800 text-sm">
-                    <span class="shrink-0 mt-0.5">✅</span>
-                    <div class="text-xs text-green-700">{{ session('success') }}</div>
-                </div>
-            @endif
-
-            <form action="{{ route('user.login.store') }}" method="POST" class="space-y-5">
-                @csrf
-
-                <div>
-                    <label for="login_field" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                        Username atau Email
-                    </label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-base">👤</span>
-                        <input 
-                            type="text" 
-                            id="login_field" 
-                            name="login"
-                            value="{{ old('login') }}"
-                            required 
-                            autofocus
-                            class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition placeholder-gray-400 text-gray-900" 
-                            placeholder="Masukkan username atau email">
-                    </div>
-                </div>
-
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <label for="password" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                            Password
-                        </label>
-                        <a href="{{ route('user.forgot-password') }}" class="text-xs font-bold text-green-600 hover:text-green-700">
-                            Lupa Password?
-                        </a>
-                    </div>
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-base">🔒</span>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            required 
-                            class="w-full pl-11 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-green-500 focus:bg-white transition placeholder-gray-400 text-gray-900" 
-                            placeholder="••••••••">
-                        
-                        <button 
-                            type="button" 
-                            onclick="togglePassword()" 
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition text-sm">
-                            <span id="eye-icon">👁️</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <input 
-                        type="checkbox" 
-                        id="remember" 
-                        name="remember" 
-                        class="w-4 h-4 border-gray-300 rounded cursor-pointer accent-green-600">
-                    <label for="remember" class="text-xs font-bold text-gray-600 cursor-pointer">
-                        Ingat saya
-                    </label>
-                </div>
-
-                <button 
-                    type="submit" 
-                    class="w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-700 hover:from-green-600 hover:to-emerald-800 text-white font-semibold rounded-xl text-sm shadow-lg shadow-green-500/20 transition transform active:scale-[0.98]">
-                    Masuk Sekarang
-                </button>
-            </form>
-
-            <div class="mt-6 pt-6 border-t border-gray-100">
-                <p class="text-center text-sm text-gray-600">
-                    Belum punya akun?
-                    <a href="{{ route('user.register') }}" class="font-bold text-green-600 hover:text-green-700 transition">
-                        Daftar di sini
-                    </a>
-                </p>
+        {{-- Alert Error dari Backend Laravel --}}
+        @if ($errors->any())
+            <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-[0.8rem] font-medium">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
             </div>
+        @endif
+
+        {{-- Alert Success dari Backend Laravel --}}
+        @if (session('success'))
+            <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-[0.8rem] font-medium">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        {{-- Form Login --}}
+        <form action="{{ route('user.login.store') }}" method="POST">
+            @csrf
+
+            {{-- Input Username / Email --}}
+            <div class="mb-3">
+                <label for="login_field" class="text-[0.75rem] font-semibold text-[#5a6080] mb-1 block">Email atau Username</label>
+                <input class="w-full px-3 py-2.5 border-[1.5px] border-[#d0d5e8] rounded-lg text-[0.875rem] bg-[#f7f8fc] outline-none focus:border-[#1a2fb5] focus:bg-white"
+                       type="text" 
+                       id="login_field" 
+                       name="login"
+                       value="{{ old('login') }}"
+                       required 
+                       autofocus
+                       placeholder="email@apps.ipb.ac.id">
+            </div>
+
+            {{-- Input Password --}}
+            <div class="mb-3">
+                <label for="password" class="text-[0.75rem] font-semibold text-[#5a6080] mb-1 block">Password</label>
+                <div class="relative">
+                    <input class="w-full px-3 py-2.5 pr-10 border-[1.5px] border-[#d0d5e8] rounded-lg text-[0.875rem] bg-[#f7f8fc] outline-none focus:border-[#1a2fb5] focus:bg-white"
+                           type="password" 
+                           id="password" 
+                           name="password"
+                           required
+                           placeholder="••••••••">
+                    
+                    {{-- Toggle Mata Password --}}
+                    <button type="button" onclick="togglePassword()"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-[#5a6080]">
+                        <svg id="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                {{-- Lupa Password (dibiarkan ke route forgot-password asli) --}}
+                <a href="{{ route('user.forgot-password') }}" class="text-[#1a2fb5] text-[0.75rem] cursor-pointer float-right mt-1 font-medium hover:underline">
+                    Lupa password?
+                </a>
+                <div class="clear-both"></div>
+            </div>
+
+            {{-- Remember Me (Tersembunyi tapi aktif jika dibutuhkan, atau ditampilkan. Disini saya tampilkan dengan gaya UI modal) --}}
+            <div class="mb-5 flex items-center gap-2">
+                 <input type="checkbox" id="remember" name="remember" class="w-3.5 h-3.5 border-[#d0d5e8] rounded cursor-pointer accent-[#1a2fb5]">
+                 <label for="remember" class="text-[0.75rem] font-medium text-[#5a6080] cursor-pointer select-none">
+                     Ingat saya
+                 </label>
+            </div>
+
+            {{-- Tombol Submit --}}
+            <button type="submit" class="w-full py-3 rounded-[9px] font-bold text-[0.88rem] bg-[#1a2fb5] text-white border-none cursor-pointer hover:bg-[#1e38cc] transition-colors">
+                Masuk
+            </button>
+        </form>
+
+        {{-- Link ke Register --}}
+        <div class="text-center text-[0.8rem] text-[#5a6080] mt-4">
+            Belum punya akun?
+            <a href="{{ route('login') }}" class="text-[#1a2fb5] font-semibold hover:underline">Daftar sekarang</a>
         </div>
 
-        <p class="text-center text-xs text-gray-400 mt-8">
-            &copy; 2026 KSPM. All rights reserved.
-        </p>
     </div>
 
     <script>
@@ -140,10 +120,12 @@
             
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
-                eyeIcon.innerText = '🙈';
+                // Mengubah icon menjadi mata dicoret (eye-off)
+                eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
             } else {
                 passwordInput.type = 'password';
-                eyeIcon.innerText = '👁️';
+                // Mengembalikan icon mata normal
+                eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
             }
         }
     </script>

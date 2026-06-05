@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SessionAuthController;
 use App\Http\Controllers\admin\HomeContentController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\GalleryController;
@@ -11,9 +12,12 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\DictionaryController;
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\User\UEventController;
 use App\Http\Controllers\User\UDictionaryController;
 use App\Http\Controllers\User\UReportController;
+use App\Http\Controllers\User\UPengaturanController;
+use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\Api\AnalyticsTrackingController;
 
 // ============= AUTHENTICATION ROUTES (Session-based) =============
@@ -73,17 +77,18 @@ Route::prefix('analytics')->group(function () {
 
 Route::prefix('user')->middleware(['auth', 'is.user'])->group(function () {
     // Overview
-    Route::get('/dashboard', function () { return view('user.dashboard'); })->name('user.dashboard');
+    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
     Route::get('/events', [UEventController::class, 'index'])->name('user.events');
     Route::get('/kamus', [UDictionaryController::class, 'index'])->name('user.kamus');
     Route::get('/riset', [UReportController::class, 'index'])->name('user.riset');
     Route::get('/kalkulator', function () { return view('user.kalkulator'); })->name('user.kalkulator');
-    Route::get('/pengaturan', function () { return view('user.pengaturan'); })->name('user.pengaturan');
+    Route::get('/pengaturan', [UPengaturanController::class, 'index'])->name('user.pengaturan');
+    Route::put('/pengaturan/update', [UPengaturanController::class, 'update'])->name('user.pengaturan.update');
 });
 
 Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     // Overview
-    Route::get('/dashboard', function () { return view('admin.dashboard'); })->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/analitik', [AnalyticsController::class, 'index'])->name('admin.analitik');
     Route::get('/api/analytics', [AnalyticsController::class, 'getChartData'])->name('admin.analitik.api');
 
@@ -143,5 +148,6 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::delete('/kamus/{id}', [DictionaryController::class, 'destroy'])->name('kamus.destroy');
     
     // Pengaturan
-    Route::get('/pengaturan', function () { return view('admin.pengaturan'); })->name('admin.pengaturan');
+    Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('admin.pengaturan');
+    Route::put('/pengaturan/update', [PengaturanController::class, 'update'])->name('admin.pengaturan.update');
 });

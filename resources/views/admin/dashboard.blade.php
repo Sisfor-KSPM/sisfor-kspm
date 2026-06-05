@@ -11,23 +11,23 @@
             <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase">Total Anggota</div>
             <div style="font-size:1.4rem">👥</div>
         </div>
-        <div class="mono" style="font-size:2rem;font-weight:800;color:var(--blue)">247</div>
-        <div style="font-size:.75rem;color:var(--success);margin-top:4px;font-weight:600">▲ +12 bulan ini</div>
+        <div class="mono" style="font-size:2rem;font-weight:800;color:var(--blue)">{{ number_format($totalAnggota, 0, ',', '.') }}</div>
+        <div style="font-size:.75rem;color:var(--success);margin-top:4px;font-weight:600">+{{ number_format($anggotaBulanIni, 0, ',', '.') }} bulan ini</div>
     </div>
     <div class="stat-card">
         <div class="flex items-center justify-between mb-2.5">
             <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase">Kegiatan Aktif</div>
             <div style="font-size:1.4rem">📅</div>
         </div>
-        <div class="mono" style="font-size:2rem;font-weight:800;color:#0ea5e9">8</div>
-        <div style="font-size:.75rem;color:var(--muted);margin-top:4px">3 upcoming</div>
+        <div class="mono" style="font-size:2rem;font-weight:800;color:#0ea5e9">{{ number_format($kegiatanAktif, 0, ',', '.') }}</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:4px">{{ number_format($upcomingKegiatan, 0, ',', '.') }} upcoming</div>
     </div>
     <div class="stat-card">
         <div class="flex items-center justify-between mb-2.5">
             <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase">Info Lomba</div>
             <div style="font-size:1.4rem">🏆</div>
         </div>
-        <div class="mono" style="font-size:2rem;font-weight:800;color:#f59e0b">3</div>
+        <div class="mono" style="font-size:2rem;font-weight:800;color:#f59e0b">{{ number_format($infoLomba, 0, ',', '.') }}</div>
         <div style="font-size:.75rem;color:var(--warn);margin-top:4px;font-weight:600">⚡ Deadline segera</div>
     </div>
     <div class="stat-card">
@@ -35,8 +35,8 @@
             <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase">Publikasi Riset</div>
             <div style="font-size:1.4rem">📊</div>
         </div>
-        <div class="mono" style="font-size:2rem;font-weight:800;color:#10b981">24</div>
-        <div style="font-size:.75rem;color:var(--success);margin-top:4px;font-weight:600">▲ +2 minggu ini</div>
+        <div class="mono" style="font-size:2rem;font-weight:800;color:#10b981">{{ number_format($totalRiset, 0, ',', '.') }}</div>
+        <div style="font-size:.75rem;color:var(--success);margin-top:4px;font-weight:600">+{{ number_format($risetMingguIni, 0, ',', '.') }} minggu ini</div>
     </div>
 </div>
 
@@ -50,41 +50,17 @@
             </div>
         </div>
         <div id="activity-log">
-            <div class="activity-item flex gap-3 py-3 border-b border-gray-100">
-                <div class="activity-dot w-2 h-2 rounded-full bg-blue-600 shrink-0 mt-1.5"></div>
-                <div>
-                    <div style="font-size:.85rem;font-weight:600">Lomba Analisis Saham BEI ditambahkan</div>
-                    <div style="font-size:.72rem;color:var(--muted)">Hari ini, 09.30 WIB · Admin</div>
+            @forelse ($recentActivities as $activity)
+                <div class="activity-item flex gap-3 py-3 border-b border-gray-100 {{ $loop->last ? 'border-none' : '' }}">
+                    <div class="activity-dot w-2 h-2 rounded-full bg-blue-600 shrink-0 mt-1.5"></div>
+                    <div>
+                        <div style="font-size:.85rem;font-weight:600">{{ $activity->description ?: trim(($activity->action ?: 'Aktivitas') . ' ' . ($activity->page_name ?: $activity->feature_name ?: 'dashboard')) }}</div>
+                        <div style="font-size:.72rem;color:var(--muted)">{{ $activity->created_at?->diffForHumans() }} · {{ $activity->user->name ?? 'Guest' }}</div>
+                    </div>
                 </div>
-            </div>
-            <div class="activity-item flex gap-3 py-3 border-b border-gray-100">
-                <div class="activity-dot w-2 h-2 rounded-full bg-emerald-500 shrink-0 mt-1.5"></div>
-                <div>
-                    <div style="font-size:.85rem;font-weight:600">Anggota baru: Rafi Prasetyo</div>
-                    <div style="font-size:.72rem;color:var(--muted)">Kemarin, 14.15 WIB · Admin</div>
-                </div>
-            </div>
-            <div class="activity-item flex gap-3 py-3 border-b border-gray-100">
-                <div class="activity-dot w-2 h-2 rounded-full bg-amber-500 shrink-0 mt-1.5"></div>
-                <div>
-                    <div style="font-size:.85rem;font-weight:600">Kegiatan SPM Batch 2 diperbarui</div>
-                    <div style="font-size:.72rem;color:var(--muted)">2 hari lalu · Admin</div>
-                </div>
-            </div>
-            <div class="activity-item flex gap-3 py-3 border-b border-gray-100">
-                <div class="activity-dot w-2 h-2 rounded-full bg-sky-500 shrink-0 mt-1.5"></div>
-                <div>
-                    <div style="font-size:.85rem;font-weight:600">Riset Weekly Outlook Vol.12 dipublikasi</div>
-                    <div style="font-size:.72rem;color:var(--muted)">3 hari lalu · Divisi Riset</div>
-                </div>
-            </div>
-            <div class="activity-item flex gap-3 py-3 border-b border-gray-100 border-none">
-                <div class="activity-dot w-2 h-2 rounded-full bg-purple-500 shrink-0 mt-1.5"></div>
-                <div>
-                    <div style="font-size:.85rem;font-weight:600">Pengumuman: Rekrutmen 2025 dibuka</div>
-                    <div style="font-size:.72rem;color:var(--muted)">1 minggu lalu · Admin</div>
-                </div>
-            </div>
+            @empty
+                <div style="font-size:.85rem;color:var(--muted)">Belum ada aktivitas terbaru.</div>
+            @endforelse
         </div>
     </div>
 
@@ -99,9 +75,9 @@
         </div>
         <div style="width:100%;overflow:hidden" id="member-chart"></div>
         <div class="mt-3.5 flex gap-5 flex-wrap">
-            <div><div style="font-size:.72rem;color:var(--muted)">Total Anggota</div><div style="font-size:1.3rem;font-weight:800;color:var(--blue)">247</div></div>
-            <div><div style="font-size:.72rem;color:var(--muted)">Rata-rata/bln</div><div style="font-size:1.3rem;font-weight:800;color:#10b981">+8</div></div>
-            <div><div style="font-size:.72rem;color:var(--muted)">Aktif</div><div style="font-size:1.3rem;font-weight:800;color:#0ea5e9">89%</div></div>
+            <div><div style="font-size:.72rem;color:var(--muted)">Total Anggota</div><div style="font-size:1.3rem;font-weight:800;color:var(--blue)">{{ number_format($totalAnggota, 0, ',', '.') }}</div></div>
+            <div><div style="font-size:.72rem;color:var(--muted)">Rata-rata/bln</div><div style="font-size:1.3rem;font-weight:800;color:#10b981">{{ number_format($memberAverageGrowth, 0, ',', '.') }}</div></div>
+            <div><div style="font-size:.72rem;color:var(--muted)">Terverifikasi</div><div style="font-size:1.3rem;font-weight:800;color:#0ea5e9">{{ $activeMemberPercentage }}%</div></div>
         </div>
     </div>
 </div>
@@ -142,14 +118,14 @@
                     <div class="section-title text-lg font-bold text-gray-900" style="font-size:.95rem">👁 Pengunjung Website</div>
                     <div class="section-sub text-sm text-gray-500" id="visitor-chart-sub">7 hari terakhir</div>
                 </div>
-                <span class="badge badge-blue inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800" id="visitor-total-badge">Total: 1.842</span>
+                <span class="badge badge-blue inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800" id="visitor-total-badge">Total: {{ number_format($chartData['visitorTotal'], 0, ',', '.') }}</span>
             </div>
             <div class="relative h-[180px] w-full">
                 <canvas id="chart-visitor"></canvas>
             </div>
             <div class="mt-3.5 flex gap-5 flex-wrap">
-                <div><div style="font-size:.72rem;color:var(--muted)">Rata-rata/hari</div><div style="font-size:1.2rem;font-weight:800;color:var(--blue)" id="visitor-avg">263</div></div>
-                <div><div style="font-size:.72rem;color:var(--muted)">Puncak tertinggi</div><div style="font-size:1.2rem;font-weight:800;color:#10b981" id="visitor-peak">412</div></div>
+                <div><div style="font-size:.72rem;color:var(--muted)">Rata-rata/hari</div><div style="font-size:1.2rem;font-weight:800;color:var(--blue)" id="visitor-avg">{{ number_format($chartData['visitorAvg'], 0, ',', '.') }}</div></div>
+                <div><div style="font-size:.72rem;color:var(--muted)">Puncak tertinggi</div><div style="font-size:1.2rem;font-weight:800;color:#10b981" id="visitor-peak">{{ number_format($chartData['visitorPeak'], 0, ',', '.') }}</div></div>
                 <div><div style="font-size:.72rem;color:var(--muted)">Trend</div><div style="font-size:1.2rem;font-weight:800;color:#f59e0b" id="visitor-trend">▲ +12%</div></div>
             </div>
         </div>
@@ -166,8 +142,8 @@
                 <canvas id="chart-weekly"></canvas>
             </div>
             <div class="mt-3.5 flex gap-5 flex-wrap">
-                <div><div style="font-size:.72rem;color:var(--muted)">Total bulan ini</div><div style="font-size:1.2rem;font-weight:800;color:var(--blue)">7.348</div></div>
-                <div><div style="font-size:.72rem;color:var(--muted)">Minggu terbaik</div><div style="font-size:1.2rem;font-weight:800;color:#10b981">2.214</div></div>
+                <div><div style="font-size:.72rem;color:var(--muted)">Total 4 minggu</div><div style="font-size:1.2rem;font-weight:800;color:var(--blue)">{{ number_format($chartData['weeklyTotal'], 0, ',', '.') }}</div></div>
+                <div><div style="font-size:.72rem;color:var(--muted)">Minggu terbaik</div><div style="font-size:1.2rem;font-weight:800;color:#10b981">{{ number_format($chartData['weeklyPeak'], 0, ',', '.') }}</div></div>
             </div>
         </div>
     </div>
@@ -186,7 +162,7 @@
                 <canvas id="chart-riset-click"></canvas>
             </div>
             <div style="margin-top:14px;font-size:.78rem;color:var(--muted)">
-                📌 Riset paling banyak dibaca: <strong style="color:var(--blue)">Weekly Outlook Vol.12</strong>
+                Riset paling banyak dibaca: <strong style="color:var(--blue)">{{ $chartData['topRisetTitle'] }}</strong>
             </div>
         </div>
 
@@ -202,7 +178,7 @@
                 <canvas id="chart-event-click"></canvas>
             </div>
             <div style="margin-top:14px;font-size:.78rem;color:var(--muted)">
-                🏆 Event paling banyak dilihat: <strong style="color:#f59e0b">SPM Batch 2 — 2025</strong>
+                Event paling banyak dilihat: <strong style="color:#f59e0b">{{ $chartData['topEventTitle'] }}</strong>
             </div>
         </div>
     </div>
@@ -213,10 +189,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 // Data Setup
-const visitorHarian = { labels: ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'], data: [224, 318, 287, 352, 412, 195, 154] };
-const visitorMingguan = { labels: ['Minggu 1','Minggu 2','Minggu 3','Minggu 4'], data: [1820, 2214, 1948, 1366] };
-const risetKlikData = { labels: ['W.Outlook Vol.12','W.Outlook Vol.11','Analisis BBCA','Analisis GOTO','Screening April','W.Outlook Vol.10'], shortLabels: ['WO.12','WO.11','BBCA','GOTO','Apr','WO.10'], data: [412, 347, 298, 276, 231, 184] };
-const eventKlikData = { labels: ['SPM Batch 2','Webinar IPO','Workshop TA','Seminar BEI','KSPM Cup','School of IPB'], shortLabels: ['SPM B2','Web.IPO','WS TA','Sem BEI','KSPM Cup','SoIPB'], data: [538, 421, 384, 312, 267, 195] };
+const visitorHarianRaw = @json($chartData['visitorHarian']);
+const visitorMingguanRaw = @json($chartData['visitorMingguan']);
+const risetKlikRaw = @json($chartData['risetKlikData']);
+const eventKlikRaw = @json($chartData['eventKlikData']);
+const memberChartRaw = @json($memberChartData);
+
+const shortLabel = label => (label || '-').length > 12 ? (label || '-').slice(0, 12) + '...' : (label || '-');
+const visitorHarian = { labels: visitorHarianRaw.map(item => item.label), data: visitorHarianRaw.map(item => Number(item.value || 0)) };
+const visitorMingguan = { labels: visitorMingguanRaw.map(item => item.label), data: visitorMingguanRaw.map(item => Number(item.value || 0)) };
+const risetKlikData = { labels: risetKlikRaw.map(item => item.title), shortLabels: risetKlikRaw.map(item => shortLabel(item.title)), data: risetKlikRaw.map(item => Number(item.views || 0)) };
+const eventKlikData = { labels: eventKlikRaw.map(item => item.title), shortLabels: eventKlikRaw.map(item => shortLabel(item.title)), data: eventKlikRaw.map(item => Number(item.views || 0)) };
 
 function hexToRgb(hex) { return [parseInt(hex.slice(1,3),16), parseInt(hex.slice(3,5),16), parseInt(hex.slice(5,7),16)].join(','); }
 function buildGradient(canvasEl, hex, alpha1=0.22, alpha2=0) {
@@ -270,8 +253,7 @@ let chartVisitor, chartWeekly, chartRiset, chartEvent;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Member SVG Chart
-    const memberData = [{m:'Okt',v:190},{m:'Nov',v:205},{m:'Des',v:215},{m:'Jan',v:228},{m:'Feb',v:238},{m:'Mar',v:247}];
-    renderLineChartSVG('member-chart', memberData, '#1a2fb5');
+    renderLineChartSVG('member-chart', memberChartRaw, '#1a2fb5');
 
     // Chart.js Charts
     const c1 = document.getElementById('chart-visitor');
@@ -302,3 +284,6 @@ function switchChartView(view) {
 }
 </script>
 @endpush
+
+
+

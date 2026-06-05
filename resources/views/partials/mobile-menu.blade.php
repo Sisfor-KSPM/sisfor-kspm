@@ -36,14 +36,16 @@
 
   {{-- CTA & Auth --}}
   <div class="flex flex-col gap-2">
-    <button class="px-5 py-3 rounded-[9px] text-sm font-semibold border-[1.5px] border-[#d0d5e8] text-[#1c1f3a] bg-white cursor-pointer w-full"
-            onclick="openModal('login'); closeMobileMenu()">
+    <a class="px-5 py-3 rounded-[9px] text-sm font-semibold border-[1.5px] border-[#d0d5e8] text-[#1c1f3a] bg-white cursor-pointer w-full text-center no-underline block leading-normal"
+       href="{{ url('/login') }}">
       Sign In
-    </button>
-    <button class="px-5 py-3 rounded-[9px] text-sm font-bold bg-[#1a2fb5] text-white border-none cursor-pointer w-full"
-            onclick="openModal('register'); closeMobileMenu()">
+    </a>
+    
+    {{-- Tombol Join Us diubah mengarah langsung ke halaman /register --}}
+    <a class="px-5 py-3 rounded-[9px] text-sm font-bold bg-[#1a2fb5] text-white border-none cursor-pointer w-full text-center no-underline block leading-normal"
+       href="{{ url('/register') }}">
       Join Us
-    </button>
+    </a>
   </div>
 
 </div>

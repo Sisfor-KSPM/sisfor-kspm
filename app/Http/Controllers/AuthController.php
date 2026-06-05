@@ -6,25 +6,26 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth; // Ditambahkan untuk autentikasi session
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
         // 1. Validasi input
+        // Ditambahkan aturan 'confirmed' agar cocok dengan input 'password_confirmation' di UI
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
+        // Jika validasi gagal, kembali ke halaman form dengan pesan error
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Validasi gagal',
-                'errors' => $validator->errors()
-            ], 422);
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput($request->except('password', 'password_confirmation')); // Simpan input sebelumnya kecuali password
         }
 
         // 2. Simpan user ke database
@@ -35,59 +36,48 @@ class AuthController extends Controller
             'password' => Hash::make($request->password), // Password otomatis di-hash
         ]);
 
-        // 3. Kembalikan response JSON
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User berhasil didaftarkan',
-            'data' => $user
-        ], 201);
+        // 3. Alihkan langsung ke route login dengan membawa pesan sukses (tanpa login otomatis)
+        return redirect()->route('login')
+            ->with('success', 'Akun berhasil dibuat! Silakan masuk menggunakan akun Anda.');
     }
 
     public function login(Request $request)
     {
-        // 1. Validasi input (menggunakan nama field 'login' untuk menerima email/username)
-        $validator = Validator::make($request->all(), [
+        // 1. Validasi input
+        $request->validate([
             'login' => 'required|string', 
             'password' => 'required|string',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Validasi gagal',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        // 2. Cek apakah input berupa format email yang valid atau bukan
+        // 2. Cek apakah input berupa format email yang valid atau username
         $loginType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        // 3. Cari user di database berdasarkan email atau username
-        $user = User::where($loginType, $request->login)->first();
+        // 3. Siapkan kredensial untuk pencocokan
+        $credentials = [
+            $loginType => $request->login,
+            'password' => $request->password,
+        ];
 
-        // 4. Jika user tidak ditemukan ATAU password salah
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Email/Username atau Password salah!'
-            ], 401);
+        // 4. Lakukan percobaan login menggunakan Session
+        // $request->boolean('remember') untuk fitur "Ingat saya"
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            // Mencegah session fixation attack
+            $request->session()->regenerate();
+
+            // Alihkan ke halaman dashboard user (pastikan route 'user.dashboard' sudah ada di web.php)
+            return redirect()->intended(route('user.dashboard'))
+                             ->with('success', 'Login berhasil!');
         }
 
-        // 5. Buat token akses untuk user
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        // 6. Kembalikan response sukses beserta tokennya
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Login berhasil',
-            'data' => $user,
-            'access_token' => $token,
-            'token_type' => 'Bearer'
-        ], 200);
+        // 5. Jika login gagal (user tidak ada atau password salah)
+        return back()->withErrors([
+            'login' => 'Email/Username atau Password salah!',
+        ])->onlyInput('login'); // Mengembalikan input agar tidak perlu mengetik ulang
     }
 
     public function loginAdmin(Request $request)
     {
+        // Mempertahankan fungsi loginAdmin yang sudah ada sebelumnya[cite: 7]
         $validator = Validator::make($request->all(), [
             'login' => 'required|string', 
             'password' => 'required|string',
