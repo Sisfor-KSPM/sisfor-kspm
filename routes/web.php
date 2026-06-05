@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\DictionaryController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\PengaturanController;
+use App\Http\Controllers\Admin\AnggotaController;
 use App\Http\Controllers\User\UEventController;
 use App\Http\Controllers\User\UDictionaryController;
 use App\Http\Controllers\User\UReportController;
@@ -108,7 +109,10 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
         ->name('pengurus.destroy');
 
     // Konten & Data
-    Route::get('/anggota', function () { return view('admin.anggota'); })->name('admin.anggota');
+    Route::get('/anggota', [AnggotaController::class, 'index'])->name('admin.anggota');
+    Route::post('/anggota', [AnggotaController::class, 'store'])->name('admin.anggota.store');
+    Route::put('/anggota/{anggota}', [AnggotaController::class, 'update'])->name('admin.anggota.update');
+    Route::delete('/anggota/{anggota}', [AnggotaController::class, 'destroy'])->name('admin.anggota.destroy');
     
     Route::get('/kegiatan', [EventController::class, 'index'])->name('admin.kegiatan');
     Route::post('/kegiatan', [EventController::class, 'store'])->name('kegiatan.store');

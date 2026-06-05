@@ -31,9 +31,11 @@
     <div class="font-bold text-base mb-4 text-gray-900">🔐 Keamanan Akun Admin</div>
     
     {{-- Form mengarah ke route update data admin --}}
-    <form action="{{ route('admin.pengaturan.update') }}" method="POST">
+    <form action="{{ route('admin.pengaturan.update') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+
+        @include('partials.profile-photo-field')
         
         <div class="mb-3.5">
             <label class="block text-xs font-semibold text-gray-500 mb-1">Name</label>

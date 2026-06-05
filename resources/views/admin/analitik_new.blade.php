@@ -184,7 +184,7 @@
             ['title' => 'Navbar Publik', 'subtitle' => 'Home, About, Events, Gallery, E-Library, Kamus', 'items' => $navItems],
             ['title' => 'Sidebar User', 'subtitle' => 'Events, Kalkulator, Kamus, Riset', 'items' => $sidebarItems],
             ['title' => 'Kalkulator', 'subtitle' => 'Tab dan tombol hitung per fitur', 'items' => $calculatorActions],
-            ['title' => 'Download Dokumen', 'subtitle' => 'E-Library dan Riset User', 'items' => $downloadTypes],
+            ['title' => 'Download Dokumen', 'subtitle' => 'Judul riset dari E-Library dan Riset User', 'items' => $downloadTypes],
         ];
     @endphp
 
@@ -199,7 +199,7 @@
                 <div class="flex flex-col gap-3">
                     @foreach($block['items'] as $item)
                         @php
-                            $name = $item->feature_name ?? $item->download_type;
+                            $name = $item->feature_name ?? $item->download_title ?? $item->download_type;
                             $total = $item->total_usage ?? $item->total_downloads;
                         @endphp
                         <div class="mini-usage-row">

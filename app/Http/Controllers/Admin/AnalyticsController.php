@@ -139,17 +139,17 @@ class AnalyticsController extends Controller
     }
 
     /**
-     * Get downloads grouped by document source/type
+     * Get downloads grouped by report title.
      */
     private function getDownloadTypes($periode)
     {
         $startDate = Carbon::now()->subDays($periode);
 
-        return ActivityLog::where('created_at', '>=', $startDate)
-            ->where('activity_type', 'document_download')
-            ->selectRaw("COALESCE(target_type, 'report') as download_type, COUNT(*) as total_downloads, COUNT(DISTINCT user_id) as unique_users")
-            ->groupBy('target_type')
+        return ReportDownload::where('created_at', '>=', $startDate)
+            ->selectRaw("COALESCE(NULLIF(report_title, ''), 'Tanpa Judul') as download_title, SUM(download_count) as total_downloads, COUNT(DISTINCT user_id) as unique_users")
+            ->groupBy('report_id', 'report_title')
             ->orderByDesc('total_downloads')
+            ->take(10)
             ->get();
     }
 

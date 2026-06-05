@@ -42,7 +42,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var
 .sb-logo-text{color:#fff;font-weight:700;font-size:.9rem;line-height:1.1}
 .sb-logo-sub{font-size:.6rem;color:rgba(255,255,255,.5);font-weight:400}
 .sb-admin-badge{margin:14px 20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;position:relative;z-index:1;}
-.sb-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff}
+.sb-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0;border:0;cursor:pointer;padding:0}
+.sb-avatar img{width:100%;height:100%;object-fit:cover;display:block}
 .sb-admin-name{font-size:.82rem;font-weight:600;color:#fff}
 .sb-admin-role{font-size:.65rem;color:rgba(255,255,255,.5)}
 .nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;border-radius:10px;margin:2px 12px;color:rgba(255,255,255,.65);text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s;position:relative;z-index:1;}
@@ -87,7 +88,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var
     </div>
   </div>
   <div class="sb-admin-badge">
-    <div class="sb-avatar">AD</div>
+    <button type="button" class="sb-avatar" onclick="openSidebarPhotoViewer()">
+      @if(Auth::user()?->profile_photo_url)
+        <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}">
+      @else
+        {{ Auth::user()?->initials ?? 'A' }}
+      @endif
+    </button>
     <div>
       <div class="sb-admin-name">{{ Auth::user()->name ?? 'Admin KSPM' }}</div>
       <div class="sb-admin-role">Super Administrator</div>
@@ -148,6 +155,22 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var
   </div>
 </aside>
 
+<div class="fixed inset-0 bg-black/70 z-50 hidden items-center justify-center p-4" id="sidebar-photo-viewer" onclick="closeSidebarPhotoViewer(event)">
+  <div class="bg-white rounded-2xl p-4 w-full max-w-md shadow-xl" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-3">
+      <div class="font-bold text-gray-900">Foto Profil</div>
+      <button type="button" class="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-600" onclick="closeSidebarPhotoViewer()">x</button>
+    </div>
+    <div class="aspect-square rounded-xl overflow-hidden bg-blue-50 flex items-center justify-center text-blue-700 text-5xl font-bold">
+      @if(Auth::user()?->profile_photo_url)
+        <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
+      @else
+        {{ Auth::user()?->initials ?? 'A' }}
+      @endif
+    </div>
+  </div>
+</div>
+
 <!-- MAIN -->
 <div class="main">
   <!-- TOPBAR -->
@@ -179,6 +202,14 @@ function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebar-overlay').classList.add('hidden');
   document.body.style.overflow = '';
+}
+function openSidebarPhotoViewer() {
+  document.getElementById('sidebar-photo-viewer')?.classList.remove('hidden');
+  document.getElementById('sidebar-photo-viewer')?.classList.add('flex');
+}
+function closeSidebarPhotoViewer() {
+  document.getElementById('sidebar-photo-viewer')?.classList.add('hidden');
+  document.getElementById('sidebar-photo-viewer')?.classList.remove('flex');
 }
 </script>
 @stack('scripts')

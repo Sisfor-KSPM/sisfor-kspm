@@ -23,6 +23,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'profile_photo',
         'role',
     ];
 
@@ -36,6 +37,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = [
+        'initials',
+        'profile_photo_url',
+    ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -47,5 +53,19 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getInitialsAttribute(): string
+    {
+        return collect(explode(' ', trim($this->name ?? '')))
+            ->filter()
+            ->take(2)
+            ->map(fn ($part) => strtoupper(substr($part, 0, 1)))
+            ->implode('') ?: 'U';
+    }
+
+    public function getProfilePhotoUrlAttribute(): ?string
+    {
+        return $this->profile_photo ? asset('storage/' . $this->profile_photo) : null;
     }
 }

@@ -15,8 +15,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalAnggota = User::where('role', 'user')->count();
-        $anggotaBulanIni = User::where('role', 'user')
+        $memberRoles = ['ipb', 'umum'];
+
+        $totalAnggota = User::whereIn('role', $memberRoles)->count();
+        $anggotaBulanIni = User::whereIn('role', $memberRoles)
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->count();
@@ -43,12 +45,12 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        $memberChartData = collect(range(5, 0))->map(function ($monthsAgo) {
+        $memberChartData = collect(range(5, 0))->map(function ($monthsAgo) use ($memberRoles) {
             $month = now()->subMonths($monthsAgo);
 
             return [
                 'm' => $month->translatedFormat('M'),
-                'v' => User::where('role', 'user')
+                'v' => User::whereIn('role', $memberRoles)
                     ->whereMonth('created_at', $month->month)
                     ->whereYear('created_at', $month->year)
                     ->count(),
@@ -134,7 +136,7 @@ class DashboardController extends Controller
 
         $memberAverageGrowth = (int) round($memberChartData->avg('v') ?? 0);
         $activeMemberPercentage = $totalAnggota > 0
-            ? (int) round(User::where('role', 'user')->whereNotNull('email_verified_at')->count() / $totalAnggota * 100)
+            ? (int) round(User::whereIn('role', $memberRoles)->whereNotNull('email_verified_at')->count() / $totalAnggota * 100)
             : 0;
 
         return view('user.dashboard', compact(
