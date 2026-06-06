@@ -12,8 +12,21 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: rgba(0, 0, 0, 0.55); /* Menyamai backdrop modal */
+            background-color: rgba(0, 0, 0, 0.55);
             backdrop-filter: blur(16px);
+        }
+
+        .cat-radio {
+            border: 1.5px solid #d0d5e8;
+            color: #5a6080;
+            background: #f7f8fc;
+            transition: all 0.18s ease;
+        }
+
+        .cat-radio.active {
+            border-color: #1a2fb5;
+            background: #e8ecfb;
+            color: #1a2fb5;
         }
     </style>
 </head>
@@ -43,19 +56,31 @@
             </div>
         @endif
 
-        {{-- Form Register Asli (Hanya 5 Field) --}}
         <form action="{{ route('user.register.store') }}" method="POST">
             @csrf
+
+            {{-- Role Toggle: Mahasiswa IPB / Umum --}}
+            <div class="flex gap-2 mb-4">
+                <div class="cat-radio active flex-1 p-2 rounded-lg text-center text-[0.8rem] font-semibold cursor-pointer select-none"
+                     id="cat-ipb"
+                     onclick="setRegCat('ipb')">🎓 Mahasiswa IPB</div>
+                <div class="cat-radio flex-1 p-2 rounded-lg text-center text-[0.8rem] font-semibold cursor-pointer select-none"
+                     id="cat-umum"
+                     onclick="setRegCat('umum')">👤 Umum</div>
+            </div>
+
+            {{-- Hidden input role yang dikirim ke backend --}}
+            <input type="hidden" name="role" id="reg-role" value="{{ old('role', 'ipb') }}">
 
             {{-- Input Nama Lengkap --}}
             <div class="mb-3">
                 <label for="name" class="text-[0.75rem] font-semibold text-[#5a6080] mb-1 block">Nama Lengkap *</label>
                 <input class="w-full px-3 py-2.5 border-[1.5px] border-[#d0d5e8] rounded-lg text-[0.875rem] bg-[#f7f8fc] outline-none focus:border-[#1a2fb5] focus:bg-white"
-                       type="text" 
-                       id="name" 
+                       type="text"
+                       id="name"
                        name="name"
                        value="{{ old('name') }}"
-                       required 
+                       required
                        autofocus
                        placeholder="Masukkan nama lengkap Anda">
             </div>
@@ -64,24 +89,26 @@
             <div class="mb-3">
                 <label for="username" class="text-[0.75rem] font-semibold text-[#5a6080] mb-1 block">Username *</label>
                 <input class="w-full px-3 py-2.5 border-[1.5px] border-[#d0d5e8] rounded-lg text-[0.875rem] bg-[#f7f8fc] outline-none focus:border-[#1a2fb5] focus:bg-white"
-                       type="text" 
-                       id="username" 
+                       type="text"
+                       id="username"
                        name="username"
                        value="{{ old('username') }}"
                        required
                        placeholder="Pilih username unik Anda">
             </div>
 
-            {{-- Input Email --}}
+            {{-- Input Email — label & placeholder berubah sesuai role --}}
             <div class="mb-3">
-                <label for="email" class="text-[0.75rem] font-semibold text-[#5a6080] mb-1 block">Email *</label>
+                <label for="email" class="text-[0.75rem] font-semibold text-[#5a6080] mb-1 block" id="label-email">
+                    Email IPB *
+                </label>
                 <input class="w-full px-3 py-2.5 border-[1.5px] border-[#d0d5e8] rounded-lg text-[0.875rem] bg-[#f7f8fc] outline-none focus:border-[#1a2fb5] focus:bg-white"
-                       type="email" 
-                       id="email" 
+                       type="email"
+                       id="email"
                        name="email"
                        value="{{ old('email') }}"
                        required
-                       placeholder="Masukkan email Anda">
+                       placeholder="nama@apps.ipb.ac.id">
             </div>
 
             {{-- Input Password --}}
@@ -89,8 +116,8 @@
                 <label for="password" class="text-[0.75rem] font-semibold text-[#5a6080] mb-1 block">Password *</label>
                 <div class="relative">
                     <input class="w-full px-3 py-2.5 pr-10 border-[1.5px] border-[#d0d5e8] rounded-lg text-[0.875rem] bg-[#f7f8fc] outline-none focus:border-[#1a2fb5] focus:bg-white"
-                           type="password" 
-                           id="password" 
+                           type="password"
+                           id="password"
                            name="password"
                            required
                            placeholder="Minimal 8 karakter">
@@ -108,8 +135,8 @@
                 <label for="password_confirmation" class="text-[0.75rem] font-semibold text-[#5a6080] mb-1 block">Konfirmasi Password *</label>
                 <div class="relative">
                     <input class="w-full px-3 py-2.5 pr-10 border-[1.5px] border-[#d0d5e8] rounded-lg text-[0.875rem] bg-[#f7f8fc] outline-none focus:border-[#1a2fb5] focus:bg-white"
-                           type="password" 
-                           id="password_confirmation" 
+                           type="password"
+                           id="password_confirmation"
                            name="password_confirmation"
                            required
                            placeholder="Ulangi password">
@@ -137,11 +164,39 @@
     </div>
 
     <script>
-        // Fungsi Toggle Password Masing-masing Field
+        // ── Role toggle ──────────────────────────────────────────────
+        function setRegCat(cat) {
+            document.getElementById('reg-role').value = cat;
+
+            var ipbBtn  = document.getElementById('cat-ipb');
+            var umumBtn = document.getElementById('cat-umum');
+            var label   = document.getElementById('label-email');
+            var emailEl = document.getElementById('email');
+
+            if (cat === 'ipb') {
+                ipbBtn.classList.add('active');
+                umumBtn.classList.remove('active');
+                label.textContent    = 'Email IPB *';
+                emailEl.placeholder  = 'nama@apps.ipb.ac.id';
+            } else {
+                umumBtn.classList.add('active');
+                ipbBtn.classList.remove('active');
+                label.textContent    = 'Email *';
+                emailEl.placeholder  = 'Masukkan email Anda';
+            }
+        }
+
+        // Restore pilihan lama saat validasi gagal (old input)
+        (function () {
+            var oldRole = '{{ old('role', 'ipb') }}';
+            if (oldRole === 'umum') setRegCat('umum');
+        })();
+
+        // ── Toggle visibilitas password ──────────────────────────────
         function togglePassword(fieldId) {
-            const field = document.getElementById(fieldId);
-            const eyeIcon = document.getElementById('eye-icon-' + fieldId);
-            
+            var field   = document.getElementById(fieldId);
+            var eyeIcon = document.getElementById('eye-icon-' + fieldId);
+
             if (field.type === 'password') {
                 field.type = 'text';
                 eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
