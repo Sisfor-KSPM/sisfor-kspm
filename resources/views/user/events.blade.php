@@ -26,11 +26,12 @@
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+    {{-- KALENDER DINAMIS --}}
     <div class="card p-5">
         <div class="flex items-center justify-between mb-4">
-            <button class="btn btn-ghost btn-icon btn-sm">◀</button>
-            <div class="font-bold text-[0.95rem]">Maret 2026</div>
-            <button class="btn btn-ghost btn-icon btn-sm">▶</button>
+            <button id="prev-month" class="btn btn-ghost btn-icon btn-sm">◀</button>
+            <div id="calendar-month-year" class="font-bold text-[0.95rem]"></div>
+            <button id="next-month" class="btn btn-ghost btn-icon btn-sm">▶</button>
         </div>
         <div class="grid grid-cols-7 gap-1 text-center mb-1">
             <div class="text-[0.68rem] font-bold text-gray-500 uppercase py-1">Min</div>
@@ -41,51 +42,9 @@
             <div class="text-[0.68rem] font-bold text-gray-500 uppercase py-1">Jum</div>
             <div class="text-[0.68rem] font-bold text-gray-500 uppercase py-1">Sab</div>
         </div>
-        <div class="grid grid-cols-7 gap-1 text-center">
-            <div></div><div></div><div></div><div></div><div></div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">1</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">2</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition relative">
-                3
-            </div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm bg-blue-600 text-white font-bold cursor-pointer transition relative">
-                4 
-            </div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition relative">
-                5 <div class="absolute bottom-1 w-1 h-1 bg-sky-500 rounded-full"></div>
-            </div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">6</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">7</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">8</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">9</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition relative">
-                10 <div class="absolute bottom-1 w-1 h-1 bg-sky-500 rounded-full"></div>
-            </div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">11</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">12</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">13</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">14</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition relative">
-                15 <div class="absolute bottom-1 w-1 h-1 bg-sky-500 rounded-full"></div>
-            </div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">16</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">17</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">18</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">19</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">20</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">21</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition relative">
-                22 <div class="absolute bottom-1 w-1 h-1 bg-sky-500 rounded-full"></div>
-            </div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">23</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">24</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">25</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">26</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">27</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">28</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">29</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">30</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">31</div>
+        {{-- Kontainer Hari Akan Diisi Oleh JavaScript --}}
+        <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center">
+            {{-- Data hari digenerate via JS --}}
         </div>
     </div>
 
@@ -103,7 +62,7 @@
                         <div class="text-[0.72rem] text-gray-500 mt-0.5">{{ $event->waktu_mulai ?? '—' }} · {{ $event->tempat ?? 'TBD' }}</div>
                     </div>
                 </div>
-            @empty  {{-- <-- SUDAH DIPERBAIKI --}}
+            @empty  
                 <div class="text-center py-4 text-gray-500 text-sm">Tidak ada kegiatan mendatang</div>
             @endforelse
         </div>
@@ -271,6 +230,100 @@
 @push('scripts')
 <script>
 /**
+ * Logika Kalender Dinamis (JavaScript)
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    const monthNames = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+
+    const monthYearDisplay = document.getElementById('calendar-month-year');
+    const calendarDays = document.getElementById('calendar-days');
+    const prevMonthBtn = document.getElementById('prev-month');
+    const nextMonthBtn = document.getElementById('next-month');
+
+    // Dapatkan tanggal hari ini secara real-time
+    const today = new Date();
+    let currentMonth = today.getMonth();
+    let currentYear = today.getFullYear();
+
+    // Mockup marker dot kalender untuk tanggal tertentu di bulan terkait (seperti 5, 10, 15, 22)
+    const eventDots = [5, 10, 15, 22];
+
+    function renderCalendar(month, year) {
+        calendarDays.innerHTML = '';
+        monthYearDisplay.innerText = `${monthNames[month]} ${year}`;
+
+        // Mencari index hari dimulainya awal bulan
+        const firstDayIndex = new Date(year, month, 1).getDay();
+        // Mencari total jumlah hari dalam bulan tersebut
+        const totalDays = new Date(year, month + 1, 0).getDate();
+
+        // Render elemen kosong untuk menyelaraskan tanggal 1
+        for (let i = 0; i < firstDayIndex; i++) {
+            const emptyDiv = document.createElement('div');
+            calendarDays.appendChild(emptyDiv);
+        }
+
+        // Memeriksa apakah render saat ini jatuh di bulan dan tahun yang sesuai dengan sistem "sekarang"
+        const isCurrentMonthYear = today.getMonth() === month && today.getFullYear() === year;
+
+        // Render tanggal
+        for (let day = 1; day <= totalDays; day++) {
+            const dayDiv = document.createElement('div');
+            const isToday = isCurrentMonthYear && day === today.getDate();
+
+            // Styling default container tanggal
+            dayDiv.className = 'aspect-square flex flex-col items-center justify-center rounded-lg text-sm cursor-pointer transition relative';
+
+            if (isToday) {
+                // Menyorot hari ini dengan warna biru
+                dayDiv.classList.add('bg-blue-600', 'text-white', 'font-bold');
+            } else {
+                dayDiv.classList.add('hover:bg-blue-50', 'text-gray-800');
+            }
+
+            // Memasukkan angka tanggal
+            dayDiv.innerText = day;
+
+            // Menambahkan dot acara (untuk tanggal 5, 10, 15, 22 sebagai contoh representasi)
+            if (eventDots.includes(day)) {
+                const dot = document.createElement('div');
+                const dotColor = isToday ? 'bg-white' : 'bg-sky-500';
+                dot.className = `absolute bottom-1 w-1 h-1 ${dotColor} rounded-full`;
+                dayDiv.appendChild(dot);
+            }
+
+            calendarDays.appendChild(dayDiv);
+        }
+    }
+
+    // Navigasi Bulan Sebelumnya
+    prevMonthBtn.addEventListener('click', () => {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        renderCalendar(currentMonth, currentYear);
+    });
+
+    // Navigasi Bulan Selanjutnya
+    nextMonthBtn.addEventListener('click', () => {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        renderCalendar(currentMonth, currentYear);
+    });
+
+    // Render kalender untuk pertama kali diload
+    renderCalendar(currentMonth, currentYear);
+});
+
+/**
  * Fungsi Pencarian & Penyaringan Real-Time (Client-Side)
  */
 function filterTable() {
@@ -392,7 +445,7 @@ function openEventModal(event)
     document.getElementById('modalKuota').innerText = event.kuota ?? 'Tidak dibatasi';
     document.getElementById('modalStatus').innerText = event.status ?? '-';
     
-    // MODIFIKASI UTAMA: Menggunakan innerHTML agar style HTML tereksekusi dengan benar di modal detail info
+    // Menggunakan innerHTML agar style HTML tereksekusi dengan benar di modal detail info
     document.getElementById('modalDeskripsi').innerHTML = event.deskripsi ?? '<p class="text-gray-400">Tidak ada deskripsi.</p>';
 
     // Menampilkan modal

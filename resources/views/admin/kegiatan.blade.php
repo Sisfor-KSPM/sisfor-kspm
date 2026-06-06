@@ -29,9 +29,9 @@
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
     <div class="card p-5">
         <div class="flex items-center justify-between mb-4">
-            <button class="btn btn-ghost btn-icon btn-sm">◀</button>
-            <div class="font-bold text-[0.95rem]">Maret 2026</div>
-            <button class="btn btn-ghost btn-icon btn-sm">▶</button>
+            <button class="btn btn-ghost btn-icon btn-sm" onclick="changeMonth(-1)">◀</button>
+            <div id="calendar-month-year" class="font-bold text-[0.95rem]">Juni 2026</div>
+            <button class="btn btn-ghost btn-icon btn-sm" onclick="changeMonth(1)">▶</button>
         </div>
         <div class="grid grid-cols-7 gap-1 text-center mb-1">
             <div class="text-[0.68rem] font-bold text-gray-500 uppercase py-1">Min</div>
@@ -42,52 +42,8 @@
             <div class="text-[0.68rem] font-bold text-gray-500 uppercase py-1">Jum</div>
             <div class="text-[0.68rem] font-bold text-gray-500 uppercase py-1">Sab</div>
         </div>
-        <div class="grid grid-cols-7 gap-1 text-center">
-            <div></div><div></div><div></div><div></div><div></div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">1</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">2</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition relative">
-                3
+        <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center">
             </div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm bg-blue-600 text-white font-bold cursor-pointer transition relative">
-                4 
-            </div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition relative">
-                5 <div class="absolute bottom-1 w-1 h-1 bg-sky-500 rounded-full"></div>
-            </div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">6</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">7</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">8</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">9</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition relative">
-                10 <div class="absolute bottom-1 w-1 h-1 bg-sky-500 rounded-full"></div>
-            </div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">11</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">12</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">13</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">14</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition relative">
-                15 <div class="absolute bottom-1 w-1 h-1 bg-sky-500 rounded-full"></div>
-            </div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">16</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">17</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">18</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">19</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">20</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">21</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition relative">
-                22 <div class="absolute bottom-1 w-1 h-1 bg-sky-500 rounded-full"></div>
-            </div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">23</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">24</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">25</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">26</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">27</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">28</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">29</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">30</div>
-            <div class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition">31</div>
-        </div>
     </div>
 
     <div class="card p-5">
@@ -288,6 +244,96 @@ trix-editor a { color: #2563eb !important; text-decoration: underline !important
 <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
 <script>
 /**
+ * Inisialisasi Data Agenda & Logika Kalender Dinamis
+ */
+// Melempar data events dari backend Laravel ke JavaScript secara aman
+const agendaEvents = @json($events->map(function($item) {
+    return [
+        'tanggal' => \Carbon\Carbon::parse($item->tanggal)->format('Y-m-d'),
+        'kegiatan' => $item->kegiatan
+    ];
+}));
+
+let dateToday = new Date();
+let currentMonth = dateToday.getMonth();
+let currentYear = dateToday.getFullYear();
+
+const namaBulan = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+];
+
+function renderCalendar() {
+    const monthYearLabel = document.getElementById('calendar-month-year');
+    const calendarDaysContainer = document.getElementById('calendar-days');
+    
+    // Update teks bulan dan tahun di header kalender
+    monthYearLabel.innerText = `${namaBulan[currentMonth]} ${currentYear}`;
+    
+    // Bersihkan grid hari sebelumnya
+    calendarDaysContainer.innerHTML = '';
+    
+    // Dapatkan indeks hari pertama bulan terpilih (0: Minggu, 1: Senin, dst)
+    const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+    
+    // Dapatkan total hari pada bulan terpilih
+    const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    // Buat elemen grid kosong untuk menyelaraskan hari pertama
+    for (let i = 0; i < firstDayIndex; i++) {
+        const emptyDiv = document.createElement('div');
+        calendarDaysContainer.appendChild(emptyDiv);
+    }
+    
+    // Render baris tanggal secara dinamis
+    for (let day = 1; day <= totalDays; day++) {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = "aspect-square flex flex-col items-center justify-center rounded-lg text-sm hover:bg-blue-50 cursor-pointer transition relative";
+        dayDiv.innerText = day;
+        
+        // Buat format YYYY-MM-DD untuk pencocokan agenda database
+        const mmString = String(currentMonth + 1).padStart(2, '0');
+        const ddString = String(day).padStart(2, '0');
+        const formattedDate = `${currentYear}-${mmString}-${ddString}`;
+        
+        // Sorot jika tanggal adalah hari ini
+        if (day === dateToday.getDate() && currentMonth === dateToday.getMonth() && currentYear === dateToday.getFullYear()) {
+            dayDiv.className = "aspect-square flex flex-col items-center justify-center rounded-lg text-sm bg-blue-600 text-white font-bold cursor-pointer transition relative";
+        }
+        
+        // Cek apakah tanggal ini memiliki agenda di database
+        const hasAgenda = agendaEvents.some(event => event.tanggal === formattedDate);
+        if (hasAgenda) {
+            const dotPenanda = document.createElement('div');
+            // Ganti warna dot menjadi putih jika bersentuhan dengan background biru "hari ini" agar kontras
+            dotPenanda.className = dayDiv.classList.contains('bg-blue-600') 
+                ? "absolute bottom-1 w-1 h-1 bg-white rounded-full" 
+                : "absolute bottom-1 w-1 h-1 bg-sky-500 rounded-full";
+            dayDiv.appendChild(dotPenanda);
+        }
+        
+        calendarDaysContainer.appendChild(dayDiv);
+    }
+}
+
+function changeMonth(direction) {
+    currentMonth += direction;
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    } else if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    renderCalendar();
+}
+
+// Jalankan fungsi kalender saat halaman selesai dimuat sepenuhnya
+document.addEventListener('DOMContentLoaded', function() {
+    renderCalendar();
+});
+
+/**
  * Fungsi Pencarian & Penyaringan Real-Time (Client-Side)
  */
 function filterTable() {
@@ -329,7 +375,6 @@ function openTambahKegiatan()
     document.getElementById('kegiatanMethodField').value = '';
     document.getElementById('kegiatanModalTitle').innerText = 'Tambah Kegiatan';
     
-    // Reset konten Trix editor agar kosong saat tambah data baru
     const trixEditor = document.querySelector("trix-editor");
     if (trixEditor) {
         trixEditor.editor.loadHTML('');
@@ -358,7 +403,6 @@ function editKegiatan(id)
         document.getElementById('kegiatan_tempat').value = data.tempat || '';
         document.getElementById('kegiatan_pic').value = data.pic || '';
         
-        // Memasukkan isi deskripsi berformat HTML ke dalam Trix Editor
         const trixEditor = document.querySelector("trix-editor");
         if (trixEditor) {
             trixEditor.editor.loadHTML(data.deskripsi || '');
