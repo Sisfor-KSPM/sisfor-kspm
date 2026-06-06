@@ -108,7 +108,7 @@
         {{-- Link ke Register --}}
         <div class="text-center text-[0.8rem] text-[#5a6080] mt-4">
             Belum punya akun?
-            <a href="{{ route('login') }}" class="text-[#1a2fb5] font-semibold hover:underline">Daftar sekarang</a>
+            <a href="/register" class="text-[#1a2fb5] font-semibold hover:underline">Daftar sekarang</a>
         </div>
 
     </div>
