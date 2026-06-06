@@ -26,7 +26,7 @@
             <option value="internal">Internal</option>
             <option value="lainnya">Lainnya</option>
         </select>
-        <button class="btn btn-primary btn-sm" onclick="document.getElementById('modal-gallery').classList.add('open')">+ Upload Foto</button>
+        <button class="btn btn-primary btn-sm" onclick="openGalleryModal()">+ Upload Foto</button>
     </div>
 </div>
 
@@ -86,8 +86,42 @@
             
             <div class="mb-3.5">
                 <label class="block text-xs font-semibold text-gray-500 mb-1">📸 Upload Foto*</label>
-                <input type="file" name="foto" accept="image/*" class="w-full rounded-xl border border-gray-300 p-3" required>
-                <p class="text-[0.72rem] text-gray-400 mt-2">JPG / PNG / WEBP · maks 5MB</p>
+
+                {{-- Step 1: Pilih file --}}
+                <label id="gallery-upload-area" for="gallery_foto_dummy" class="border-2 border-dashed border-gray-300 rounded-xl p-5 text-center hover:bg-blue-50 transition cursor-pointer block">
+                    <div class="text-3xl mb-1.5">🖼️</div>
+                    <div class="font-semibold text-gray-500 text-sm">Klik untuk pilih foto</div>
+                    <div class="text-[0.72rem] text-gray-400 mt-1">JPG / PNG / WEBP · maks 5MB · Akan di-crop 4:3</div>
+                    <input type="file" id="gallery_foto_dummy" accept="image/jpeg,image/png,image/webp" class="hidden">
+                </label>
+
+                {{-- Step 2: Crop area --}}
+                <div id="gallery-crop-area" class="hidden mt-3">
+                    <p class="text-[0.72rem] text-blue-600 font-semibold mb-2">✂️ Sesuaikan area foto (rasio 4:3 sesuai tampilan gallery)</p>
+                    <div class="w-full rounded-xl border border-gray-200 bg-gray-100 mb-3 overflow-hidden" style="height:300px;position:relative;">
+                        <img id="gallery-image-to-crop" src="" style="display:block;max-width:100%;">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" id="gallery-btn-cancel" class="btn btn-ghost flex-1 py-2 text-sm">Batal</button>
+                        <button type="button" id="gallery-btn-apply" class="btn btn-primary flex-1 py-2 text-sm">✂️ Terapkan</button>
+                    </div>
+                </div>
+
+                {{-- Step 3: Preview hasil crop --}}
+                <div id="gallery-preview-area" class="hidden mt-3 flex items-center justify-between border border-gray-200 rounded-xl p-3 bg-gray-50">
+                    <div class="flex items-center gap-3">
+                        <img id="gallery-cropped-preview" src="" class="w-20 h-[60px] object-cover rounded-lg border border-gray-200">
+                        <div>
+                            <div class="text-sm font-semibold text-gray-700">Foto Siap Upload</div>
+                            <div class="text-xs text-green-600 font-medium">✓ Sudah di-crop 4:3</div>
+                        </div>
+                    </div>
+                    <button type="button" id="gallery-btn-reset" class="text-xs text-red-500 hover:text-red-700 font-semibold px-3 py-1.5 bg-red-50 rounded-lg hover:bg-red-100 transition">Ganti</button>
+                </div>
+
+                {{-- Input hidden: base64 hasil crop, dikirim ke controller --}}
+                <input type="hidden" name="foto_base64" id="gallery_foto_base64">
+                <p id="gallery-foto-error" class="hidden text-red-500 text-xs mt-1.5 font-medium">⚠ Foto wajib dipilih dan di-crop terlebih dahulu.</p>
             </div>
             <div class="mb-3.5">
                 <label class="block text-xs font-semibold text-gray-500 mb-1">Judul / Keterangan Foto*</label>
@@ -107,14 +141,14 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">Tanggal</label>
-                    <input type="date" name="tanggal" class="inp">
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Tanggal*</label>
+                    <input type="date" name="tanggal" class="inp" required>
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3.5">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">Fotografer</label>
-                    <input type="text" name="fotografer" class="inp" placeholder="Nama fotografer / media">
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Fotografer*</label>
+                    <input type="text" name="fotografer" class="inp" placeholder="Nama fotografer / media" required>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 mb-1">Tampil di Homepage</label>
@@ -126,7 +160,7 @@
             </div>
             <div class="mt-5 pt-4 border-t border-gray-200 flex justify-end gap-2.5">
                 <button type="button" class="btn btn-ghost" onclick="document.getElementById('modal-gallery').classList.remove('open')">Batal</button>
-                <button type="submit" class="btn btn-primary">🖼️ Simpan Foto</button>
+                <button type="button" class="btn btn-primary" onclick="validateAndSubmitGallery()">🖼️ Simpan Foto</button>
             </div>
         </form>
     </div>
@@ -163,75 +197,193 @@
 @endsection
 
 @push('styles')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
 <style>
-/* KUNCI 3: Pastikan class Tailwind ter-overwrite dengan mutlak menggunakan !important style */
 .modal-overlay.open { 
     display: flex !important; 
 }
 .gallery-card.is-hidden {
     display: none !important;
 }
+/* Crop box berbentuk rectangle 4:3 — tidak perlu rounded */
+#gallery-crop-area .cropper-view-box,
+#gallery-crop-area .cropper-face {
+    border-radius: 0;
+}
 </style>
 @endpush
 
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.querySelector('.search-bar input');
-        const categorySelect = document.querySelector('select[name="kategori_filter"]');
-        const cards = document.querySelectorAll('.gallery-card');
-        const noResults = document.getElementById('no-search-results');
+// ================================================================
+// GALLERY CROP FLOW
+// ================================================================
+window.galleryCropperInst = null;
 
-        function filterGallery() {
-            const query = searchInput.value.trim().toLowerCase();
-            const selectedCategory = categorySelect ? categorySelect.value.toLowerCase() : '';
-            let visibleCount = 0;
+function resetGalleryUploadUI() {
+    document.getElementById('gallery-upload-area').classList.remove('hidden');
+    document.getElementById('gallery-crop-area').classList.add('hidden');
+    document.getElementById('gallery-preview-area').classList.add('hidden');
+    // Reset value input file dengan replace node (bukan .value='') agar benar-benar kosong
+    var old = document.getElementById('gallery_foto_dummy');
+    var fresh = old.cloneNode(true);
+    old.parentNode.replaceChild(fresh, old);
+    // Pasang ulang listener ke input baru
+    fresh.addEventListener('change', onGalleryFileSelected);
+    document.getElementById('gallery_foto_base64').value = '';
+    if (window.galleryCropperInst) {
+        window.galleryCropperInst.destroy();
+        window.galleryCropperInst = null;
+    }
+}
 
-            cards.forEach(card => {
-                const title = card.querySelector('.gallery-title')?.innerText.toLowerCase() || '';
-                const meta = card.querySelector('.gallery-meta')?.innerText.toLowerCase() || '';
-                const cardCategory = card.getAttribute('data-category') || '';
-
-                // Cocokkan text query (judul/meta) & kecocokan seleksi kategori
-                const matchesQuery = query === '' || title.includes(query) || meta.includes(query);
-                const matchesCategory = selectedCategory === '' || cardCategory === selectedCategory;
-
-                if (matchesQuery && matchesCategory) {
-                    card.classList.remove('is-hidden');
-                    visibleCount++;
-                } else {
-                    card.classList.add('is-hidden');
-                }
-            });
-
-            // Tampilkan pesan kosong jika semua card tersembunyi
-            if (noResults) {
-                if (visibleCount === 0 && cards.length > 0) {
-                    noResults.classList.remove('hidden');
-                } else {
-                    noResults.classList.add('hidden');
-                }
-            }
+// Handler terpisah agar bisa di-re-attach setelah cloneNode
+function onGalleryFileSelected(e) {
+    var files = e.target.files;
+    if (!files || !files.length) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+        var img = document.getElementById('gallery-image-to-crop');
+        img.src = ev.target.result;
+        document.getElementById('gallery-upload-area').classList.add('hidden');
+        document.getElementById('gallery-crop-area').classList.remove('hidden');
+        if (window.galleryCropperInst) {
+            window.galleryCropperInst.destroy();
+            window.galleryCropperInst = null;
         }
+        window.galleryCropperInst = new Cropper(img, {
+            aspectRatio: 4 / 3,
+            viewMode: 1,
+            dragMode: 'move',
+            autoCropArea: 1,
+            responsive: true,
+            restore: false,
+            guides: true,
+            center: true,
+            highlight: false,
+            cropBoxMovable: true,
+            cropBoxResizable: true,
+            toggleDragModeOnDblclick: false,
+        });
+    };
+    reader.readAsDataURL(files[0]);
+}
 
-        if (searchInput) {
-            searchInput.addEventListener('input', filterGallery);
-        }
+// Dipanggil dari onclick tombol "Upload Foto" di header
+function openGalleryModal() {
+    resetGalleryUploadUI();
+    // Reset error foto juga saat buka modal
+    var errEl = document.getElementById('gallery-foto-error');
+    if (errEl) errEl.classList.add('hidden');
+    document.getElementById('modal-gallery').classList.add('open');
+}
 
-        if (categorySelect) {
-            categorySelect.addEventListener('change', filterGallery);
-        }
+// Validasi manual sebelum submit — karena foto_base64 adalah hidden input
+// yang tidak bisa divalidasi oleh browser native required
+function validateAndSubmitGallery() {
+    var base64Val = document.getElementById('gallery_foto_base64').value;
+    var errEl = document.getElementById('gallery-foto-error');
+
+    if (!base64Val) {
+        // Tampilkan error foto
+        if (errEl) errEl.classList.remove('hidden');
+        // Scroll ke area foto agar user tahu
+        document.getElementById('gallery-upload-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+
+    if (errEl) errEl.classList.add('hidden');
+
+    // Trigger native validation untuk field lainnya (judul, kategori, tanggal, fotografer, homepage)
+    var form = document.querySelector('#modal-gallery form');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    form.submit();
+}
+
+// Tombol Batal crop
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('gallery-btn-cancel').addEventListener('click', function(e) {
+        e.preventDefault();
+        resetGalleryUploadUI();
     });
 
-    function openDeleteGallery(id, title) {
-        document.getElementById('deleteGalleryTitle').innerText = title;
-        const form = document.getElementById('deleteGalleryForm');
-        form.action = '{{ url("/admin/gallery") }}/' + id;
-        document.getElementById('modal-delete-gallery').classList.add('open');
+    // Tombol Terapkan crop
+    document.getElementById('gallery-btn-apply').addEventListener('click', function(e) {
+        e.preventDefault();
+        if (!window.galleryCropperInst) return;
+        var canvas = window.galleryCropperInst.getCroppedCanvas({ width: 1200, height: 900 });
+        var base64 = canvas.toDataURL('image/jpeg', 0.92);
+        document.getElementById('gallery_foto_base64').value = base64;
+        document.getElementById('gallery-cropped-preview').src = base64;
+        document.getElementById('gallery-crop-area').classList.add('hidden');
+        document.getElementById('gallery-preview-area').classList.remove('hidden');
+        window.galleryCropperInst.destroy();
+        window.galleryCropperInst = null;
+    });
+
+    // Tombol Ganti foto
+    document.getElementById('gallery-btn-reset').addEventListener('click', function(e) {
+        e.preventDefault();
+        resetGalleryUploadUI();
+    });
+
+    // Pasang listener awal ke input dummy
+    var dummy = document.getElementById('gallery_foto_dummy');
+    if (dummy) dummy.addEventListener('change', onGalleryFileSelected);
+
+    // ================================================================
+    // FILTER GALLERY (search + kategori)
+    // ================================================================
+    const searchInput = document.querySelector('.search-bar input');
+    const categorySelect = document.querySelector('select[name="kategori_filter"]');
+    const cards = document.querySelectorAll('.gallery-card');
+    const noResults = document.getElementById('no-search-results');
+
+    function filterGallery() {
+        const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+        const selectedCategory = categorySelect ? categorySelect.value.toLowerCase() : '';
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const title = card.querySelector('.gallery-title')?.innerText.toLowerCase() || '';
+            const meta = card.querySelector('.gallery-meta')?.innerText.toLowerCase() || '';
+            const cardCategory = card.getAttribute('data-category') || '';
+            const matchesQuery = query === '' || title.includes(query) || meta.includes(query);
+            const matchesCategory = selectedCategory === '' || cardCategory === selectedCategory;
+            if (matchesQuery && matchesCategory) {
+                card.classList.remove('is-hidden');
+                visibleCount++;
+            } else {
+                card.classList.add('is-hidden');
+            }
+        });
+
+        if (noResults) {
+            noResults.classList.toggle('hidden', !(visibleCount === 0 && cards.length > 0));
+        }
     }
 
-    function closeDeleteGalleryModal() {
-        document.getElementById('modal-delete-gallery').classList.remove('open');
-    }
+    if (searchInput) searchInput.addEventListener('input', filterGallery);
+    if (categorySelect) categorySelect.addEventListener('change', filterGallery);
+});
+
+// ================================================================
+// MODAL DELETE
+// ================================================================
+function openDeleteGallery(id, title) {
+    document.getElementById('deleteGalleryTitle').innerText = title;
+    const form = document.getElementById('deleteGalleryForm');
+    form.action = '{{ url("/admin/gallery") }}/' + id;
+    document.getElementById('modal-delete-gallery').classList.add('open');
+}
+
+function closeDeleteGalleryModal() {
+    document.getElementById('modal-delete-gallery').classList.remove('open');
+}
 </script>
 @endpush
