@@ -4,7 +4,6 @@
 @section('title', 'KSPM SV IPB — About')
 
 @section('styles')
-
 /* Photo slider */
 #aph-slider{display:flex;transition:transform 0.6s ease}
 .div-card{cursor:pointer;transition:all 0.2s}
@@ -17,7 +16,6 @@
 .org-node.sec{background:#0d0f1a;color:#fff;border-color:#0d0f1a}
 .org-line{width:2px;background:#d0d5e8;margin:0 auto}
 .org-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
-
 @endsection
 
 @section('content')
@@ -38,6 +36,13 @@
 {{-- ABOUT HERO TEXT --}}
 <div class="bg-[#1a2fb5] py-[60px] pb-20 text-white relative overflow-hidden">
   <div class="max-w-[1200px] mx-auto px-10 relative z-[2]">
+
+    {{-- Render Logo Organisasi Utama --}}
+    @if($about && $about->logo)
+      <div class="mb-5">
+        <img src="{{ asset('storage/' . $about->logo) }}" alt="Logo {{ $about->nama }}" class="h-20 w-auto object-contain bg-white/10 p-2 rounded-xl">
+      </div>
+    @endif
 
     <div class="text-[0.75rem] font-bold tracking-[0.12em] uppercase text-white/50 mb-3.5">
       {{ $about->singkatan ?? 'Our Journey So Far' }}
@@ -60,9 +65,16 @@
     @endif
 
     @if($about?->visi)
-      <p class="text-base text-white/70 leading-[1.8] max-w-[640px]">
-        <span class="font-semibold text-white">Vision :</span>
+      <p class="text-base text-white/70 leading-[1.8] max-w-[640px] mb-2">
+        <span class="font-semibold text-white">Visi :</span>
         {{ $about->visi }}
+      </p>
+    @endif
+
+    @if($about?->misi)
+      <p class="text-base text-white/70 leading-[1.8] max-w-[640px]">
+        <span class="font-semibold text-white">Misi :</span>
+        {!! nl2br(e($about->misi)) !!}
       </p>
     @endif
 
@@ -75,21 +87,16 @@
     <div class="text-[0.72rem] font-bold tracking-[0.1em] uppercase text-[#1a2fb5] mb-2.5">Perjalanan Kami</div>
     <h2 class="text-[clamp(1.9rem,3vw,2.6rem)] text-[#0d0f1a] leading-[1.15] font-medium">Dari Awal Hingga Kini</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-[72px] items-start mt-12">
-      <!-- Stats grid -->
       <div class="rounded-3xl overflow-hidden border border-[#d0d5e8] bg-white" data-aos="fade-right">
-
         <div class="bg-gradient-to-br from-[#0d1a6e] via-[#1a2fb5] to-[#2d4ee0] p-8 relative overflow-hidden">
           <div class="text-[3.6rem] font-black leading-none text-white tracking-[-0.02em]">
             {{ $about->tahun_berdiri ?? '-' }}
           </div>
-
           <div class="text-[0.68rem] text-white/50 uppercase tracking-[0.1em] font-bold mt-1">
             Tahun Berdiri
           </div>
         </div>
-
-        <div class="grid grid-cols-2 gap-px bg-[#d0d5e8']">
-
+        <div class="grid grid-cols-2 gap-px bg-[#d0d5e8]">
           <div class="bg-white px-[22px] py-[18px] hover:bg-[#e8ecfb] transition-colors">
             <div class="text-[1.5rem] font-black text-[#1a2fb5] leading-none">
               {{ $about->total_anggota ?? '-' }}
@@ -98,7 +105,6 @@
               Anggota & Alumni
             </div>
           </div>
-
           <div class="bg-white px-[22px] py-[18px] hover:bg-[#e8ecfb] transition-colors">
             <div class="text-[1.5rem] font-black text-[#1a2fb5] leading-none">
               {{ $about->tahun_aktif ?? '-' }}
@@ -107,7 +113,6 @@
               Tahun Aktif
             </div>
           </div>
-
           <div class="bg-white px-[22px] py-[18px] hover:bg-[#e8ecfb] transition-colors">
             <div class="text-[1.5rem] font-black text-[#1a2fb5] leading-none">
               {{ $about->program_kerja ?? '-' }}
@@ -116,7 +121,6 @@
               Program Kerja
             </div>
           </div>
-
           <div class="bg-white px-[22px] py-[18px] hover:bg-[#e8ecfb] transition-colors">
             <div class="text-[1.5rem] font-black text-[#1a2fb5] leading-none">
               {{ $about->publikasi_riset ?? '-' }}
@@ -125,38 +129,25 @@
               Publikasi Riset
             </div>
           </div>
-
         </div>
       </div>
       
       <div data-aos="fade-left">
-
         @if($about?->deskripsi)
           <p class="text-[0.92rem] text-[#5a6080] leading-[1.85] mb-[18px]">
             {{ $about->deskripsi }}
           </p>
         @endif
-
         @if($about?->visi)
           <p class="text-[0.92rem] text-[#5a6080] leading-[1.85] mb-[18px]">
-            <span class="font-bold text-[#0d0f1a]">
-              Visi
-            </span>
-            <br>
-            {{ $about->visi }}
+            <span class="font-bold text-[#0d0f1a]">Visi :</span><br>{{ $about->visi }}
           </p>
         @endif
-
         @if($about?->misi)
           <p class="text-[0.92rem] text-[#5a6080] leading-[1.85]">
-            <span class="font-bold text-[#0d0f1a]">
-              Misi
-            </span>
-            <br>
-            {!! nl2br(e($about->misi)) !!}
+            <span class="font-bold text-[#0d0f1a]">Misi :</span><br>{!! nl2br(e($about->misi)) !!}
           </p>
         @endif
-
       </div>
     </div>
   </div>
@@ -166,7 +157,7 @@
 <section class="bg-[#f7f8fc] py-24">
   <div class="max-w-[1200px] mx-auto px-10">
     <div class="text-[0.72rem] font-bold tracking-[0.1em] uppercase text-[#1a2fb5] mb-2.5">Struktur Organisasi</div>
-    <h2 class="text-[clamp(1.9rem,3vw,2.6rem)] text-[#0d0f1a] leading-[1.15] font-medium mb-12">KSPM SV IPB 2026 Organizational Structure</h2>
+    <h2 class="text-[clamp(1.9rem,3vw,2.6rem)] text-[#0d0f1a] leading-[1.15] font-medium mb-12">KSPM SV IPB Organizational Structure</h2>
     <div class="text-center space-y-4">
       <div class="flex justify-center"><div class="org-node head">CEO KSPM</div></div>
       <div class="org-line h-6"></div>
@@ -215,13 +206,10 @@
     </div>
   </div>
 </div>
-
 @endsection
 
 @section('scripts')
-
 <script>
-
 /* PHOTO SLIDER */
 var aphIdx=0;
 var aphSlider=document.getElementById('aph-slider');
@@ -246,13 +234,11 @@ function goAph(n){
 }
 
 function slidePhoto(dir){goAph((aphIdx+dir+aphTotal)%aphTotal);}
-
 setInterval(function(){slidePhoto(1);},5000);
 
 /* DIVISIONS DATA - DYNAMIC FROM DATABASE */
 var divisiData = @json($divisiData);
 
-// Add emoji icons for each division
 var divisiIcons = {
   'BPH (Badan Pengurus Harian)': '👑',
   'Administration': '📋',
@@ -266,30 +252,28 @@ var divisiIcons = {
 divisiData.forEach(function(d) {
   d.icon = divisiIcons[d.nama] || '💼';
 });
-/* MAPPING ELEMENT GRID DIVISI */
+
 var divGrid=document.getElementById('div-grid');
 if(divGrid){
   divGrid.innerHTML=divisiData.map(function(d,i){
     return '<div class="div-card bg-[#f7f8fc] border border-[#d0d5e8] rounded-[18px] p-7 hover:border-[#1a2fb5] hover:bg-[#e8ecfb]" onclick="openDivModal('+i+')">'+
       '<div class="text-[2rem] mb-3">'+d.icon+'</div>'+
       '<div class="text-[0.95rem] font-bold text-[#0d0f1a] mb-1.5">'+d.nama+'</div>'+
-      // murni memanggil d.desc unik hasil generate controller
       '<div class="text-[0.82rem] text-[#5a6080] leading-[1.65] mb-4">'+d.desc+'</div>'+ 
       '<div class="text-[0.78rem] font-bold text-[#1a2fb5]">Lihat Detail →</div>'+
     '</div>';
   }).join('');
 }
 
-/* FUNGSI MODAL DETAIL */
 function openDivModal(idx){
   var d=divisiData[idx];
   document.getElementById('dm-title').textContent=d.nama;
-  document.getElementById('dm-sub').textContent=d.desc;        // Deskripsi singkat di sub-title modal
-  document.getElementById('dm-desc').textContent=d.fullDesc;   // Deskripsi lengkap di body tentang kami
+  document.getElementById('dm-sub').textContent=d.desc;
+  document.getElementById('dm-desc').textContent=d.fullDesc;
 
   document.getElementById('dm-members').innerHTML=d.members.map(function(m){
-    var namaPengurus = m.nama || m.name || 'Pengurus';
-    var jabatanPengurus = m.jabatan || m.role || 'Staff';
+    var namaPengurus = m.nama || 'Pengurus';
+    var jabatanPengurus = m.jabatan || 'Staff';
     var fotoPengurus = m.foto_pengurus;
     var inisial = m.initials || 'P';
 
@@ -315,7 +299,5 @@ function closeDivModal(){
   modal.style.opacity='0';modal.style.pointerEvents='none';
   box.style.transform='translateY(20px)';
 }
-
 </script>
-
 @endsection

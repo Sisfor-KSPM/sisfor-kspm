@@ -90,7 +90,7 @@
 
     </div>
 
-    <!-- Social Media Links -->
+    <!-- Social Media Links
     <div class="card mb-5 p-6">
 
         <div class="font-bold mb-4 text-gray-900">
@@ -193,7 +193,7 @@
 
         </div>
 
-    </div>
+    </div> -->
 
 </form>
 

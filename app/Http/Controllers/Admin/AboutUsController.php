@@ -37,12 +37,21 @@ class AboutUsController extends Controller
 
         $about = AboutUs::first() ?? new AboutUs();
 
-        if ($request->hasFile('logo')) {
-            if ($about->logo && Storage::disk('public')->exists($about->logo)) {
-                Storage::disk('public')->delete($about->logo);
+        // Logo dikirim sebagai base64 dari hasil crop di frontend
+        if ($request->filled('logo_base64')) {
+            $base64 = $request->input('logo_base64');
+            // Format: data:image/png;base64,XXXXX
+            if (preg_match('/^data:image\/png;base64,/', $base64)) {
+                $imageData = base64_decode(preg_replace('/^data:image\/png;base64,/', '', $base64));
+                $fileName  = 'logos/logo_' . time() . '.png';
+                if ($about->logo && Storage::disk('public')->exists($about->logo)) {
+                    Storage::disk('public')->delete($about->logo);
+                }
+                Storage::disk('public')->put($fileName, $imageData);
+                $validated['logo'] = $fileName;
             }
-            $validated['logo'] = $request->file('logo')->store('logos', 'public');
         }
+        unset($validated['logo_base64']); // Jangan masuk ke fillable
 
         $about->fill($validated);
         $about->save();

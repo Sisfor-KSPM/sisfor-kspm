@@ -20,7 +20,7 @@ class HomeController extends Controller
     public function index()
     {
         $home = Homecontent::first();
-        $header = Header::first(); // null-safe, view sudah handle kalau null
+        $header = Header::first();
         return view('welcome', compact('header', 'home'));
     }
 
@@ -34,8 +34,7 @@ class HomeController extends Controller
     public function about()
     {
         $about = AboutUs::first();
-        // Contoh potongan kode di Controller Anda saat melempar data ke view about
-        // 1. Definisikan list divisi beserta deskripsi uniknya masing-masing
+        
         $daftarDivisi = [
             'BPH (Badan Pengurus Harian)' => [
                 'desc' => 'Inti kepemimpinan dan manajemen pusat organisasi KSPM.',
@@ -59,12 +58,9 @@ class HomeController extends Controller
             ],
         ];
 
-        // 2. Loop dan kumpulkan anggota dari database berdasarkan divisinya
         $divisiData = [];
         foreach ($daftarDivisi as $namaDivisi => $info) {
-            
-            // Ambil pengurus yang terdaftar di divisi ini
-            $members = \App\Models\DataPengurus::where('divisi', $namaDivisi)
+            $members = DataPengurus::where('divisi', $namaDivisi)
                 ->get()
                 ->map(function($m) {
                     return [
@@ -75,7 +71,6 @@ class HomeController extends Controller
                     ];
                 });
 
-            // Gabungkan nama divisi, teks deskripsi unik, dan daftar anggotanya
             $divisiData[] = [
                 'nama' => $namaDivisi,
                 'desc' => $info['desc'],
@@ -84,7 +79,6 @@ class HomeController extends Controller
             ];
         }
 
-        // Kirim data ke view about
         return view('about', compact('about', 'divisiData'));
     }
 
@@ -120,6 +114,4 @@ class HomeController extends Controller
         $faqs = Faq::all();
         return view('contact', compact('faqs'));
     }
-
-
 }

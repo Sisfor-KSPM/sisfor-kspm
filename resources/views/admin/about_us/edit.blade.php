@@ -25,19 +25,45 @@
         <div class="card p-6">
             <div class="mb-5">
                 <label class="block text-xs font-semibold text-gray-500 mb-1">Logo Utama</label>
-                
-                @if($about && $about->logo)
-                    <div class="mb-2">
-                        <img src="{{ asset('storage/' . $about->logo) }}" alt="Logo KSPM" class="h-16 w-auto object-contain">
-                    </div>
-                @endif
 
-                <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center hover:bg-blue-50 transition cursor-pointer relative">
-                    <input type="file" name="logo" class="absolute inset-0 opacity-0 cursor-pointer">
-                    <div class="text-2xl mb-1">🏦</div>
-                    <div class="font-semibold text-gray-500 text-xs">Klik untuk ganti logo</div>
-                    <div class="text-[10px] text-gray-400">PNG/JPG/SVG · maks 2MB</div>
+                {{-- Upload area logo --}}
+                <label id="logo-upload-area" for="logo_input_dummy" class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center hover:bg-blue-50 transition cursor-pointer block">
+                    @if($about && $about->logo)
+                        <img src="{{ asset('storage/' . $about->logo) }}" alt="Logo KSPM" id="logo-current-img" class="h-16 w-auto object-contain mx-auto mb-2">
+                        <div class="font-semibold text-gray-500 text-xs">Klik untuk ganti logo</div>
+                    @else
+                        <div class="text-2xl mb-1">🏦</div>
+                        <div class="font-semibold text-gray-500 text-xs">Klik untuk upload logo</div>
+                    @endif
+                    <div class="text-[10px] text-gray-400">PNG/JPG/SVG · maks 2MB · Akan di-crop bulat</div>
+                    <input type="file" id="logo_input_dummy" accept=".jpg,.jpeg,.png,.svg" class="hidden">
+                </label>
+
+                {{-- Area crop logo --}}
+                <div id="logo-crop-area" class="hidden mt-3">
+                    <div class="w-full h-[250px] sm:h-[320px] rounded-xl border border-gray-200 bg-gray-100 mb-3 overflow-hidden relative">
+                        <img id="logo-image-to-crop" src="" style="display:block;max-width:100%;">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" id="logo-btn-cancel" class="btn btn-ghost flex-1 py-2 text-sm">Batal</button>
+                        <button type="button" id="logo-btn-apply" class="btn btn-primary flex-1 py-2 text-sm">✂️ Terapkan Potongan</button>
+                    </div>
                 </div>
+
+                {{-- Preview setelah crop logo --}}
+                <div id="logo-preview-area" class="hidden mt-3 flex items-center justify-between border border-gray-200 rounded-xl p-4 bg-gray-50">
+                    <div class="flex items-center gap-3">
+                        <img id="logo-cropped-preview" src="" class="w-14 h-14 rounded-full object-cover shadow-sm border border-gray-200 bg-transparent">
+                        <div>
+                            <div class="text-sm font-semibold text-gray-700">Logo Siap Upload</div>
+                            <div class="text-xs text-green-600 font-medium">✓ Sudah dipotong membulat</div>
+                        </div>
+                    </div>
+                    <button type="button" id="logo-btn-reset" class="text-xs text-red-500 hover:text-red-700 font-semibold px-3 py-1.5 bg-red-50 rounded-lg hover:bg-red-100 transition">Ganti Logo</button>
+                </div>
+
+                {{-- Hidden input base64 yang dikirim ke server --}}
+                <input type="hidden" name="logo_base64" id="logo_base64_input">
                 @error('logo') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
             </div>
 
@@ -218,41 +244,40 @@
 
             <div class="mb-5">
                 <label class="block text-xs font-semibold text-gray-500 mb-1">Foto Pengurus (Wajib Diisi)</label>
-
                 <label id="upload-area" class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:bg-blue-50 transition cursor-pointer block">
                     <div class="text-4xl mb-2">👤</div>
                     <div class="font-semibold text-gray-500 text-sm">Pilih Foto Pengurus</div>
-                    <div class="text-[0.72rem] text-gray-400 mt-1">Akan dipotong kotak presisi otomatis</div>
+                    <div class="text-[0.72rem] text-gray-400 mt-1">Akan dipotong presisi membulat</div>
                     <input type="file" id="foto_input_dummy" accept=".jpg,.jpeg,.png" class="hidden">
                 </label>
 
                 <div id="crop-area" class="hidden mt-3">
-                    <div class="w-full h-[250px] sm:h-[350px] rounded-xl border border-gray-200 bg-gray-100 mb-3 overflow-hidden">
+                    <div class="w-full h-[250px] sm:h-[350px] rounded-xl border border-gray-200 bg-gray-100 mb-3 overflow-hidden relative">
                         <img id="image-to-crop" src="" style="display: block; max-width: 100%;">
                     </div>
                     <div class="flex gap-2">
                         <button type="button" id="btn-cancel-crop" class="btn btn-ghost flex-1 py-2 text-sm">Batal</button>
-                        <button type="button" id="btn-apply-crop" class="btn btn-primary flex-1 py-2 text-sm">✂️ Potong & Simpan</button>
+                        <button type="button" id="btn-apply-crop" class="btn btn-primary flex-1 py-2 text-sm">✂️ Terapkan Potongan</button>
                     </div>
                 </div>
 
                 <div id="preview-area" class="hidden mt-3 flex items-center justify-between border border-gray-200 rounded-xl p-4 bg-gray-50">
                     <div class="flex items-center gap-3">
-                        <img id="cropped-preview" src="" class="w-14 h-14 rounded-full object-cover shadow-sm border border-gray-200">
+                        <img id="cropped-preview" src="" class="w-14 h-14 rounded-full object-cover shadow-sm border border-gray-200 bg-transparent">
                         <div>
                             <div class="text-sm font-semibold text-gray-700">Foto Siap Upload</div>
-                            <div class="text-xs text-green-600 font-medium">✓ Sudah terpotong (1:1)</div>
+                            <div class="text-xs text-green-600 font-medium">✓ Sudah dipotong membulat</div>
                         </div>
                     </div>
-                    <button type="button" id="btn-reset-foto" class="text-xs text-red-500 hover:text-red-700 font-semibold px-3 py-1.5 bg-red-50 rounded-lg hover:bg-red-100 transition">Ganti</button>
+                    <button type="button" id="btn-reset-foto" class="text-xs text-red-500 hover:text-red-700 font-semibold px-3 py-1.5 bg-red-50 rounded-lg hover:bg-red-100 transition">Ganti Foto</button>
                 </div>
 
-                <input type="file" id="foto_pengurus_real" name="foto_pengurus" class="hidden" accept=".jpg,.jpeg,.png">
+                <input type="file" id="foto_pengurus_real" name="foto_pengurus" class="hidden" accept=".png">
             </div>
 
             <div class="mt-5 pt-4 border-t border-gray-200 flex justify-end gap-2">
                 <button type="button" class="btn btn-ghost" onclick="document.getElementById('modal-pengurus').classList.remove('open')">Batal</button>
-                <button type="submit" class="btn btn-primary">💾 Simpan</button>
+                <button type="submit" class="btn btn-primary">💾 Simpan Pengurus</button>
             </div>
         </form>
     </div>
@@ -288,19 +313,125 @@
 .btn-ghost:hover { background: #e5e7eb; }
 .btn-danger { background: #dc2626; color: #fff; }
 .btn-danger:hover { background: #b91c1c; }
+
+/* Membuat antarmuka pemotong berbentuk bulat visual */
+.cropper-view-box,
+.cropper-face {
+  border-radius: 50%;
+}
+.cropper-dashed,
+.cropper-line {
+  display: none !important;
+}
+.cropper-view-box {
+  outline: 2px solid #fff;
+  outline-color: rgba(255, 255, 255, 0.75);
+}
 </style>
 @endpush
 
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script>
+// ============================================================
+// HELPER GLOBAL
+// ============================================================
+window.cropperInst     = null; // untuk foto pengurus (modal)
+window.logoCropperInst = null; // untuk logo utama (halaman)
 
-// --- FUNGSI MODAL PENGURUS --- //
+// Buat canvas hasil crop berbentuk lingkaran transparan (PNG)
+function getRoundedCanvas(sourceCanvas) {
+    var c = document.createElement('canvas');
+    var ctx = c.getContext('2d');
+    c.width = sourceCanvas.width;
+    c.height = sourceCanvas.height;
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(sourceCanvas, 0, 0);
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.beginPath();
+    ctx.arc(c.width / 2, c.height / 2, Math.min(c.width, c.height) / 2, 0, 2 * Math.PI, true);
+    ctx.fill();
+    return c;
+}
+
+// ============================================================
+// LOGO UTAMA — crop flow di halaman (bukan modal)
+// ============================================================
+function resetLogoUI() {
+    document.getElementById('logo-upload-area').classList.remove('hidden');
+    document.getElementById('logo-crop-area').classList.add('hidden');
+    document.getElementById('logo-preview-area').classList.add('hidden');
+    document.getElementById('logo_input_dummy').value = '';
+    document.getElementById('logo_base64_input').value = '';
+    if (window.logoCropperInst) {
+        window.logoCropperInst.destroy();
+        window.logoCropperInst = null;
+    }
+}
+
+document.getElementById('logo_input_dummy').addEventListener('change', function(e) {
+    var files = e.target.files;
+    if (!files || !files.length) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+        var img = document.getElementById('logo-image-to-crop');
+        img.src = ev.target.result;
+        document.getElementById('logo-upload-area').classList.add('hidden');
+        document.getElementById('logo-crop-area').classList.remove('hidden');
+        if (window.logoCropperInst) { window.logoCropperInst.destroy(); }
+        window.logoCropperInst = new Cropper(img, {
+            aspectRatio: 1,
+            viewMode: 1,
+            dragMode: 'move',
+            autoCropArea: 0.9,
+            responsive: true,
+            restore: false,
+            guides: false,
+            center: false,
+            highlight: false,
+            cropBoxMovable: true,
+            cropBoxResizable: true,
+            toggleDragModeOnDblclick: false,
+        });
+    };
+    reader.readAsDataURL(files[0]);
+});
+
+document.getElementById('logo-btn-cancel').addEventListener('click', function(e) {
+    e.preventDefault();
+    resetLogoUI();
+});
+
+document.getElementById('logo-btn-apply').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (!window.logoCropperInst) return;
+    var canvas  = window.logoCropperInst.getCroppedCanvas({ width: 500, height: 500 });
+    var rounded = getRoundedCanvas(canvas);
+    // Simpan sebagai base64 di hidden input (dikirim ke controller)
+    var base64 = rounded.toDataURL('image/png', 1.0);
+    document.getElementById('logo_base64_input').value = base64;
+    document.getElementById('logo-cropped-preview').src = base64;
+    document.getElementById('logo-crop-area').classList.add('hidden');
+    document.getElementById('logo-preview-area').classList.remove('hidden');
+    window.logoCropperInst.destroy();
+    window.logoCropperInst = null;
+});
+
+document.getElementById('logo-btn-reset').addEventListener('click', function(e) {
+    e.preventDefault();
+    resetLogoUI();
+});
+
+// ============================================================
+// FOTO PENGURUS (MODAL) — crop flow
+// ============================================================
 function resetFotoUI() {
     document.getElementById('upload-area').classList.remove('hidden');
     document.getElementById('crop-area').classList.add('hidden');
     document.getElementById('preview-area').classList.add('hidden');
-    document.getElementById('foto_input_dummy').value = '';
+    // Reset input dengan replace node agar value benar-benar kosong
+    var dummy = document.getElementById('foto_input_dummy');
+    dummy.value = '';
     document.getElementById('foto_pengurus_real').value = '';
     if (window.cropperInst) {
         window.cropperInst.destroy();
@@ -308,133 +439,135 @@ function resetFotoUI() {
     }
 }
 
-function openTambahPengurus() {
-    let form = document.getElementById('pengurusForm');
-    form.reset();
-    form.action = "{{ route('pengurus.store') }}";
-    document.getElementById('modalTitle').innerText = 'Tambah Pengurus';
-
-    let methodField = document.getElementById('methodField');
-    if (methodField) {
-        methodField.removeAttribute('name');
-        methodField.value = '';
+// Pasang ulang event listener tiap modal dibuka (cegah duplikasi pakai flag)
+function initCropperListeners() {
+    // Gunakan teknik replace node untuk benar-benar hapus listener lama
+    function replaceNode(id) {
+        var el = document.getElementById(id);
+        var clone = el.cloneNode(true);
+        el.parentNode.replaceChild(clone, el);
+        return clone;
     }
 
-    resetFotoUI();
-    document.getElementById('modal-pengurus').classList.add('open');
-}
+    // Foto input: JANGAN replace label wrapper, cukup input-nya saja
+    var dummy = replaceNode('foto_input_dummy');
+    replaceNode('btn-cancel-crop');
+    replaceNode('btn-apply-crop');
+    replaceNode('btn-reset-foto');
 
-function editPengurus(data) {
-    let form = document.getElementById('pengurusForm');
+    // Pastikan label upload-area tetap trigger input baru
+    var uploadLabel = document.getElementById('upload-area');
+    uploadLabel.setAttribute('for', 'foto_input_dummy');
+    uploadLabel.onclick = function() {
+        document.getElementById('foto_input_dummy').click();
+    };
 
-    document.getElementById('modalTitle').innerText = 'Edit Pengurus';
-    document.getElementById('nama').value = data.nama ?? '';
-    document.getElementById('nim').value = data.nim ?? '';
-    document.getElementById('jabatan').value = data.jabatan ?? '';
-    document.getElementById('divisi').value = data.divisi ?? '';
-    document.getElementById('periode').value = data.periode ?? '';
-    document.getElementById('angkatan').value = data.angkatan ?? '';
-    document.getElementById('email').value = data.email ?? '';
-    document.getElementById('linkedin').value = data.linkedin ?? '';
-
-    form.action = "{{ url('/admin/pengurus') }}/" + data.id;
-
-    let methodField = document.getElementById('methodField');
-    if (methodField) {
-        methodField.setAttribute('name', '_method');
-        methodField.value = 'PUT';
-    }
-
-    resetFotoUI();
-    document.getElementById('modal-pengurus').classList.add('open');
-}
-
-function openDeleteModal(id, nama, deleteRoute) {
-    document.getElementById('deleteName').innerText = nama;
-    document.getElementById('deleteForm').action = deleteRoute;
-    document.getElementById('modal-delete').classList.add('open');
-}
-
-function closeDeleteModal() {
-    document.getElementById('modal-delete').classList.remove('open');
-}
-
-// --- LOGIKA CROPPER JS --- //
-window.cropperInst = null;
-const fotoDummy = document.getElementById('foto_input_dummy');
-const fotoReal = document.getElementById('foto_pengurus_real');
-const imageToCrop = document.getElementById('image-to-crop');
-
-fotoDummy.addEventListener('change', function(e) {
-    let files = e.target.files;
-    if (files && files.length > 0) {
-        let file = files[0];
-        let reader = new FileReader();
-        
-        reader.onload = function(event) {
-            imageToCrop.src = event.target.result;
+    // Pilih file → tampilkan cropper
+    document.getElementById('foto_input_dummy').addEventListener('change', function(e) {
+        var files = e.target.files;
+        if (!files || !files.length) return;
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            var img = document.getElementById('image-to-crop');
+            img.src = ev.target.result;
             document.getElementById('upload-area').classList.add('hidden');
             document.getElementById('crop-area').classList.remove('hidden');
-
-            if (window.cropperInst) {
-                window.cropperInst.destroy();
-            }
-            
-            // Konfigurasi Cropper Mobile-Friendly
-            window.cropperInst = new Cropper(imageToCrop, {
-                aspectRatio: 1, 
-                viewMode: 1, // Kunci agar crop box tidak keluar jalur gambar
-                dragMode: 'move', // Sangat berguna untuk HP (geser gambar dengan satu jari)
+            if (window.cropperInst) { window.cropperInst.destroy(); }
+            window.cropperInst = new Cropper(img, {
+                aspectRatio: 1,
+                viewMode: 1,
+                dragMode: 'move',
                 autoCropArea: 0.9,
                 responsive: true,
                 restore: false,
-                guides: true,
-                center: true,
+                guides: false,
+                center: false,
                 highlight: false,
                 cropBoxMovable: true,
                 cropBoxResizable: true,
                 toggleDragModeOnDblclick: false,
             });
         };
-        reader.readAsDataURL(file);
-    }
-});
+        reader.readAsDataURL(files[0]);
+    });
 
-// Batal Crop
-document.getElementById('btn-cancel-crop').addEventListener('click', function() {
+    // Batal crop
+    document.getElementById('btn-cancel-crop').addEventListener('click', function(e) {
+        e.preventDefault();
+        resetFotoUI();
+    });
+
+    // Terapkan crop → masukkan ke hidden file input
+    document.getElementById('btn-apply-crop').addEventListener('click', function(e) {
+        e.preventDefault();
+        if (!window.cropperInst) return;
+        var canvas  = window.cropperInst.getCroppedCanvas({ width: 500, height: 500 });
+        var rounded = getRoundedCanvas(canvas);
+        rounded.toBlob(function(blob) {
+            var fileName = 'foto_pengurus_' + Date.now() + '.png';
+            var file = new File([blob], fileName, { type: 'image/png', lastModified: Date.now() });
+            var dt = new DataTransfer();
+            dt.items.add(file);
+            document.getElementById('foto_pengurus_real').files = dt.files;
+            document.getElementById('cropped-preview').src = URL.createObjectURL(blob);
+            document.getElementById('crop-area').classList.add('hidden');
+            document.getElementById('preview-area').classList.remove('hidden');
+            window.cropperInst.destroy();
+            window.cropperInst = null;
+        }, 'image/png', 1.0);
+    });
+
+    // Ganti foto
+    document.getElementById('btn-reset-foto').addEventListener('click', function(e) {
+        e.preventDefault();
+        resetFotoUI();
+    });
+}
+
+// ============================================================
+// MODAL PENGURUS
+// ============================================================
+function openTambahPengurus() {
+    var form = document.getElementById('pengurusForm');
+    form.reset();
+    form.action = "{{ route('pengurus.store') }}";
+    document.getElementById('modalTitle').innerText = 'Tambah Pengurus';
+    var mf = document.getElementById('methodField');
+    if (mf) { mf.removeAttribute('name'); mf.value = ''; }
     resetFotoUI();
-});
+    initCropperListeners();
+    document.getElementById('modal-pengurus').classList.add('open');
+}
 
-// Terapkan Potongan Gambar
-document.getElementById('btn-apply-crop').addEventListener('click', function() {
-    if (!window.cropperInst) return;
-    
-    window.cropperInst.getCroppedCanvas({
-        width: 500,
-        height: 500
-    }).toBlob((blob) => {
-        
-        let fileName = "foto_pengurus_" + new Date().getTime() + ".jpg";
-        let file = new File([blob], fileName, { type: "image/jpeg", lastModified: new Date().getTime() });
-        
-        let container = new DataTransfer();
-        container.items.add(file);
-        fotoReal.files = container.files;
-
-        document.getElementById('cropped-preview').src = URL.createObjectURL(blob);
-        document.getElementById('crop-area').classList.add('hidden');
-        document.getElementById('preview-area').classList.remove('hidden');
-        
-        window.cropperInst.destroy();
-        window.cropperInst = null;
-        
-    }, 'image/jpeg', 0.90);
-});
-
-// Tombol Ganti / Hapus Foto
-document.getElementById('btn-reset-foto').addEventListener('click', function() {
+function editPengurus(data) {
+    var form = document.getElementById('pengurusForm');
+    document.getElementById('modalTitle').innerText = 'Edit Pengurus';
+    document.getElementById('nama').value      = data.nama      ?? '';
+    document.getElementById('nim').value       = data.nim       ?? '';
+    document.getElementById('jabatan').value   = data.jabatan   ?? '';
+    document.getElementById('divisi').value    = data.divisi    ?? '';
+    document.getElementById('periode').value   = data.periode   ?? '';
+    document.getElementById('angkatan').value  = data.angkatan  ?? '';
+    document.getElementById('email').value     = data.email     ?? '';
+    document.getElementById('linkedin').value  = data.linkedin  ?? '';
+    form.action = "{{ url('/admin/pengurus') }}/" + data.id;
+    var mf = document.getElementById('methodField');
+    if (mf) { mf.setAttribute('name', '_method'); mf.value = 'PUT'; }
     resetFotoUI();
-});
+    initCropperListeners();
+    document.getElementById('modal-pengurus').classList.add('open');
+}
 
+// ============================================================
+// MODAL DELETE
+// ============================================================
+function openDeleteModal(id, nama, deleteRoute) {
+    document.getElementById('deleteName').innerText = nama;
+    document.getElementById('deleteForm').action = deleteRoute;
+    document.getElementById('modal-delete').classList.add('open');
+}
+function closeDeleteModal() {
+    document.getElementById('modal-delete').classList.remove('open');
+}
 </script>
 @endpush
